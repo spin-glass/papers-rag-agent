@@ -1,0 +1,39 @@
+---
+description: Commit message convention based on Conventional Commits v1.0.0
+globs:
+alwaysApply: true
+---
+
+# Commit Message Rules
+
+You are generating commit messages for this repository.
+**Always write commit messages in English, never in Japanese or any other language.**
+
+Follow the [**Conventional Commits v1.0.0** specification](https://www.conventionalcommits.org/en/v1.0.0/)
+
+## Format
+
+```<type>[optional scope]: <description>```
+
+## Types
+
+feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+
+## Rules
+
+- Scope is optional but recommended (e.g., retriever, ui, docs)
+- Description should be written in **present tense imperative**
+  - ✅ "add retriever module"
+  - ❌ "added retriever module" / "adds retriever module"
+- Start with lowercase letter
+- Do not end with period
+- Subject line should be 72 characters or less
+
+## Examples
+
+- feat(retriever): add FAISS-based retriever with reranker
+- fix(ui): correct citation highlighting bug
+- docs: update README with LangGraph flow spec
+- refactor(agent): simplify Summarizer input/output schema
+- chore: update dependencies
+- revert: revert commit abc123

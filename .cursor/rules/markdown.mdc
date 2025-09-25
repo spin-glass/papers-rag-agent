@@ -1,0 +1,44 @@
+---
+description: Markdown files must follow Markdownlint style rules globs:
+  - "**/*.md"
+alwaysApply: true
+---
+
+# Markdownlint Rules
+
+When editing or generating Markdown files, follow [Markdownlint](https://github.com/DavidAnson/markdownlint) rules.
+
+## Key Rules
+
+- Use ATX headings (`#`, `##`, …), no Setext (`===`, `---`)  (MD003, MD018)
+- Heading levels should only increment by one level at a time (MD001)
+- No trailing spaces at line end (MD009)
+- Hard tabs are not allowed; use spaces (MD010)
+- Maximum line length: 80 characters (MD013)
+- Code blocks fenced with backticks, specify language (MD040, MD046)
+- Blank line before headings, lists, and code blocks (MD022, MD031)
+- Lists should be consistent in style (MD004, MD005)
+- No consecutive blank lines (MD012)
+
+## Example
+
+✅
+
+```markdown
+# Title
+
+## Subtitle
+
+- Item 1
+- Item 2
+```
+
+❌
+
+```markdown
+Title
+=====
+
+-   Item1
+-   Item2
+```
