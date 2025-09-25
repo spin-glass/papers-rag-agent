@@ -6,8 +6,7 @@ alwaysApply: true
 
 # Commit Message Rules
 
-You are generating commit messages for this repository.
-**Always write commit messages in English, never in Japanese or any other language.**
+**IMPORTANT: Always write commit messages in English, never in Japanese or any other language.**
 
 Follow the [**Conventional Commits v1.0.0** specification](https://www.conventionalcommits.org/en/v1.0.0/)
 
