@@ -1,5 +1,6 @@
 ---
-description: Markdown files must follow Markdownlint style rules globs:
+description: Markdown files must follow Markdownlint style rules
+globs:
   - "**/*.md"
 alwaysApply: true
 ---
@@ -19,26 +20,3 @@ When editing or generating Markdown files, follow [Markdownlint](https://github.
 - Blank line before headings, lists, and code blocks (MD022, MD031)
 - Lists should be consistent in style (MD004, MD005)
 - No consecutive blank lines (MD012)
-
-## Example
-
-✅
-
-```markdown
-# Title
-
-## Subtitle
-
-- Item 1
-- Item 2
-```
-
-❌
-
-```markdown
-Title
-=====
-
--   Item1
--   Item2
-```
