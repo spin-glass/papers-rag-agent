@@ -1,75 +1,62 @@
-# Papers RAG Agent (MVP)
+# Papers RAG Agent
 
-This project is a **minimum viable product (MVP) of a RAG × Agent chatbot specialized for academic paper learning**. When users input paper titles or questions, the following processes are executed:
+このプロジェクトは **論文学習に特化した RAG × エージェント型チャットボット** です。
+ユーザーが論文タイトルや質問を入力すると、以下の処理が行われます。
 
-1. **Query Planner**
-   Analyzes user input and generates search queries (e.g., HyDE/query expansion).
+## Query Planner
 
-2. **Retriever**
-   Retrieves papers from arXiv, converts PDFs to text → chunks by IMRaD/formulas → stores in vector DB (FAISS) and performs search.
+ユーザー入力を解析し、検索クエリを生成します（例: HyDE／クエリ拡張）。
 
-3. **Summarizer**
-   Generates **Cornell Note format (Cue / Notes / Summary)** based on search results and creates **3 quiz questions** to deepen understanding.
+## Retriever（GraphRAG + ベクトルハイブリッド）
 
-4. **Judge**
-   Cross-references answers with citations and retries if there are deficiencies or errors.
+* arXivから論文を取得し、PDFをテキスト化 → IMRaD構造ごとにチャンク化 → ベクトルDB（FAISS）に格納して検索。
+* 加えて、知識グラフを利用した **GraphRAG** により、概念間の関係性を探索。
+* LangGraph上でクエリ解析に基づき **ベクトル検索とGraph検索を動的に切り替え／統合** します。
+
+## Summarizer
+
+検索結果をもとに **Cornell Note形式（Cue / Notes / Summary）** を生成し、理解を深めるための **3問クイズ** を作成します。
+
+## Judge（Corrective RAG: CRAG）
+
+回答と引用の整合性をチェックし、不足や誤りがあれば再検索・再生成を行います。
+LangGraphの制御フローを用い、**自己検証と修正ループ**を実現します。
+
+## Multi-Agent Cooperation（Aime / TreeQuest思想）
+
+* 複数の専門エージェント（例: 領域専門／数理的厳密性／引用重視）が候補回答を生成。
+* **批判エージェント（Critic）**が各候補を評価し、**統合エージェント（Integrator）**が最終回答を決定します。
+* これにより、単一モデルの偏りを抑え、より妥当な答えを導出します。
 
 ---
 
-## MVP Goals
+## 目標
 
-- Ability to verify the following through **Chainlit UI**:
-  - Chat questions → answers returned with citations
-  - Cornell Note output (Cue / Notes / Summary)
-  - Auto-generated 3 quiz questions
+**Chainlit UI** を通じて以下を確認できること:
 
-- **Evaluation postponed** (LangSmith Evals and RAGAS are for the next phase)
+* 質問に対して引用付きで回答が返る
+* Cornell Note形式の出力（Cue / Notes / Summary）
+* 自動生成された3問クイズ
+* **Judgeによる自己修正ループ（CRAG）**の実行履歴
+* 複数エージェントの候補・批評・合議結果
+* 検索モード（ベクトル／Graph）切替の可視化
+
+> 評価は後回し（LangSmith EvalsやRAGASは次フェーズで導入予定）
 
 ---
 
-## Project Structure (Planned)
+## フォルダ構成（予定）
 
+```bash
 papers-rag-agent/
 ├── src/
-│ ├── agents/ # Query Planner, Retriever, Summarizer, Judge
-│ ├── ui/ # Chainlit app
-│ └── utils/ # Common processing (PDF→text, chunker etc.)
-├── data/ # Sample paper PDFs
-├── tests/ # Test code
-├── scripts/ # Supporting scripts for eval etc.
+│   ├── graphs/    # LangGraph定義（CRAGループ、マルチエージェント、ハイブリッド検索）
+│   ├── agents/    # Query Planner, Summarizer, Judge, Experts, Critics, Integrator
+│   ├── retrieval/ # Vector / Graph Retriever 実装
+│   ├── ui/        # Chainlitアプリ
+│   └── utils/     # 共通処理（PDF→text, chunkerなど）
+├── data/          # サンプル論文PDF
+├── tests/         # テストコード
+├── scripts/       # 評価・補助スクリプト
 └── README.md
-
----
-
-## Setup and Running
-
-### Install Dependencies
-
-```bash
-uv install
 ```
-
-### Launch UI
-
-```bash
-uv run chainlit run src/ui/app.py -w
-```
-
-Access `http://localhost:8000` in your browser to use the chat UI.
-
-### Current Features
-
-- **Mock Implementation**: LangGraph not yet implemented, returns fixed data
-- **Type-Safe**: Uses Pydantic models
-- **UI Display**: Shows answers, Cornell Notes, quizzes, and citations
-
----
-
-## Future Extensions
-
-- Evaluation: Introduce LangSmith Evals, RAGAS to measure Faithfulness / Recall / Relevance
-- Guardrails: Suppress unsourced assertions and NG words
-- Vector DB: Replace FAISS → Pinecone/Weaviate
-- CI/CD: Gate quality with LangSmith regression tests
-
----
