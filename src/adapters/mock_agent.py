@@ -29,52 +29,51 @@ def run_agent(user_query: str) -> AnswerPayload:
             url="https://arxiv.org/abs/1706.03762"
         ),
         Citation(
-            id="2", 
+            id="2",
             title="BERT: Pre-training Deep Bidirectional Transformers",
             authors=["Devlin", "Chang", "Lee", "Toutanova"],
             year=2018,
             url="https://arxiv.org/abs/1810.04805"
         )
     ]
-    
+
     # Mock answer with inline citations
     answer = (
-        "Transformers have revolutionized natural language processing. "
-        "The attention mechanism [1] allows models to focus on relevant parts "
-        "of the input sequence. BERT [2] demonstrated the power of bidirectional "
-        "transformers for understanding context in both directions."
+        "Transformerは自然言語処理に革命をもたらしました。"
+        "アテンション機構[1]により、モデルは入力シーケンスの関連する部分に注目することができます。"
+        "BERT[2]は双方向Transformerが文脈を両方向から理解する力を実証しました。"
     )
-    
+
     # Mock Cornell note
     cornell_note = CornellNote(
-        cue="Transformer Architecture",
+        cue="Transformerアーキテクチャ",
         notes=(
-            "- Self-attention mechanism replaces recurrence\n"
-            "- Encoder-decoder structure with multi-head attention\n"
-            "- Positional encoding for sequence information\n"
-            "- BERT uses only encoder for bidirectional context"
+            "- セルフアテンション機構が再帰処理を置き換え\n"
+            "- マルチヘッドアテンションを持つエンコーダ・デコーダ構造\n"
+            "- シーケンス情報のための位置エンコーディング\n"
+            "- BERTは双方向文脈のためにエンコーダのみを使用"
         ),
         summary=(
-            "Transformers use attention mechanisms to process sequences in parallel, "
-            "enabling better performance and faster training than RNNs. "
-            "BERT extends this with bidirectional encoding."
+            "Transformerはアテンション機構を使用してシーケンスを並列処理し、"
+            "RNNよりも優れたパフォーマンスと高速な学習を可能にします。"
+            "BERTは双方向エンコーディングでこれを拡張しました。"
         )
     )
-    
+
     # Mock quiz questions
     quiz_items = [
         QuizItem(
-            question="What is the key innovation of the Transformer architecture?",
+            question="Transformerアーキテクチャの主要な革新は何ですか？",
             options=[
-                QuizOption(id="a", text="Recurrent connections"),
-                QuizOption(id="b", text="Self-attention mechanism"),
-                QuizOption(id="c", text="Convolutional layers"),
-                QuizOption(id="d", text="Memory networks")
+                QuizOption(id="a", text="再帰的な接続"),
+                QuizOption(id="b", text="セルフアテンション機構"),
+                QuizOption(id="c", text="畳み込み層"),
+                QuizOption(id="d", text="メモリネットワーク")
             ],
             correct_answer="b"
         ),
         QuizItem(
-            question="What does BERT stand for?",
+            question="BERTは何の略語ですか？",
             options=[
                 QuizOption(id="a", text="Basic Encoder Representation Transformer"),
                 QuizOption(id="b", text="Bidirectional Encoder Representations from Transformers"),
@@ -84,7 +83,7 @@ def run_agent(user_query: str) -> AnswerPayload:
             correct_answer="b"
         )
     ]
-    
+
     return AnswerPayload(
         answer=answer,
         cornell_note=cornell_note,
