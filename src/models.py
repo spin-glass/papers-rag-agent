@@ -3,11 +3,12 @@
 from typing import List, Optional
 
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class CornellNote(BaseModel):
     """Cornell Note-taking format structure."""
-    
+
     cue: str
     notes: str
     summary: str
@@ -15,7 +16,7 @@ class CornellNote(BaseModel):
 
 class Citation(BaseModel):
     """Citation information for a source."""
-    
+
     id: str
     title: str
     authors: List[str]
@@ -25,14 +26,14 @@ class Citation(BaseModel):
 
 class QuizOption(BaseModel):
     """Single option for a quiz question."""
-    
+
     id: str
     text: str
 
 
 class QuizItem(BaseModel):
     """Quiz question with multiple options."""
-    
+
     question: str
     options: List[QuizOption]
     correct_answer: str  # ID of the correct option
@@ -40,8 +41,17 @@ class QuizItem(BaseModel):
 
 class AnswerPayload(BaseModel):
     """Complete response payload from the agent."""
-    
+
     answer: str
     cornell_note: CornellNote
     quiz_items: List[QuizItem]
     citations: List[Citation]
+
+
+class Paper(BaseModel):
+    id: str
+    title: str
+    link: str
+    pdf: Optional[str] = None
+    published: Optional[datetime] = None
+    authors: List[str] = []
