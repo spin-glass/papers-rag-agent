@@ -1,10 +1,11 @@
 import sys
 from pathlib import Path
+
+# Add src to path for imports BEFORE other imports
+sys.path.append(str(Path(__file__).parent.parent))
+
 from retrieval.arxiv_searcher import run_arxiv_search
 import chainlit as cl
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
 from adapters.mock_agent import run_agent
 from ui.components import render_citations, render_cornell, render_quiz
