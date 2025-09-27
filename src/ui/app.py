@@ -1,8 +1,6 @@
-"""Chainlit application entry point."""
-
 import sys
 from pathlib import Path
-
+from retrieval.arxiv_searcher import run_arxiv_search
 import chainlit as cl
 
 # Add src to path for imports
@@ -29,11 +27,26 @@ async def on_chat_start():
 async def on_message(message: cl.Message):
     """
     Handle incoming messages from users.
-    
+
     Args:
         message: Chainlit message object containing user input
     """
     # Show thinking indicator
+    if message.content.lower().startswith("arxiv:"):
+        q = message.content.split(":", 1)[1].strip()
+        hits = run_arxiv_search(q, max_results=5)
+        if hits:
+            lines = [
+                f"- [{h['title']}]({h['link']})  •  [PDF]({h['pdf']})"
+                if h.get("pdf")
+                else f"- [{h['title']}]({h['link']})"
+                for h in hits
+            ]
+            await cl.Message(content="### arXiv hits\n" + "\n".join(lines)).send()
+        else:
+            await cl.Message(content="該当する論文が見つかりませんでした").send()
+        return
+
     async with cl.Step(name="Processing", type="run") as step:
         step.output = "エージェントが回答を生成しています..."
 
@@ -45,7 +58,7 @@ async def on_message(message: cl.Message):
         f"## 回答\n{result.answer}\n",
         render_cornell(result.cornell_note),
         render_quiz(result.quiz_items),
-        render_citations(result.citations)
+        render_citations(result.citations),
     ]
 
     # Combine all parts
