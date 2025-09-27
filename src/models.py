@@ -1,6 +1,6 @@
 """Type definitions for the Papers RAG Agent."""
 
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from pydantic import BaseModel
 from datetime import datetime
@@ -49,9 +49,29 @@ class AnswerPayload(BaseModel):
 
 
 class Paper(BaseModel):
+    """arXiv paper model with RAG-required fields."""
     id: str
     title: str
     link: str
     pdf: Optional[str] = None
-    published: Optional[datetime] = None
-    authors: List[str] = []
+    summary: str
+    authors: Optional[List[str]] = None
+    updated: Optional[str] = None
+    categories: Optional[List[str]] = None
+
+
+class RetrievedContext(BaseModel):
+    """Retrieved context for RAG pipeline."""
+    paper_id: str
+    title: str
+    link: str
+    summary: str
+    embedding: Any  # numpy array
+
+
+class AnswerResult(BaseModel):
+    """Complete answer result from RAG pipeline."""
+    text: str
+    citations: List[dict]
+    support: float
+    attempts: List[dict]  # Each attempt (initial/HyDE) summary
