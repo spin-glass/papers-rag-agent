@@ -18,7 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY chainlit.md .
 COPY .chainlit/ ./.chainlit/
-COPY .env .
 
 # ポート8000を公開（Chainlitのデフォルトポート）
 EXPOSE 8000
