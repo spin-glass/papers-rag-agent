@@ -108,12 +108,55 @@ tasks:
   run:
     desc: Run the Chainlit application
     cmds:
+      - ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000
+
+  run:force:
+    desc: Run with maximum buffer settings (if errors persist)
+    cmds:
+      - ENGINEIO_MAX_HTTP_BUFFER_SIZE=500000000 ENGINEIO_PACKET_TIMEOUT=600 ENGINEIO_PING_TIMEOUT=1200 uv run chainlit run src/ui/app.py -w --port 8002 --host 127.0.0.1
+
+  run:simple:
+    desc: Run the application without cleaning cache
+    cmds:
       - uv run chainlit run src/ui/app.py -w
+
+  run:clean:
+    desc: Run the application with clean cache (alias for run)
+    cmds:
+      - task: run
+
+  run:safe:
+    desc: Run the application with safe settings (alternative port and reduced features)
+    cmds:
+      - task: clean
+      - uv run chainlit run src/ui/app.py -w --host 127.0.0.1 --port 8001 --no-cache
+
+  run:debug:
+    desc: Run the application with debug settings
+    cmds:
+      - task: clean
+      - uv run chainlit run src/ui/app.py -w --debug --no-cache
 
   dev:
     desc: Run development server
     cmds:
       - uv run chainlit run src/ui/app.py -w --host localhost --port 8000
+
+  run:en:
+    desc: Run the application in English
+    cmds:
+      - |
+        sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
+        echo "Switched to English locale"
+      - task: run
+
+  run:ja:
+    desc: Run the application in Japanese
+    cmds:
+      - |
+        sed -i '' 's/default_locale = ".*"/default_locale = "ja"/' .chainlit/config.toml
+        echo "Switched to Japanese locale"
+      - task: run
 
   check:
     desc: Run all checks (linting, formatting, tests)
@@ -225,7 +268,7 @@ tasks:
       - echo "Main commands:"
       - echo "  task setup     - Complete project setup"
       - echo "  task test      - Run all tests"
-      - echo "  task run       - Start the application"
+      - echo "  task run       - Start the application (clean)"
       - echo "  task dev       - Start development server"
       - echo "  task check     - Run all quality checks"
       - echo "  task diff      - Show clean git diff"
