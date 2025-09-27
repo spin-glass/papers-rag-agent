@@ -50,7 +50,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}
-          flags: '--allow-unauthenticated --port=8000 --set-env-vars=OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},LLM_PROVIDER=openai,TOP_K=5,SUPPORT_THRESHOLD=0.35,MAX_OUTPUT_CHARS=1400'
+          flags: '--allow-unauthenticated --port=8000 --min-instances=1 --cpu=1 --memory=2Gi --concurrency=1 --set-env-vars=OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},LLM_PROVIDER=openai,TOP_K=5,SUPPORT_THRESHOLD=0.35,MAX_OUTPUT_CHARS=1400'
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
