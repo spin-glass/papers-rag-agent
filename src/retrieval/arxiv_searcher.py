@@ -1,6 +1,11 @@
 import urllib.parse
 import feedparser
 from typing import List, Dict
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
+from models import Paper
 
 ARXIV_API = "https://export.arxiv.org/api/query"
 
@@ -33,3 +38,69 @@ def run_arxiv_search(query: str, max_results: int = 5) -> List[Dict[str, str]]:
             }
         )
     return results
+
+
+def search_arxiv_papers(query: str, max_results: int = 5, date_range: str = None) -> List[Paper]:
+    """
+    Search arXiv and return Paper objects with full metadata including summary.
+    
+    Args:
+        query: Search query
+        max_results: Maximum number of results
+        date_range: Optional date range like "20170101+TO+20251231"
+        
+    Returns:
+        List of Paper objects with summary field populated
+    """
+    q = f"all:{query}"
+
+    # Add date range if specified (format: "2017* TO 2025*")
+    if date_range:
+        q += f" AND submittedDate:[{date_range}]"
+
+    url = (
+        f"{ARXIV_API}?search_query={urllib.parse.quote(q)}"
+        f"&sortBy=relevance&sortOrder=descending&max_results={max_results}"
+    )
+
+    feed = feedparser.parse(url)
+    papers: List[Paper] = []
+
+    for e in getattr(feed, "entries", []):
+        # Extract PDF link
+        pdf = ""
+        for link in getattr(e, "links", []):
+            if getattr(link, "type", "") == "application/pdf":
+                pdf = getattr(link, "href", "")
+                break
+
+        # Extract arXiv ID
+        arxiv_id_core = (
+            e.id.split("/")[-1].split("v")[0] if getattr(e, "id", "") else ""
+        )
+
+        # Extract authors
+        authors = []
+        if hasattr(e, "authors"):
+            authors = [getattr(author, "name", "") for author in e.authors]
+
+        # Extract categories
+        categories = []
+        if hasattr(e, "tags"):
+            categories = [getattr(tag, "term", "") for tag in e.tags]
+
+        # Create Paper object
+        paper = Paper(
+            id=arxiv_id_core,
+            title=getattr(e, "title", "").strip(),
+            link=getattr(e, "link", ""),
+            pdf=pdf if pdf else None,
+            summary=getattr(e, "summary", "").strip(),
+            authors=authors if authors else None,
+            updated=getattr(e, "updated", None),
+            categories=categories if categories else None
+        )
+
+        papers.append(paper)
+
+    return papers
