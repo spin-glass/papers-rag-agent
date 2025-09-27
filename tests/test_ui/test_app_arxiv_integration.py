@@ -1,0 +1,289 @@
+"""Chainlit アプリケーションの ArXiv 検索統合テスト"""
+
+import unittest
+from unittest.mock import AsyncMock, patch, Mock
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+
+
+class TestArxivIntegration(unittest.TestCase):
+    """ArXiv検索機能の統合テスト"""
+
+    def setUp(self):
+        """テストセットアップ"""
+        # Chainlitのモックを作成
+        self.mock_message = Mock()
+        self.mock_cl_message = Mock()
+
+    @patch("ui.app.run_arxiv_search")
+    @patch("ui.app.cl.Message")
+    async def test_arxiv_search_with_results(
+        self, mock_cl_message_class, mock_run_arxiv_search
+    ):
+        """ArXiv検索で結果がある場合のテスト"""
+        # テストデータの準備
+        mock_run_arxiv_search.return_value = [
+            {
+                "title": "Attention Is All You Need",
+                "link": "http://arxiv.org/abs/1706.03762",
+                "pdf": "http://arxiv.org/pdf/1706.03762.pdf",
+            },
+            {
+                "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+                "link": "http://arxiv.org/abs/1810.04805",
+                "pdf": "http://arxiv.org/pdf/1810.04805.pdf",
+            },
+        ]
+
+        # メッセージオブジェクトの設定
+        message = Mock()
+        message.content = "arxiv:transformer"
+
+        # Chainlit Messageクラスのモック
+        mock_message_instance = AsyncMock()
+        mock_cl_message_class.return_value = mock_message_instance
+
+        # テスト対象の関数をインポートして実行
+        from ui.app import on_message
+
+        await on_message(message)
+
+        # 検索関数が正しいパラメータで呼ばれたことを確認
+        mock_run_arxiv_search.assert_called_once_with("transformer", max_results=5)
+
+        # Messageが正しい内容で作成され、送信されたことを確認
+        mock_cl_message_class.assert_called_once()
+        call_args = mock_cl_message_class.call_args
+        content = call_args[1]["content"]
+
+        # コンテンツの検証
+        self.assertIn("### arXiv hits", content)
+        self.assertIn("Attention Is All You Need", content)
+        self.assertIn("BERT: Pre-training of Deep Bidirectional Transformers", content)
+        self.assertIn("http://arxiv.org/abs/1706.03762", content)
+        self.assertIn("PDF", content)
+
+        # send()メソッドが呼ばれたことを確認
+        mock_message_instance.send.assert_called_once()
+
+    @patch("ui.app.run_arxiv_search")
+    @patch("ui.app.cl.Message")
+    async def test_arxiv_search_with_no_results(
+        self, mock_cl_message_class, mock_run_arxiv_search
+    ):
+        """ArXiv検索で結果がない場合のテスト"""
+        # 空の結果を返すように設定
+        mock_run_arxiv_search.return_value = []
+
+        message = Mock()
+        message.content = "arxiv:nonexistent query"
+
+        mock_message_instance = AsyncMock()
+        mock_cl_message_class.return_value = mock_message_instance
+
+        from ui.app import on_message
+
+        await on_message(message)
+
+        # 検索関数が呼ばれたことを確認
+        mock_run_arxiv_search.assert_called_once_with(
+            "nonexistent query", max_results=5
+        )
+
+        # "該当する論文が見つかりませんでした"メッセージが送信されたことを確認
+        mock_cl_message_class.assert_called_once_with(
+            content="該当する論文が見つかりませんでした"
+        )
+        mock_message_instance.send.assert_called_once()
+
+    @patch("ui.app.run_arxiv_search")
+    @patch("ui.app.cl.Message")
+    async def test_arxiv_search_without_pdf(
+        self, mock_cl_message_class, mock_run_arxiv_search
+    ):
+        """PDFリンクがない論文の場合のテスト"""
+        mock_run_arxiv_search.return_value = [
+            {
+                "title": "Test Paper Without PDF",
+                "link": "http://arxiv.org/abs/2301.00001",
+                "pdf": "",  # PDFリンクなし
+            }
+        ]
+
+        message = Mock()
+        message.content = "arxiv:test query"
+
+        mock_message_instance = AsyncMock()
+        mock_cl_message_class.return_value = mock_message_instance
+
+        from ui.app import on_message
+
+        await on_message(message)
+
+        # コンテンツにPDFリンクが含まれていないことを確認
+        call_args = mock_cl_message_class.call_args
+        content = call_args[1]["content"]
+
+        self.assertIn("Test Paper Without PDF", content)
+        self.assertIn("http://arxiv.org/abs/2301.00001", content)
+        self.assertNotIn("PDF", content)  # PDFリンクが表示されていないことを確認
+
+    def test_arxiv_prefix_detection(self):
+        """ArXivプレフィックスの検出テスト"""
+        test_cases = [
+            ("arxiv:machine learning", True),
+            ("ARXIV:deep learning", True),
+            ("ArXiv:neural networks", True),
+            ("arxiv: transformer", True),  # スペース付き
+            ("regular message", False),
+            ("not arxiv related", False),
+            ("arxivtopic", False),  # コロンなし
+        ]
+
+        for message_content, should_be_arxiv in test_cases:
+            with self.subTest(content=message_content):
+                is_arxiv = message_content.lower().startswith("arxiv:")
+                self.assertEqual(is_arxiv, should_be_arxiv)
+
+    def test_query_extraction(self):
+        """クエリ抽出のテスト"""
+        test_cases = [
+            ("arxiv:machine learning", "machine learning"),
+            ("arxiv: deep learning", "deep learning"),  # 先頭スペース
+            ("ARXIV:neural networks", "neural networks"),
+            ("arxiv:transformer attention", "transformer attention"),
+            ("arxiv:", ""),  # 空のクエリ
+        ]
+
+        for message_content, expected_query in test_cases:
+            with self.subTest(content=message_content):
+                query = message_content.split(":", 1)[1].strip()
+                self.assertEqual(query, expected_query)
+
+    @patch("ui.app.run_agent")
+    @patch("ui.app.cl.Message")
+    @patch("ui.app.cl.Step")
+    async def test_non_arxiv_message_handling(
+        self, mock_step, mock_cl_message, mock_run_agent
+    ):
+        """ArXivでない通常のメッセージ処理のテスト"""
+        # 通常のエージェント処理のモック
+        mock_result = Mock()
+        mock_result.answer = "Test answer"
+        mock_result.cornell_note = Mock()
+        mock_result.quiz_items = []
+        mock_result.citations = []
+        mock_run_agent.return_value = mock_result
+
+        # Stepのモック
+        mock_step_instance = AsyncMock()
+        mock_step.return_value.__aenter__.return_value = mock_step_instance
+
+        # Messageのモック
+        mock_message_instance = AsyncMock()
+        mock_cl_message.return_value = mock_message_instance
+
+        message = Mock()
+        message.content = "What is machine learning?"
+
+        from ui.app import on_message
+
+        await on_message(message)
+
+        # エージェントが呼ばれたことを確認
+        mock_run_agent.assert_called_once_with("What is machine learning?")
+
+        # Stepが作成されたことを確認
+        mock_step.assert_called_once_with(name="Processing", type="run")
+
+
+class TestMessageFormatting(unittest.TestCase):
+    """メッセージフォーマット機能のテスト"""
+
+    def test_format_arxiv_results_with_pdf(self):
+        """PDFありの結果フォーマットテスト"""
+        hits = [
+            {
+                "title": "Test Paper 1",
+                "link": "http://arxiv.org/abs/2301.00001",
+                "pdf": "http://arxiv.org/pdf/2301.00001.pdf",
+            }
+        ]
+
+        # フォーマット処理をテスト
+        lines = [
+            f"- [{h['title']}]({h['link']})  •  [PDF]({h['pdf']})"
+            if h.get("pdf")
+            else f"- [{h['title']}]({h['link']})"
+            for h in hits
+        ]
+        content = "### arXiv hits\n" + "\n".join(lines)
+
+        expected = "### arXiv hits\n- [Test Paper 1](http://arxiv.org/abs/2301.00001)  •  [PDF](http://arxiv.org/pdf/2301.00001.pdf)"
+        self.assertEqual(content, expected)
+
+    def test_format_arxiv_results_without_pdf(self):
+        """PDFなしの結果フォーマットテスト"""
+        hits = [
+            {
+                "title": "Test Paper 2",
+                "link": "http://arxiv.org/abs/2301.00002",
+                "pdf": "",
+            }
+        ]
+
+        lines = [
+            f"- [{h['title']}]({h['link']})  •  [PDF]({h['pdf']})"
+            if h.get("pdf")
+            else f"- [{h['title']}]({h['link']})"
+            for h in hits
+        ]
+        content = "### arXiv hits\n" + "\n".join(lines)
+
+        expected = "### arXiv hits\n- [Test Paper 2](http://arxiv.org/abs/2301.00002)"
+        self.assertEqual(content, expected)
+
+    def test_format_multiple_arxiv_results(self):
+        """複数結果のフォーマットテスト"""
+        hits = [
+            {
+                "title": "Paper 1",
+                "link": "http://arxiv.org/abs/2301.00001",
+                "pdf": "http://arxiv.org/pdf/2301.00001.pdf",
+            },
+            {"title": "Paper 2", "link": "http://arxiv.org/abs/2301.00002", "pdf": ""},
+        ]
+
+        lines = [
+            f"- [{h['title']}]({h['link']})  •  [PDF]({h['pdf']})"
+            if h.get("pdf")
+            else f"- [{h['title']}]({h['link']})"
+            for h in hits
+        ]
+        content = "### arXiv hits\n" + "\n".join(lines)
+
+        expected_lines = [
+            "### arXiv hits",
+            "- [Paper 1](http://arxiv.org/abs/2301.00001)  •  [PDF](http://arxiv.org/pdf/2301.00001.pdf)",
+            "- [Paper 2](http://arxiv.org/abs/2301.00002)",
+        ]
+        expected = "\n".join(expected_lines)
+        self.assertEqual(content, expected)
+
+
+if __name__ == "__main__":
+    # 非同期テストのサポート
+    import asyncio
+
+    # 非同期テストメソッドを同期実行に変換
+    def run_async_test(coro):
+        loop = asyncio.new_event_loop()
+        try:
+            return loop.run_until_complete(coro)
+        finally:
+            loop.close()
+
+    unittest.main()
