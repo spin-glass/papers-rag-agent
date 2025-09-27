@@ -11,7 +11,7 @@ from adapters.mock_agent import run_agent
 from ui.components import render_citations, render_cornell, render_quiz
 
 
-@cl.on_chat_start
+@cl.on_chat_start  # TODO: ValueError: Too many packets in payload を解消する
 async def on_chat_start():
     """Initialize the chat session with a greeting message."""
     await cl.Message(
