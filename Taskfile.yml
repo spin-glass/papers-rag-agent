@@ -1,0 +1,232 @@
+version: '3'
+
+vars:
+  PYTHON_DIRS: src/ tests/
+  TEST_DIRS: tests/
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install dependencies
+    cmds:
+      - uv sync
+      - uv add --group test pytest pytest-asyncio pytest-mock
+
+  test:
+    desc: Run all tests
+    cmds:
+      - uv run pytest {{.TEST_DIRS}} -v
+
+  test:unit:
+    desc: Run unit tests only
+    cmds:
+      - uv run pytest tests/test_retrieval/ -v
+
+  test:integration:
+    desc: Run integration tests only
+    cmds:
+      - uv run pytest tests/test_ui/ -v
+
+  test:coverage:
+    desc: Run tests with coverage report
+    deps: [install:coverage]
+    cmds:
+      - uv run pytest {{.TEST_DIRS}} --cov=src --cov-report=html --cov-report=term
+
+  test:arxiv:
+    desc: Run ArXiv searcher tests specifically
+    cmds:
+      - uv run pytest tests/test_retrieval/test_arxiv_searcher*.py -v
+
+  test:pytest:
+    desc: Run PyTest format tests
+    cmds:
+      - uv run pytest tests/test_retrieval/test_arxiv_searcher_pytest.py -v
+
+  test:unittest:
+    desc: Run unittest format tests
+    dir: src
+    cmds:
+      - python -m unittest ../tests/test_retrieval/test_arxiv_searcher.py -v
+
+  test:integration:real:
+    desc: Run integration tests with real ArXiv API
+    cmds:
+      - uv run pytest tests/test_retrieval/test_arxiv_searcher_integration.py -v -m integration
+
+  test:real:
+    desc: Run tests with real ArXiv API (alias for test:integration:real)
+    cmds:
+      - task: test:integration:real
+
+  test:mock:
+    desc: Run only mock-based tests (excluding real API calls)
+    cmds:
+      - uv run pytest tests/test_retrieval/test_arxiv_searcher.py tests/test_retrieval/test_arxiv_searcher_pytest.py tests/test_ui/ -v
+
+  test:all:
+    desc: Run all tests including real API integration tests
+    cmds:
+      - uv run pytest tests/ -v
+
+  lint:
+    desc: Run linting with ruff
+    deps: [install:dev]
+    cmds:
+      - uv run ruff check {{.PYTHON_DIRS}}
+
+  lint:fix:
+    desc: Run linting with automatic fixes
+    deps: [install:dev]
+    cmds:
+      - uv run ruff check --fix {{.PYTHON_DIRS}}
+
+  format:
+    desc: Format code with ruff
+    deps: [install:dev]
+    cmds:
+      - uv run ruff format {{.PYTHON_DIRS}}
+
+  format:check:
+    desc: Check code formatting without making changes
+    deps: [install:dev]
+    cmds:
+      - uv run ruff format --check {{.PYTHON_DIRS}}
+
+  clean:
+    desc: Clean up temporary files and caches
+    cmds:
+      - find . -type f -name "*.pyc" -delete
+      - find . -type d -name "__pycache__" -delete
+      - find . -type d -name "*.egg-info" -exec rm -rf {} + || true
+      - rm -rf .coverage htmlcov/ .pytest_cache/ .ruff_cache/
+
+  run:
+    desc: Run the Chainlit application
+    cmds:
+      - uv run chainlit run src/ui/app.py -w
+
+  dev:
+    desc: Run development server
+    cmds:
+      - uv run chainlit run src/ui/app.py -w --host localhost --port 8000
+
+  check:
+    desc: Run all checks (linting, formatting, tests)
+    deps: [lint, format:check, test]
+
+  ci:
+    desc: Run CI pipeline (install, check, test with coverage)
+    cmds:
+      - task: install
+      - task: lint
+      - task: format:check
+      - task: test:coverage
+
+  # Helper tasks for installation
+  install:dev:
+    desc: Install development dependencies
+    cmds:
+      - uv add --group dev ruff
+    status:
+      - uv run ruff --version
+
+  install:coverage:
+    desc: Install coverage dependencies
+    cmds:
+      - uv add --group test pytest-cov
+    status:
+      - uv run pytest --version | grep cov
+
+  # Project setup
+  setup:
+    desc: Complete project setup (install all dependencies)
+    cmds:
+      - task: install
+      - task: install:dev
+      - task: install:coverage
+
+  # ArXiv specific tasks
+  arxiv:test:
+    desc: Test ArXiv functionality end-to-end
+    cmds:
+      - task: test:arxiv
+
+  arxiv:demo:
+    desc: Run a quick ArXiv search demo
+    cmds:
+      - |
+        echo "Testing ArXiv search functionality..."
+        cd src && uv run python -c "
+        from retrieval.arxiv_searcher import run_arxiv_search
+        results = run_arxiv_search('transformer attention', max_results=2)
+        print(f'Found {len(results)} papers:')
+        for i, paper in enumerate(results, 1):
+            print(f'{i}. {paper[\"title\"]}')
+            print(f'   ID: {paper[\"id\"]}')
+            print(f'   Link: {paper[\"link\"]}')
+            if paper['pdf']:
+                print(f'   PDF: {paper[\"pdf\"]}')
+            print()
+        "
+
+  # Git utilities
+  diff:
+    desc: Show git diff excluding noisy files
+    cmds:
+      - git diff --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff
+
+  diff:copy:
+    desc: Copy git diff (excluding noisy files) to clipboard
+    cmds:
+      - git diff --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff | pbcopy
+      - echo "Git diff copied to clipboard!"
+
+  diff:staged:
+    desc: Show staged git diff excluding noisy files
+    cmds:
+      - git diff --cached --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff --cached
+
+  diff:staged:copy:
+    desc: Copy staged git diff (excluding noisy files) to clipboard
+    cmds:
+      - git diff --cached --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff --cached | pbcopy
+      - echo "Staged git diff copied to clipboard!"
+
+  diff:all:
+    desc: Show all git diff (including noisy files)
+    cmds:
+      - git diff
+
+  diff:all:copy:
+    desc: Copy all git diff (including noisy files) to clipboard
+    cmds:
+      - git diff | pbcopy
+      - echo "Complete git diff copied to clipboard!"
+
+  status:
+    desc: Show git status
+    cmds:
+      - git status
+
+  # Help and info
+  info:
+    desc: Display project information
+    cmds:
+      - echo "Papers RAG Agent - ArXiv Search Integration"
+      - echo "Python version:" && uv run python --version
+      - echo "UV version:" && uv --version
+      - echo "Task version:" && task --version
+      - echo ""
+      - echo "Main commands:"
+      - echo "  task setup     - Complete project setup"
+      - echo "  task test      - Run all tests"
+      - echo "  task run       - Start the application"
+      - echo "  task dev       - Start development server"
+      - echo "  task check     - Run all quality checks"
+      - echo "  task diff      - Show clean git diff"
+      - echo "  task diff:copy - Copy clean git diff to clipboard"
