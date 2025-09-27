@@ -45,18 +45,27 @@ LangGraphの制御フローを用い、**自己検証と修正ループ**を実�
 
 ---
 
-## フォルダ構成（予定）
+## フォルダ構成
 
-```bash
+```tree
 papers-rag-agent/
 ├── src/
-│   ├── graphs/    # LangGraph定義（CRAGループ、マルチエージェント、ハイブリッド検索）
-│   ├── agents/    # Query Planner, Summarizer, Judge, Experts, Critics, Integrator
-│   ├── retrieval/ # Vector / Graph Retriever 実装
-│   ├── ui/        # Chainlitアプリ
-│   └── utils/     # 共通処理（PDF→text, chunkerなど）
-├── data/          # サンプル論文PDF
-├── tests/         # テストコード
-├── scripts/       # 評価・補助スクリプト
-└── README.md
+│   ├── graphs/                # LangGraph 定義（CRAGループ, マルチエージェント, ハイブリッド検索）
+│   ├── agents/                # Query Planner, Summarizer, Judge, Experts, Critics, Integrator
+│   ├── retrieval/             # Vector / Graph Retriever 実装 + arXiv検索
+│   │   └── arxiv_searcher.py
+│   ├── adapters/              # 既存のmock_agentなどはここへ
+│   │   └── mock_agent.py
+│   ├── ui/                    # Chainlit アプリ (app, components)
+│   │   ├── app.py
+│   │   └── components.py
+│   ├── utils/                 # 共通処理（PDF→text, chunkerなど）
+│   └── models.py              # 共通モデル
+├── data/                      # サンプル論文PDF
+├── tests/                     # テストコード
+├── scripts/                   # 評価・補助スクリプト
+├── README.md
+├── pyproject.toml
+├── chainlit.md
+└── uv.lock
 ```
