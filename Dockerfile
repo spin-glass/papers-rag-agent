@@ -19,11 +19,13 @@ COPY src/ ./src/
 COPY chainlit.md .
 COPY .chainlit/ ./.chainlit/
 
-# ポート8000を公開（Chainlitのデフォルトポート）
-EXPOSE 8000
+# Cloud RunのPORT環境変数に対応（デフォルト8000）
+# Cloud Runは通常8080を設定するが、エントリーポイントで動的に処理
+EXPOSE 8000 8080
 
 # 環境変数を設定
 ENV CHAINLIT_HOST=0.0.0.0
+# PORT環境変数はCloud Runが動的に設定（通常8080）
 
 # エントリーポイントスクリプトでCloud RunのPORT環境変数に対応
 COPY docker-entrypoint.sh /docker-entrypoint.sh

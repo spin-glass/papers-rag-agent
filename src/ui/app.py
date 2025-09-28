@@ -234,12 +234,11 @@ async def on_message(message: cl.Message):
     """
     global _rag_index
 
-    # Temporarily use legacy implementation for stability
-    # TODO: Re-enable LangGraph after Cloud Run deployment is stable
-    # if use_langgraph() and LANGGRAPH_AVAILABLE:
-    #     await handle_message_with_langgraph(message)
-    # else:
-    await handle_message_legacy(message)
+    # Check if we should use LangGraph workflows
+    if use_langgraph() and LANGGRAPH_AVAILABLE:
+        await handle_message_with_langgraph(message)
+    else:
+        await handle_message_legacy(message)
 
 
 async def handle_message_with_langgraph(message: cl.Message):
