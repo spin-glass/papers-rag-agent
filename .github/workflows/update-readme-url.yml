@@ -6,7 +6,7 @@ on:
       force_update:
         description: 'Force update README even if URL has not changed'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 env:

@@ -49,11 +49,13 @@ OPENAI_API_KEY=your_openai_api_key_here
 **ファイル**: `src/graphs/content_enhancement.py`
 
 **機能**:
+
 - 基本のRAG回答にCornell NoteとQuizを追加
 - 並列処理によりCornell NoteとQuizを同時生成
 
 **ワークフロー**:
-```
+
+```text
 RAG回答 → [Cornell Note生成] → 結果統合
         → [Quiz生成]       →
 ```
@@ -63,12 +65,14 @@ RAG回答 → [Cornell Note生成] → 結果統合
 **ファイル**: `src/graphs/corrective_rag.py`
 
 **機能**:
+
 - 従来のif-else制御をLangGraphノードに変換
 - 修正プロセスの可視化
 - 新しい修正戦略の追加が容易
 
 **ワークフロー**:
-```
+
+```text
 質問 → Baseline RAG → 評価 → [十分] → 完了
                            ↓
                       [不十分] → HyDE書き換え → 拡張検索 → 再評価
@@ -81,12 +85,14 @@ RAG回答 → [Cornell Note生成] → 結果統合
 **ファイル**: `src/graphs/message_routing.py`
 
 **機能**:
+
 - メッセージタイプの自動分類
 - ArXiv検索とRAG質問の適切なルーティング
 - 統一されたレスポンス形式
 
 **ワークフロー**:
-```
+
+```text
 メッセージ → 分類 → [ArXiv] → ArXiv検索 → 結果フォーマット
                  ↓
                 [RAG] → RAG処理 → 結果フォーマット
@@ -118,11 +124,13 @@ uv run chainlit run src/ui/app.py -w
 ### 機能の確認
 
 LangGraphが有効な場合：
+
 - UI上で "LangGraph Processing" のステップが表示される
 - Cornell NoteとQuizが自動生成される
 - より詳細な処理ログが出力される
 
 従来実装の場合：
+
 - "Legacy Processing" のステップが表示される
 - 基本的なRAG回答のみ生成される
 
@@ -176,6 +184,7 @@ LangGraphワークフローは詳細なログを出力します：
 ### フォールバック動作
 
 LangGraphでエラーが発生した場合：
+
 - 自動的に従来実装にフォールバック
 - 基本的なRAG機能は維持される
 - エラーメッセージが適切に表示される
@@ -246,6 +255,7 @@ LangGraphワークフローは状態管理のため若干のメモリオーバ�
 LangGraphワークフローで "Recursion limit reached" エラーが発生する場合：
 
 1. **環境変数で調整**:
+
    ```bash
    export GRAPH_RECURSION_LIMIT=15  # デフォルト10から増やす
    ```

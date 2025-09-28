@@ -15,6 +15,7 @@
 ### GitHub Secrets
 
 既存の設定に追加で必要なもの：
+
 - `contents: write` 権限（既に設定済み）
 
 ### README URLセクション

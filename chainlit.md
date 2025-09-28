@@ -23,14 +23,16 @@ AIによる論文検索・分析システムです。ArXivの最新論文を検�
 ## 利用方法
 
 ### 論文を探す場合
-```
+
+```text
 arxiv:BERT
 arxiv:computer vision survey
 arxiv:reinforcement learning
 ```
 
 ### 技術について質問する場合
-```
+
+```text
 Transformerアーキテクチャの仕組みを教えてください
 アテンション機構とは何ですか？
 強化学習の基本概念について

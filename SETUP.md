@@ -80,7 +80,7 @@ uv run python debug_rag.py
 
 正常に設定されている場合、以下のような出力が表示されます：
 
-```
+```text
 ✅ Index loaded with 64 papers
 🔍 Testing query: 最近のTransformerに関する論文を探しています
 📋 Retrieved 5 contexts:
