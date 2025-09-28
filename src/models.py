@@ -75,3 +75,13 @@ class AnswerResult(BaseModel):
     citations: List[dict]
     support: float
     attempts: List[dict]  # Each attempt (initial/HyDE) summary
+
+
+class EnhancedAnswerResult(BaseModel):
+    """Enhanced answer result with Cornell Note and Quiz integration."""
+    text: str
+    citations: List[dict]
+    support: float
+    attempts: List[dict]
+    cornell_note: Optional[CornellNote] = None
+    quiz_items: Optional[List[QuizItem]] = None
