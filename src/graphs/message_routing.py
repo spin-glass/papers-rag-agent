@@ -301,15 +301,8 @@ def create_message_routing_graph() -> StateGraph:
     )
 
     # Route to appropriate formatter
-    graph.add_conditional_edges(
-        "arxiv_search",
-        lambda _: "format_arxiv"
-    )
-
-    graph.add_conditional_edges(
-        "rag_pipeline",
-        lambda _: "format_rag"
-    )
+    graph.add_edge("arxiv_search", "format_arxiv")
+    graph.add_edge("rag_pipeline", "format_rag")
 
     graph.add_edge("format_arxiv", END)
     graph.add_edge("format_rag", END)

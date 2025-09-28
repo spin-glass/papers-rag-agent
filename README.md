@@ -37,21 +37,111 @@ LangGraphの制御フローを用い、**自己検証と修正ループ**を実�
 ### 必須要件
 
 1. **OpenAI API Key の設定**
+
    ```bash
    export OPENAI_API_KEY="your_api_key_here"
    ```
 
 2. **依存関係のインストール**
+
    ```bash
    uv sync
    ```
 
 3. **アプリケーションの起動**
+
    ```bash
    uv run chainlit run src/ui/app.py -w
    ```
 
 詳細なセットアップ手順は [`SETUP.md`](SETUP.md) をご確認ください。
+
+## 🔄 LangGraph ワークフロー図
+
+<!-- TODO: Mermaid図の自動更新機能を実装
+     現在は手動でコピーしているが、以下の機能を実装予定：
+     1. scripts/update_readme_with_graphs.py - READMEマーカー方式での自動更新
+     2. Taskfile統合 - task docs:update コマンドでの更新
+     3. GitHub Actions - グラフ変更時の自動PR作成
+     関連: scripts/generate_mermaid_graphs.py (既存)
+-->
+
+Papers RAG Agentは複数のLangGraphワークフローで構成されています：
+
+### メッセージルーティングワークフロー
+
+ユーザーの入力を解析し、適切な処理パイプライン（ArXiv検索またはRAG処理）にルーティングします。
+
+```mermaid
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	classify(classify)
+	arxiv_search(arxiv_search)
+	rag_pipeline(rag_pipeline)
+	format_arxiv(format_arxiv)
+	format_rag(format_rag)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> classify;
+	arxiv_search --> format_arxiv;
+	classify -. &nbsp;arxiv&nbsp; .-> arxiv_search;
+	classify -. &nbsp;rag&nbsp; .-> rag_pipeline;
+	rag_pipeline --> format_rag;
+	format_arxiv --> __end__;
+	format_rag --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+```
+
+### 補正RAGワークフロー
+
+HyDE（Hypothetical Document Embeddings）を使用した自己補正RAGシステムです。
+
+```mermaid
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	baseline(baseline)
+	evaluate(evaluate)
+	hyde_rewrite(hyde_rewrite)
+	enhanced_retrieval(enhanced_retrieval)
+	no_answer(no_answer)
+	finalize(finalize)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> baseline;
+	baseline --> evaluate;
+	enhanced_retrieval --> evaluate;
+	evaluate -. &nbsp;sufficient&nbsp; .-> finalize;
+	evaluate -. &nbsp;try_hyde&nbsp; .-> hyde_rewrite;
+	evaluate -. &nbsp;give_up&nbsp; .-> no_answer;
+	hyde_rewrite --> enhanced_retrieval;
+	no_answer --> finalize;
+	finalize --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+```
+
+### コンテンツ強化ワークフロー
+
+RAG回答をCornell Note形式とクイズ問題で強化します。
+
+```mermaid
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	cornell_generation(cornell_generation)
+	quiz_generation(quiz_generation)
+	format_result(format_result)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> cornell_generation;
+	cornell_generation --> quiz_generation;
+	quiz_generation --> format_result;
+	format_result --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+```
+
+> 📊 詳細なワークフロー図は [`docs/graphs/`](docs/graphs/) ディレクトリで確認できます。
 
 ---
 
