@@ -4,30 +4,35 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from typing import TypedDict, List, Optional
-from langgraph.graph import StateGraph, START, END
+from typing import TypedDict, List, Optional, Annotated
+from langgraph.graph import StateGraph, START, END, add
 from langchain_core.runnables import RunnableConfig
 
 from models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
 from llm.generator import generate_answer
-from config import get_graph_recursion_limit
+from config import get_graph_recursion_limit, get_openai_api_key_safe
 
 
 class ContentEnhancementState(TypedDict):
     """State for content enhancement workflow."""
-    question: str
+    question: Annotated[str, add]  # Allow multiple updates
     answer_text: str
     citations: List[dict]
     support: float
     attempts: List[dict]
     cornell_note: Optional[CornellNote]
     quiz_items: Optional[List[QuizItem]]
-    error: Optional[str]
+    error: Annotated[Optional[str], add]  # Allow multiple error updates
 
 
 def cornell_note_generation_node(state: ContentEnhancementState) -> ContentEnhancementState:
     """Generate Cornell Note from answer content."""
     try:
+        # Check if OpenAI API key is available
+        if not get_openai_api_key_safe():
+            print("⚠️ Skipping Cornell Note generation - OPENAI_API_KEY not set")
+            state["error"] = "Cornell Note generation skipped - API key not available"
+            return state
         prompt = f"""Based on the following question and answer, create a Cornell Note format summary.
 
 Question: {state['question']}
@@ -92,6 +97,11 @@ SUMMARY: [your summary here]
 def quiz_generation_node(state: ContentEnhancementState) -> ContentEnhancementState:
     """Generate quiz questions from answer content."""
     try:
+        # Check if OpenAI API key is available
+        if not get_openai_api_key_safe():
+            print("⚠️ Skipping Quiz generation - OPENAI_API_KEY not set")
+            state["error"] = "Quiz generation skipped - API key not available"
+            return state
         prompt = f"""Based on the following question and answer, create 2 multiple-choice quiz questions to test understanding.
 
 Question: {state['question']}
@@ -207,10 +217,7 @@ def create_content_enhancement_graph() -> StateGraph:
     graph.add_edge(["cornell_generation", "quiz_generation"], "format_result")
     graph.add_edge("format_result", END)
 
-    return graph.compile(
-        # Set recursion limit for safety
-        {"recursion_limit": get_graph_recursion_limit()}
-    )
+    return graph.compile()
 
 
 def enhance_answer_content(answer_result: AnswerResult, question: str) -> EnhancedAnswerResult:
@@ -242,7 +249,11 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
 
         # Run the enhancement workflow
         print("🚀 Starting content enhancement workflow...")
-        final_state = enhancement_graph.invoke(initial_state)
+
+        # Create RunnableConfig with recursion limit
+        config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
+
+        final_state = enhancement_graph.invoke(initial_state, config=config)
 
         # Check for errors
         if final_state.get("error"):

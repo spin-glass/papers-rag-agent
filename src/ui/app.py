@@ -33,6 +33,27 @@ async def on_chat_start():
     """Initialize the chat session with a greeting message."""
     global _rag_index
 
+    # Check OpenAI API Key before initialization
+    from config import get_openai_api_key_safe
+    api_key = get_openai_api_key_safe()
+    
+    if not api_key:
+        await cl.Message(
+            content=(
+                "## ⚠️ 設定が必要です\n\n"
+                "Papers RAG Agentを使用するには、OpenAI API Keyの設定が必要です。\n\n"
+                "**設定方法:**\n"
+                "1. [OpenAI Platform](https://platform.openai.com/api-keys) でAPI Keyを取得\n"
+                "2. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
+                "3. アプリケーションを再起動\n\n"
+                "詳細は `SETUP.md` をご確認ください。\n\n"
+                "**現在利用可能な機能:**\n"
+                "- `arxiv: <query>`: 論文検索（API Key不要）\n\n"
+                "API Key設定後に全機能をお使いいただけます。"
+            )
+        ).send()
+        return
+
     # Initialize RAG index with some sample papers
     await initialize_rag_index()
 
@@ -45,7 +66,7 @@ async def on_chat_start():
             "- 通常の質問: RAGによる回答\n"
             "- `arxiv: <query>`: 論文検索\n\n"
             "**テスト用クエリ例:**\n"
-            "- 「Transformerに関する論文を探しています」\n"
+            "- 「最近のTransformerに関する論文を探しています」\n"
             "- 「Attention機構について教えてください」\n"
             "- 「BERT と GPT の違いは何ですか？」\n\n"
             "何について知りたいですか？"
@@ -208,8 +229,23 @@ async def handle_message_with_langgraph(message: cl.Message):
             step.output = "LangGraphワークフロー完了"
 
         except Exception as e:
-            response_content = f"LangGraphワークフローでエラーが発生しました: {str(e)}"
-            step.output = f"エラー: {str(e)}"
+            error_msg = str(e)
+            # Check for specific API key related errors
+            if "OPENAI_API_KEY" in error_msg:
+                response_content = (
+                    "## ⚠️ API Key設定エラー\n\n"
+                    "OpenAI API Keyが設定されていないため、質問に回答できません。\n\n"
+                    "**解決方法:**\n"
+                    "1. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
+                    "2. アプリケーションを再起動\n\n"
+                    "詳細は `SETUP.md` をご確認ください。\n\n"
+                    "**利用可能な機能:**\n"
+                    "- `arxiv: <query>`: 論文検索（API Key不要）"
+                )
+            else:
+                response_content = f"LangGraphワークフローでエラーが発生しました: {error_msg}"
+            
+            step.output = f"エラー: {error_msg}"
             print(f"❌ LangGraph workflow failed: {e}")
 
     # Send response using chunked sending

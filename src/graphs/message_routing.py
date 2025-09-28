@@ -6,6 +6,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, Optional, Literal, Any
 from langgraph.graph import StateGraph, START, END
+from langchain_core.runnables import RunnableConfig
 
 from models import EnhancedAnswerResult
 from graphs.corrective_rag import answer_with_correction_graph
@@ -246,10 +247,7 @@ def create_message_routing_graph() -> StateGraph:
     graph.add_edge("format_arxiv", END)
     graph.add_edge("format_rag", END)
 
-    return graph.compile(
-        # Set recursion limit for safety
-        {"recursion_limit": get_graph_recursion_limit()}
-    )
+    return graph.compile()
 
 
 def process_message_with_routing(message_content: str, rag_index: Any = None) -> str:
@@ -279,9 +277,12 @@ def process_message_with_routing(message_content: str, rag_index: Any = None) ->
         )
 
         print(f"🚀 Starting message routing workflow...")
-
+        
+        # Create RunnableConfig with recursion limit
+        config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
+        
         # Run the routing workflow
-        final_state = routing_graph.invoke(initial_state)
+        final_state = routing_graph.invoke(initial_state, config=config)
 
         # Check for errors
         if final_state.get("error"):

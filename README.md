@@ -32,6 +32,27 @@ LangGraphの制御フローを用い、**自己検証と修正ループ**を実�
 * **批判エージェント（Critic）**が各候補を評価し、**統合エージェント（Integrator）**が最終回答を決定します。
 * これにより、単一モデルの偏りを抑え、より妥当な答えを導出します。
 
+## 🚀 クイックスタート
+
+### 必須要件
+
+1. **OpenAI API Key の設定**
+   ```bash
+   export OPENAI_API_KEY="your_api_key_here"
+   ```
+
+2. **依存関係のインストール**
+   ```bash
+   uv sync
+   ```
+
+3. **アプリケーションの起動**
+   ```bash
+   uv run chainlit run src/ui/app.py -w
+   ```
+
+詳細なセットアップ手順は [`SETUP.md`](SETUP.md) をご確認ください。
+
 ---
 
 ## 目標

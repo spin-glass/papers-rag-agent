@@ -259,6 +259,14 @@ LangGraphワークフローで "Recursion limit reached" エラーが発生す�
    - 検索対象を絞り込む  
    - TOP_Kパラメータを小さくする
 
+### Checkpointerエラー
+
+"Checkpointer requires one or more of the following 'configurable' keys" エラーが発生する場合：
+
+1. **原因**: LangGraphのチェックポイント機能が不適切に設定されている
+2. **修正済み**: `RunnableConfig`で`recursion_limit`を設定し、`compile()`はシンプルに呼び出す
+3. **テスト**: `tests/test_graphs/test_graph_compilation.py`で検証済み
+
 ### パフォーマンス最適化
 
 - `TOP_K`: 検索件数（デフォルト5）

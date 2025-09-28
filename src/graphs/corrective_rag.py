@@ -6,6 +6,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, Optional, Literal
 from langgraph.graph import StateGraph, START, END
+from langchain_core.runnables import RunnableConfig
 
 from models import AnswerResult
 from pipelines.baseline import baseline_answer
@@ -236,10 +237,7 @@ def create_corrective_rag_graph() -> StateGraph:
     graph.add_edge("no_answer", "finalize")
     graph.add_edge("finalize", END)
 
-    return graph.compile(
-        # Set recursion limit to prevent infinite loops
-        {"recursion_limit": get_graph_recursion_limit()}
-    )
+    return graph.compile()
 
 
 def answer_with_correction_graph(question: str, theta: float = None, index=None) -> AnswerResult:
@@ -276,8 +274,11 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
         print(f"🚀 Starting corrective RAG workflow for: {question[:50]}...")
         print(f"⚙️ Recursion limit set to: {get_graph_recursion_limit()}")
 
+        # Create RunnableConfig with recursion limit
+        config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
+
         # Run the corrective RAG workflow
-        final_state = corrective_graph.invoke(initial_state)
+        final_state = corrective_graph.invoke(initial_state, config=config)
 
         # Return the final result
         result = final_state.get("final_result") or final_state.get("answer")
