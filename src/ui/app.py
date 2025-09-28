@@ -98,7 +98,7 @@ async def on_chat_start():
         print(f"❌ Critical error during chat initialization: {error_msg}")
         import traceback
         traceback.print_exc()
-        
+
         await cl.Message(
             content=(
                 "## ❌ アプリケーション初期化エラー\n\n"
