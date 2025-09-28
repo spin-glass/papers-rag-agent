@@ -16,7 +16,7 @@ jobs:
   deploy:
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     runs-on: ubuntu-latest
@@ -69,3 +69,32 @@ jobs:
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
+
+      - name: Update README with Cloud Run URL
+        run: |
+          CLOUDRUN_URL="${{ steps.deploy.outputs.url }}"
+          
+          # READMEのCloud Run URLセクションを更新
+          sed -i.bak '/<!-- CLOUDRUN_URL_START -->/,/<!-- CLOUDRUN_URL_END -->/c\
+          <!-- CLOUDRUN_URL_START -->\
+          🚀 **Live Demo**: ['$CLOUDRUN_URL']('$CLOUDRUN_URL')\
+          <!-- CLOUDRUN_URL_END -->' README.md
+          
+          # バックアップファイルを削除
+          rm README.md.bak
+          
+          echo "✅ README updated with Cloud Run URL: $CLOUDRUN_URL"
+
+      - name: Commit and push README changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [[ -n $(git diff --name-only) ]]; then
+            git add README.md
+            git commit -m "chore: update Cloud Run URL in README"
+            git push
+            echo "📝 README updated and changes pushed"
+          else
+            echo "ℹ️ No changes to commit"
+          fi

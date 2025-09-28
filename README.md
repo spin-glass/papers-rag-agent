@@ -1,5 +1,9 @@
 # Papers RAG Agent
 
+<!-- CLOUDRUN_URL_START -->
+🚀 **Live Demo**: [https://your-cloudrun-url.run.app](https://your-cloudrun-url.run.app)
+<!-- CLOUDRUN_URL_END -->
+
 このプロジェクトは **論文学習に特化した RAG × エージェント型チャットボット** です。
 ユーザーが論文タイトルや質問を入力すると、以下の処理が行われます。
 
