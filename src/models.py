@@ -2,12 +2,13 @@
 
 from typing import List, Optional, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 
 class CornellNote(BaseModel):
     """Cornell Note-taking format structure."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     cue: str
     notes: str
@@ -16,6 +17,7 @@ class CornellNote(BaseModel):
 
 class Citation(BaseModel):
     """Citation information for a source."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: str
     title: str
@@ -26,6 +28,7 @@ class Citation(BaseModel):
 
 class QuizOption(BaseModel):
     """Single option for a quiz question."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: str
     text: str
@@ -33,6 +36,7 @@ class QuizOption(BaseModel):
 
 class QuizItem(BaseModel):
     """Quiz question with multiple options."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     question: str
     options: List[QuizOption]
@@ -41,6 +45,7 @@ class QuizItem(BaseModel):
 
 class AnswerPayload(BaseModel):
     """Complete response payload from the agent."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     answer: str
     cornell_note: CornellNote
@@ -50,6 +55,8 @@ class AnswerPayload(BaseModel):
 
 class Paper(BaseModel):
     """arXiv paper model with RAG-required fields."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     id: str
     title: str
     link: str
@@ -62,6 +69,8 @@ class Paper(BaseModel):
 
 class RetrievedContext(BaseModel):
     """Retrieved context for RAG pipeline."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     paper_id: str
     title: str
     link: str
@@ -71,6 +80,8 @@ class RetrievedContext(BaseModel):
 
 class AnswerResult(BaseModel):
     """Complete answer result from RAG pipeline."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     text: str
     citations: List[dict]
     support: float
@@ -80,6 +91,8 @@ class AnswerResult(BaseModel):
 
 class EnhancedAnswerResult(BaseModel):
     """Enhanced answer result with Cornell Note and Quiz integration."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     text: str
     citations: List[dict]
     support: float

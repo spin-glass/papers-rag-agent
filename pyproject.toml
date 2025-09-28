@@ -39,6 +39,10 @@ markers = [
     "unit: marks tests as unit tests",
     "slow: marks tests as slow running",
 ]
+filterwarnings = [
+    "ignore::pydantic.warnings.PydanticDeprecatedSince20",
+    "ignore::DeprecationWarning:pydantic.*",
+]
 
 [dependency-groups]
 test = [
