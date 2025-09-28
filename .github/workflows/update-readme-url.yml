@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history to avoid rebase issues
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -92,8 +94,29 @@ jobs:
           if [[ -n $(git diff --name-only) ]]; then
             git add README.md
             git commit -m "chore: update Cloud Run URL in README"
-            git push
-            echo "📝 Changes committed and pushed to repository"
+            
+            # Fetch latest changes and rebase before pushing
+            git fetch origin main
+            git rebase origin/main
+            
+            # Push with retry logic in case of race conditions
+            max_retries=3
+            for i in $(seq 1 $max_retries); do
+              if git push; then
+                echo "📝 Changes committed and pushed to repository (attempt $i)"
+                break
+              else
+                if [[ $i -lt $max_retries ]]; then
+                  echo "⚠️ Push failed, retrying in 5 seconds... (attempt $i/$max_retries)"
+                  sleep 5
+                  git fetch origin main
+                  git rebase origin/main
+                else
+                  echo "❌ Push failed after $max_retries attempts"
+                  exit 1
+                fi
+              fi
+            done
           else
             echo "ℹ️ No changes to commit"
           fi
