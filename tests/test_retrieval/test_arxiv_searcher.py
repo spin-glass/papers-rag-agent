@@ -113,11 +113,12 @@ class TestArxivSearcher(unittest.TestCase):
 
         run_arxiv_search("machine learning", max_results=10)
 
-        # URLが正しく構築されたかを確認
+        # URLが正しく構築されたかを確認（新しいクエリ形式）
+        # "machine learning" は特別な処理を受ける
         expected_url_pattern = (
             "https://export.arxiv.org/api/query?"
-            "search_query=all%3Amachine%20learning"
-            "&sortBy=submittedDate&sortOrder=descending&max_results=10"
+            "search_query=cat%3Acs.LG%20OR%20cat%3Astat.ML"
+            "&sortBy=relevance&sortOrder=descending&max_results=10"
         )
         mock_parse.assert_called_once_with(expected_url_pattern)
 

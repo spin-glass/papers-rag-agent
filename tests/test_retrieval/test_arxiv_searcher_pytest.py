@@ -152,8 +152,8 @@ class TestArxivSearcherPytest:
 
         run_arxiv_search("test query with spaces")
 
-        # urllib.parse.quote が正しく呼ばれたことを確認
-        mock_quote.assert_called_once_with("all:test query with spaces")
+        # urllib.parse.quote が正しく呼ばれたことを確認（新しいクエリ形式）
+        mock_quote.assert_called_once_with("ti:test query with spaces OR abs:test query with spaces")
 
     @patch("retrieval.arxiv_searcher.feedparser.parse")
     def test_url_construction_components(self, mock_parse):
@@ -167,10 +167,10 @@ class TestArxivSearcherPytest:
         args, kwargs = mock_parse.call_args
         url = args[0]
 
-        # URL の各部分が含まれていることを確認
+        # URL の各部分が含まれていることを確認（新しい実装）
         assert "https://export.arxiv.org/api/query" in url
         assert "search_query=" in url
-        assert "sortBy=submittedDate" in url
+        assert "sortBy=relevance" in url  # relevanceに変更
         assert "sortOrder=descending" in url
         assert "max_results=10" in url
 

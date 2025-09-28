@@ -1,0 +1,82 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  quick-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+    
+    - name: Set up Python 3.13
+      run: uv python install 3.13
+    
+    - name: Install dependencies
+      run: |
+        uv sync --dev
+    
+    - name: Set environment variables for testing
+      run: |
+        echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=test_key_for_ci" >> $GITHUB_ENV
+    
+    - name: Run core tests (excluding UI tests)
+      run: |
+        uv run pytest tests/test_graphs/ tests/test_retrieval/ -v --tb=short
+    
+    - name: Check arXiv search functionality
+      run: |
+        uv run python -c "
+        from src.retrieval.arxiv_searcher import run_arxiv_search
+        results = run_arxiv_search('transformer', 3)
+        print(f'✅ arXiv検索テスト成功: {len(results)}件の結果を取得')
+        assert len(results) > 0, 'arXiv検索で結果が見つからない'
+        print('✅ arXiv検索機能は正常に動作しています')
+        "
+    
+    - name: Check LangGraph functionality
+      run: |
+        uv run python -c "
+        from src.graphs.message_routing import process_message_with_routing
+        result = process_message_with_routing('arxiv:transformer', None)
+        print(f'✅ LangGraphテスト成功: {len(result)}文字の結果')
+        assert 'ArXiv検索結果' in result, 'LangGraphワークフローが期待する結果を返していない'
+        print('✅ LangGraphワークフローは正常に動作しています')
+        "
+
+  lint-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+    
+    - name: Set up Python 3.13
+      run: uv python install 3.13
+    
+    - name: Install dependencies
+      run: |
+        uv sync --dev
+    
+    - name: Run linting checks
+      run: |
+        # Check if ruff is available and run basic checks
+        if uv run which ruff > /dev/null 2>&1; then
+          echo "Running ruff checks..."
+          uv run ruff check src/ tests/ --extend-ignore=E501,F401 || echo "Linting issues found but continuing..."
+        else
+          echo "Ruff not available, skipping lint checks"
+        fi

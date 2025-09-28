@@ -5,7 +5,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, List, Optional, Annotated
-from langgraph.graph import StateGraph, START, END, add
+from langgraph.graph import StateGraph, START, END
+from operator import add
 from langchain_core.runnables import RunnableConfig
 
 from models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
