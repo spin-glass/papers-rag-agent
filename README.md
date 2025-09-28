@@ -26,6 +26,18 @@
 回答と引用の整合性をチェックし、不足や誤りがあれば再検索・再生成を行います。
 LangGraphの制御フローを用い、**自己検証と修正ループ**を実現します。
 
+## 🔄 リアルタイム処理表示
+
+**NEW**: LangGraphワークフローの途中結果をリアルタイムで表示する機能を追加しました：
+
+* **メッセージ分類**: 入力がRAG質問かArXiv検索かを自動判別
+* **ベースライン検索**: 初回検索結果とSupport値を表示
+* **HyDE拡張**: Support値が低い場合の拡張クエリ生成過程
+* **拡張検索**: HyDE後の改善されたSupport値と改善度
+* **回答生成**: 最終回答のストリーミング表示
+
+これにより、ユーザーはRAGの処理過程を透明性高く確認できます。
+
 ## Multi-Agent Cooperation（Aime / TreeQuest思想）
 
 * 複数の専門エージェント（例: 領域専門／数理的厳密性／引用重視）が候補回答を生成。
@@ -74,23 +86,23 @@ Papers RAG Agentは複数のLangGraphワークフローで構成されていま�
 
 ```mermaid
 graph TD;
-	__start__([<p>__start__</p>]):::first
-	classify(classify)
-	arxiv_search(arxiv_search)
-	rag_pipeline(rag_pipeline)
-	format_arxiv(format_arxiv)
-	format_rag(format_rag)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> classify;
-	arxiv_search --> format_arxiv;
-	classify -. &nbsp;arxiv&nbsp; .-> arxiv_search;
-	classify -. &nbsp;rag&nbsp; .-> rag_pipeline;
-	rag_pipeline --> format_rag;
-	format_arxiv --> __end__;
-	format_rag --> __end__;
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
+__start__([<p>__start__</p>]):::first
+classify(classify)
+arxiv_search(arxiv_search)
+rag_pipeline(rag_pipeline)
+format_arxiv(format_arxiv)
+format_rag(format_rag)
+__end__([<p>__end__</p>]):::last
+__start__ --> classify;
+arxiv_search --> format_arxiv;
+classify -. &nbsp;arxiv&nbsp; .-> arxiv_search;
+classify -. &nbsp;rag&nbsp; .-> rag_pipeline;
+rag_pipeline --> format_rag;
+format_arxiv --> __end__;
+format_rag --> __end__;
+classDef default fill:#f2f0ff,line-height:1.2
+classDef first fill-opacity:0
+classDef last fill:#bfb6fc
 ```
 
 ### 補正RAGワークフロー
@@ -99,26 +111,26 @@ HyDE（Hypothetical Document Embeddings）を使用した自己補正RAGシス�
 
 ```mermaid
 graph TD;
-	__start__([<p>__start__</p>]):::first
-	baseline(baseline)
-	evaluate(evaluate)
-	hyde_rewrite(hyde_rewrite)
-	enhanced_retrieval(enhanced_retrieval)
-	no_answer(no_answer)
-	finalize(finalize)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> baseline;
-	baseline --> evaluate;
-	enhanced_retrieval --> evaluate;
-	evaluate -. &nbsp;sufficient&nbsp; .-> finalize;
-	evaluate -. &nbsp;try_hyde&nbsp; .-> hyde_rewrite;
-	evaluate -. &nbsp;give_up&nbsp; .-> no_answer;
-	hyde_rewrite --> enhanced_retrieval;
-	no_answer --> finalize;
-	finalize --> __end__;
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
+__start__([<p>__start__</p>]):::first
+baseline(baseline)
+evaluate(evaluate)
+hyde_rewrite(hyde_rewrite)
+enhanced_retrieval(enhanced_retrieval)
+no_answer(no_answer)
+finalize(finalize)
+__end__([<p>__end__</p>]):::last
+__start__ --> baseline;
+baseline --> evaluate;
+enhanced_retrieval --> evaluate;
+evaluate -. &nbsp;sufficient&nbsp; .-> finalize;
+evaluate -. &nbsp;try_hyde&nbsp; .-> hyde_rewrite;
+evaluate -. &nbsp;give_up&nbsp; .-> no_answer;
+hyde_rewrite --> enhanced_retrieval;
+no_answer --> finalize;
+finalize --> __end__;
+classDef default fill:#f2f0ff,line-height:1.2
+classDef first fill-opacity:0
+classDef last fill:#bfb6fc
 ```
 
 ### コンテンツ強化ワークフロー
@@ -127,18 +139,18 @@ RAG回答をCornell Note形式とクイズ問題で強化します。
 
 ```mermaid
 graph TD;
-	__start__([<p>__start__</p>]):::first
-	cornell_generation(cornell_generation)
-	quiz_generation(quiz_generation)
-	format_result(format_result)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> cornell_generation;
-	cornell_generation --> quiz_generation;
-	quiz_generation --> format_result;
-	format_result --> __end__;
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
+__start__([<p>__start__</p>]):::first
+cornell_generation(cornell_generation)
+quiz_generation(quiz_generation)
+format_result(format_result)
+__end__([<p>__end__</p>]):::last
+__start__ --> cornell_generation;
+cornell_generation --> quiz_generation;
+quiz_generation --> format_result;
+format_result --> __end__;
+classDef default fill:#f2f0ff,line-height:1.2
+classDef first fill-opacity:0
+classDef last fill:#bfb6fc
 ```
 
 > 📊 詳細なワークフロー図は [`docs/graphs/`](docs/graphs/) ディレクトリで確認できます。

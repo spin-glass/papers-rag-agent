@@ -20,8 +20,9 @@ uv sync
 ```
 
 新しく追加された依存関係：
+
 - `langgraph>=0.2.0`
-- `langchain-core>=0.3.0` 
+- `langchain-core>=0.3.0`
 - `langchain-openai>=0.2.0`
 
 ### 2. 環境変数の設定
@@ -57,7 +58,7 @@ RAG回答 → [Cornell Note生成] → 結果統合
         → [Quiz生成]       →
 ```
 
-### 2. Corrective RAG Workflow  
+### 2. Corrective RAG Workflow
 
 **ファイル**: `src/graphs/corrective_rag.py`
 
@@ -101,7 +102,7 @@ RAG回答 → [Cornell Note生成] → 結果統合
 # LangGraphを使用
 USE_LANGGRAPH=true
 
-# 従来実装を使用  
+# 従来実装を使用
 USE_LANGGRAPH=false
 ```
 
@@ -167,7 +168,7 @@ LangGraphワークフローは詳細なログを出力します：
 ```bash
 # ログレベルの例
 🚀 Starting content enhancement workflow...
-✅ Cornell Note generated: Transformerアーキテクチャ  
+✅ Cornell Note generated: Transformerアーキテクチャ
 ✅ Quiz generated: 2 questions
 ✅ Enhanced result formatted successfully
 ```
@@ -256,7 +257,7 @@ LangGraphワークフローで "Recursion limit reached" エラーが発生す�
 
 3. **対処方法**:
    - 質問をより簡潔にする
-   - 検索対象を絞り込む  
+   - 検索対象を絞り込む
    - TOP_Kパラメータを小さくする
 
 ### Checkpointerエラー
@@ -266,10 +267,10 @@ LangGraphワークフローで "Recursion limit reached" エラーが発生す�
 1. **原因**: LangGraphのチェックポイント機能が不適切に設定されている
 2. **修正済み**: `RunnableConfig`で`recursion_limit`を設定し、`compile()`はシンプルに呼び出す
 3. **テスト**: `tests/test_graphs/test_graph_compilation.py`で検証済み
+4. **ユーザー適応**: ユーザーの専門レベルに応じた回答調整
 
 ### パフォーマンス最適化
 
 - `TOP_K`: 検索件数（デフォルト5）
 - `SUPPORT_THRESHOLD`: サポート閾値（デフォルト0.62）
 - `GRAPH_RECURSION_LIMIT`: 再帰制限（デフォルト10）
-4. **ユーザー適応**: ユーザーの専門レベルに応じた回答調整

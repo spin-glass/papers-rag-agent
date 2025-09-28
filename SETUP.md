@@ -17,7 +17,7 @@ Papers RAG AgentはOpenAI APIを使用してテキスト生成と埋め込み処
 
 #### API Keyの設定方法
 
-**方法1: 環境変数で設定（推奨）**
+##### 方法1: 環境変数で設定（推奨）
 
 ```bash
 # 一時的な設定（現在のセッションのみ）
@@ -28,7 +28,7 @@ echo 'export OPENAI_API_KEY="your_api_key_here"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**方法2: .envファイルで設定**
+##### 方法2: .envファイルで設定
 
 プロジェクトルートに `.env` ファイルを作成：
 
@@ -95,6 +95,7 @@ uv run python debug_rag.py
 **症状**: アプリ起動時にAPI Keyエラーが表示される
 
 **解決方法**:
+
 1. API Keyが正しく設定されているか確認
 2. 環境変数の再読み込み（`source ~/.zshrc`）
 3. シェルの再起動
