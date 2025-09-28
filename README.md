@@ -1,7 +1,7 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
-🚀 **Live Demo**: [https://your-cloudrun-url.run.app](https://your-cloudrun-url.run.app)
+🚀 **Live Demo**: [https://papers-rag-agent-74fhp6jaca-an.a.run.app](https://papers-rag-agent-74fhp6jaca-an.a.run.app)
 <!-- CLOUDRUN_URL_END -->
 
 このプロジェクトは **論文学習に特化した RAG × エージェント型チャットボット** です。
