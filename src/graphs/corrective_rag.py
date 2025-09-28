@@ -24,6 +24,8 @@ class CorrectionState(TypedDict):
     attempts: list
     final_result: Optional[AnswerResult]
     hyde_attempted: bool  # Flag to track if HyDE has been attempted
+    baseline_support: Optional[float]  # Track baseline support score
+    enhanced_support: Optional[float]  # Track enhanced support score
 
 
 def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
@@ -36,6 +38,7 @@ def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
 
         state["answer"] = answer
         state["attempts"] = answer.attempts.copy()
+        state["baseline_support"] = answer.support  # Store for later display
 
         print(f"✅ Baseline retrieval completed. Support: {answer.support:.3f}")
 
@@ -117,6 +120,7 @@ def enhanced_retrieval_node(state: CorrectionState) -> CorrectionState:
         state["answer"] = hyde_answer
         state["attempts"].extend(hyde_answer.attempts)
         state["attempts"].append(hyde_attempt)
+        state["enhanced_support"] = hyde_answer.support  # Store for later display
 
         print(f"✅ Enhanced retrieval completed. New support: {hyde_answer.support:.3f}")
 
@@ -171,6 +175,14 @@ def finalize_result_node(state: CorrectionState) -> CorrectionState:
             support=answer.support,
             attempts=state["attempts"]
         )
+
+        # Add support evaluation details to result metadata
+        final_result.metadata = {
+            "baseline_support": state.get("baseline_support"),
+            "enhanced_support": state.get("enhanced_support"),
+            "threshold": state["theta"],
+            "threshold_met": answer.support >= state["theta"]
+        }
 
         state["final_result"] = final_result
         print(f"✅ Result finalized with {len(state['attempts'])} attempts")
@@ -268,7 +280,9 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
             hyde_query=None,
             attempts=[],
             final_result=None,
-            hyde_attempted=False
+            hyde_attempted=False,
+            baseline_support=None,
+            enhanced_support=None
         )
 
         print(f"🚀 Starting corrective RAG workflow for: {question[:50]}...")

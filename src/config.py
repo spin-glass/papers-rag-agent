@@ -40,7 +40,7 @@ def get_top_k() -> int:
 
 def get_support_threshold() -> float:
     """Get support threshold for corrective RAG."""
-    return float(os.getenv("SUPPORT_THRESHOLD", "0.62"))
+    return float(os.getenv("SUPPORT_THRESHOLD", "0.35"))
 
 
 def get_max_output_chars() -> int:

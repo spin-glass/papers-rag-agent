@@ -75,6 +75,7 @@ class AnswerResult(BaseModel):
     citations: List[dict]
     support: float
     attempts: List[dict]  # Each attempt (initial/HyDE) summary
+    metadata: Optional[dict] = None  # Additional metadata (e.g., support details)
 
 
 class EnhancedAnswerResult(BaseModel):
@@ -85,3 +86,4 @@ class EnhancedAnswerResult(BaseModel):
     attempts: List[dict]
     cornell_note: Optional[CornellNote] = None
     quiz_items: Optional[List[QuizItem]] = None
+    metadata: Optional[dict] = None  # Additional metadata (e.g., support details)

@@ -29,14 +29,21 @@ class MessageState(TypedDict):
 def classify_message_node(state: MessageState) -> MessageState:
     """Classify the incoming message type."""
     try:
-        message = state["message_content"].strip()
+        message = state["message_content"].strip().lower()
 
         print(f"📝 Classifying message: {message[:50]}...")
 
-        # Check for arxiv search command
-        if message.lower().startswith("arxiv:"):
+        # Check for explicit arxiv search command
+        if message.startswith("arxiv:"):
             state["message_type"] = "arxiv"
             print("✅ Classified as: ArXiv search")
+        # Check for paper search keywords
+        elif any(keyword in message for keyword in [
+            "論文を探し", "論文を検索", "論文を見つけ", "paper search", "find paper",
+            "最近の論文", "recent paper", "論文が知りたい", "新しい論文"
+        ]):
+            state["message_type"] = "arxiv"
+            print("✅ Classified as: ArXiv search (paper search detected)")
         else:
             state["message_type"] = "rag"
             print("✅ Classified as: RAG question")
@@ -53,7 +60,13 @@ def arxiv_search_node(state: MessageState) -> MessageState:
     """Handle ArXiv search requests."""
     try:
         message = state["message_content"]
-        query = message.split(":", 1)[1].strip()
+
+        # Extract search query
+        if message.lower().startswith("arxiv:"):
+            query = message.split(":", 1)[1].strip()
+        else:
+            # For paper search questions, extract the research topic
+            query = extract_research_topic(message)
 
         print(f"🔍 Searching ArXiv for: {query}")
 
@@ -69,6 +82,28 @@ def arxiv_search_node(state: MessageState) -> MessageState:
         state["error"] = f"ArXiv search error: {str(e)}"
 
     return state
+
+
+def extract_research_topic(message: str) -> str:
+    """Extract research topic from natural language paper search query."""
+    message_lower = message.lower()
+
+    # Common patterns for extracting research topics
+    if "transformer" in message_lower:
+        return "transformer"
+    elif "機械学習" in message_lower or "machine learning" in message_lower:
+        return "machine learning"
+    elif "深層学習" in message_lower or "deep learning" in message_lower:
+        return "deep learning"
+    elif "自然言語処理" in message_lower or "nlp" in message_lower:
+        return "natural language processing"
+    elif "コンピュータビジョン" in message_lower or "computer vision" in message_lower:
+        return "computer vision"
+    elif "強化学習" in message_lower or "reinforcement learning" in message_lower:
+        return "reinforcement learning"
+    else:
+        # Default: extract key nouns or use the whole message
+        return message.replace("最近の", "").replace("論文を探しています", "").replace("について", "").strip()
 
 
 def rag_pipeline_node(state: MessageState) -> MessageState:
@@ -87,8 +122,20 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
         # Run corrective RAG workflow
         basic_result = answer_with_correction_graph(question, index=index)
 
-        # Enhance with Cornell Note and Quiz
-        enhanced_result = enhance_answer_content(basic_result, question)
+        # Temporarily skip content enhancement to fix immediate issues
+        # enhanced_result = enhance_answer_content(basic_result, question)
+
+        # Create a simple enhanced result without Cornell Note and Quiz
+        from models import EnhancedAnswerResult
+        enhanced_result = EnhancedAnswerResult(
+            text=basic_result.text,
+            citations=basic_result.citations,
+            support=basic_result.support,
+            attempts=basic_result.attempts,
+            cornell_note=None,
+            quiz_items=[],
+            metadata=basic_result.metadata  # Pass through support details
+        )
 
         state["rag_result"] = enhanced_result
 
@@ -167,9 +214,29 @@ def format_rag_response_node(state: MessageState) -> MessageState:
                     marker = "✓ " if option.id == quiz.correct_answer else ""
                     response_parts.append(f"- {marker}{option.id.upper()}: {option.text}")
 
-        # Support score
+        # Support score with detailed information
         support_level = _format_support_level(result.support)
-        response_parts.append(f"\n**Support: {support_level} (score={result.support:.2f})**")
+        response_parts.append(f"\n## 検索品質情報")
+
+        # Check if we have metadata with support details
+        if result.metadata and result.metadata.get("baseline_support") is not None:
+            baseline_support = result.metadata["baseline_support"]
+            enhanced_support = result.metadata.get("enhanced_support")
+            threshold = result.metadata["threshold"]
+            threshold_met = result.metadata["threshold_met"]
+
+            response_parts.append(f"**基本検索Support: {baseline_support:.3f}**")
+            if enhanced_support is not None:
+                response_parts.append(f"**HyDE拡張後Support: {enhanced_support:.3f}**")
+            response_parts.append(f"**閾値: {threshold:.3f}**")
+            response_parts.append(f"**最終Support: {result.support:.3f} ({support_level})**")
+
+            if not threshold_met and result.support == 0.0:
+                response_parts.append("⚠️ **Support値が閾値を下回ったため、no-answer応答が生成されました**")
+            elif threshold_met:
+                response_parts.append("✅ **閾値を満たしているため、回答が生成されました**")
+        else:
+            response_parts.append(f"**Support: {support_level} (score={result.support:.3f})**")
 
         # HyDE usage info
         if len(result.attempts) > 1:
@@ -277,10 +344,10 @@ def process_message_with_routing(message_content: str, rag_index: Any = None) ->
         )
 
         print(f"🚀 Starting message routing workflow...")
-        
+
         # Create RunnableConfig with recursion limit
         config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
-        
+
         # Run the routing workflow
         final_state = routing_graph.invoke(initial_state, config=config)
 
