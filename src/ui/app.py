@@ -28,6 +28,11 @@ except ImportError:
 # Global index for RAG
 _rag_index = None
 
+# Add startup logging for Cloud Run debugging
+print("🚀 Papers RAG Agent starting up...")
+print(f"📍 LangGraph available: {LANGGRAPH_AVAILABLE}")
+print("✅ Application module loaded successfully")
+
 
 def initialize_langsmith_tracing():
     """Initialize LangSmith tracing if enabled."""
@@ -60,32 +65,51 @@ async def on_chat_start():
     """Initialize the chat session with a greeting message."""
     global _rag_index
 
-    # Initialize LangSmith tracing if enabled
-    initialize_langsmith_tracing()
+    try:
+        # Initialize LangSmith tracing if enabled
+        initialize_langsmith_tracing()
 
-    # Check OpenAI API Key before initialization
-    from config import get_openai_api_key_safe
-    api_key = get_openai_api_key_safe()
+        # Check OpenAI API Key before initialization
+        from config import get_openai_api_key_safe
+        api_key = get_openai_api_key_safe()
 
-    if not api_key:
+        if not api_key:
+            await cl.Message(
+                content=(
+                    "## ⚠️ 設定が必要です\n\n"
+                    "Papers RAG Agentを使用するには、OpenAI API Keyの設定が必要です。\n\n"
+                    "**設定方法:**\n"
+                    "1. [OpenAI Platform](https://platform.openai.com/api-keys) でAPI Keyを取得\n"
+                    "2. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
+                    "3. アプリケーションを再起動\n\n"
+                    "詳細は `SETUP.md` をご確認ください。\n\n"
+                    "**現在利用可能な機能:**\n"
+                    "- `arxiv: <query>`: 論文検索（API Key不要）\n\n"
+                    "API Key設定後に全機能をお使いいただけます。"
+                )
+            ).send()
+            return
+
+        # Initialize RAG index with some sample papers
+        await initialize_rag_index()
+
+    except Exception as e:
+        error_msg = str(e)
+        print(f"❌ Critical error during chat initialization: {error_msg}")
+        import traceback
+        traceback.print_exc()
+        
         await cl.Message(
             content=(
-                "## ⚠️ 設定が必要です\n\n"
-                "Papers RAG Agentを使用するには、OpenAI API Keyの設定が必要です。\n\n"
-                "**設定方法:**\n"
-                "1. [OpenAI Platform](https://platform.openai.com/api-keys) でAPI Keyを取得\n"
-                "2. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
-                "3. アプリケーションを再起動\n\n"
-                "詳細は `SETUP.md` をご確認ください。\n\n"
-                "**現在利用可能な機能:**\n"
-                "- `arxiv: <query>`: 論文検索（API Key不要）\n\n"
-                "API Key設定後に全機能をお使いいただけます。"
+                "## ❌ アプリケーション初期化エラー\n\n"
+                f"アプリケーションの初期化中にエラーが発生しました。\n\n"
+                f"**エラー詳細:** {error_msg}\n\n"
+                "**利用可能な機能:**\n"
+                "- `arxiv: <query>`: 論文検索\n\n"
+                "管理者にお問い合わせください。"
             )
         ).send()
         return
-
-    # Initialize RAG index with some sample papers
-    await initialize_rag_index()
 
     await cl.Message(
         content=(
