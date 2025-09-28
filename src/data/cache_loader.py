@@ -27,38 +27,51 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
         data_dir = Path(__file__).parent
         papers_file = data_dir / "precomputed_papers.json"
         embeddings_file = data_dir / "precomputed_embeddings.pkl"
-        
+
         # Check if cache files exist
         if not papers_file.exists():
             print(f"⚠️  Papers cache not found: {papers_file}")
             return None
-            
+
         if not embeddings_file.exists():
             print(f"⚠️  Embeddings cache not found: {embeddings_file}")
             return None
-        
+
         print("📖 Loading precomputed cache...")
-        
+        print(f"  📂 Papers file: {papers_file} (exists: {papers_file.exists()})")
+        print(f"  📂 Embeddings file: {embeddings_file} (exists: {embeddings_file.exists()})")
+
         # Load papers
         with open(papers_file, 'r', encoding='utf-8') as f:
             papers_data = json.load(f)
-        
+
         papers = [Paper(**data) for data in papers_data]
         print(f"  ✅ Loaded {len(papers)} papers")
-        
+
         # Load embeddings
-        with open(embeddings_file, 'rb') as f:
-            papers_with_embeddings = pickle.load(f)
-        
-        print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
-        
+        try:
+            with open(embeddings_file, 'rb') as f:
+                papers_with_embeddings = pickle.load(f)
+
+            print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
+        except Exception as e:
+            print(f"  ❌ Failed to load embeddings: {e}")
+            print(f"  📂 Embeddings file exists: {embeddings_file.exists()}")
+            print(f"  📊 Embeddings file size: {embeddings_file.stat().st_size if embeddings_file.exists() else 'N/A'} bytes")
+            papers_with_embeddings = []
+
         # Create index and populate with precomputed data
         index = InMemoryIndex()
         index.papers_with_embeddings = papers_with_embeddings
-        
+
+        # Validate that we have both papers and embeddings
+        if len(papers) == 0 or len(papers_with_embeddings) == 0:
+            print(f"⚠️  Warning: {len(papers)} papers, {len(papers_with_embeddings)} embeddings")
+            print("⚠️  RAG functionality will be limited. Only arXiv search will work.")
+
         print("✅ Precomputed cache loaded successfully!")
         return index
-        
+
     except Exception as e:
         print(f"❌ Error loading precomputed cache: {e}")
         import traceback
@@ -76,7 +89,7 @@ def cache_exists() -> bool:
     data_dir = Path(__file__).parent
     papers_file = data_dir / "precomputed_papers.json"
     embeddings_file = data_dir / "precomputed_embeddings.pkl"
-    
+
     return papers_file.exists() and embeddings_file.exists()
 
 
@@ -90,20 +103,20 @@ def get_cache_info() -> dict:
     data_dir = Path(__file__).parent
     papers_file = data_dir / "precomputed_papers.json"
     embeddings_file = data_dir / "precomputed_embeddings.pkl"
-    
+
     info = {
         "papers_file": str(papers_file),
         "embeddings_file": str(embeddings_file),
         "papers_exists": papers_file.exists(),
         "embeddings_exists": embeddings_file.exists(),
     }
-    
+
     if papers_file.exists():
         info["papers_size"] = papers_file.stat().st_size
         info["papers_modified"] = papers_file.stat().st_mtime
-    
+
     if embeddings_file.exists():
         info["embeddings_size"] = embeddings_file.stat().st_size
         info["embeddings_modified"] = embeddings_file.stat().st_mtime
-    
+
     return info
