@@ -6,8 +6,7 @@ import json
 import pickle
 import sys
 from pathlib import Path
-from typing import List, Tuple, Optional
-import numpy as np
+from typing import Optional
 
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -66,14 +65,14 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
                 print(f"  📊 File size: {file_size} bytes")
                 
                 if file_size == 0:
-                    print(f"  ⚠️  Embeddings file is empty!")
+                    print("  ⚠️  Embeddings file is empty!")
                     papers_with_embeddings = []
                 else:
                     with open(embeddings_file, 'rb') as f:
                         papers_with_embeddings = pickle.load(f)
                     print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
             else:
-                print(f"  ❌ Embeddings file does not exist!")
+                print("  ❌ Embeddings file does not exist!")
                 papers_with_embeddings = []
                 
         except Exception as e:

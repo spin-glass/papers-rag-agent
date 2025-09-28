@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-import re
 from models import AnswerResult
 from pipelines.baseline import baseline_answer
 from llm.hyde import hyde_rewrite

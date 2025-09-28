@@ -103,7 +103,7 @@ def enhanced_retrieval_node(state: CorrectionState) -> CorrectionState:
             print("⚠️ No HyDE query available, skipping enhanced retrieval")
             return state
 
-        print(f"🔍 Starting enhanced retrieval with HyDE query...")
+        print("🔍 Starting enhanced retrieval with HyDE query...")
 
         # Perform retrieval with HyDE query
         hyde_answer = baseline_answer(state["hyde_query"], state["index"])

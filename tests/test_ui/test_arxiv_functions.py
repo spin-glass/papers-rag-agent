@@ -1,6 +1,5 @@
 """ArXiv関連関数の単体テスト（Chainlitコンテキスト依存なし）"""
 
-import pytest
 from unittest.mock import AsyncMock, patch, Mock
 import sys
 from pathlib import Path
@@ -41,7 +40,7 @@ class TestArxivFunctions:
         # 直接arxiv検索関数をテスト
         from retrieval.arxiv_searcher import run_arxiv_search
         query = message.content.split(":", 1)[1].strip()
-        results = run_arxiv_search(query, max_results=5)
+        run_arxiv_search(query, max_results=5)
 
         # 結果の検証（モックを使用しているため、実際の呼び出しは確認しない）
         # 代わりに、関数の呼び出し可能性をテスト

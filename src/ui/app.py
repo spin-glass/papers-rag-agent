@@ -13,15 +13,15 @@ from data.cache_loader import load_precomputed_cache, cache_exists
 from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_key, get_langsmith_project, get_langsmith_endpoint
 import chainlit as cl
 
-from adapters.mock_agent import run_agent
-from ui.components import render_citations, render_cornell, render_quiz
 
 # LangGraph imports (conditional)
 try:
-    from graphs.message_routing import process_message_with_routing
+    from graphs.message_routing import process_message_with_routing  # noqa: F401
     LANGGRAPH_AVAILABLE = True
+    HAS_MESSAGE_ROUTING = True
 except ImportError:
     LANGGRAPH_AVAILABLE = False
+    HAS_MESSAGE_ROUTING = False
     print("⚠️ LangGraph not available, using legacy implementation")
 
 # Global index for RAG
@@ -531,7 +531,7 @@ async def handle_message_legacy(message: cl.Message):
 
             # Add debug info about attempts (optional)
             if len(result.attempts) > 1:
-                response_content += f"\n*HyDEを使用した補正検索を実行しました*"
+                response_content += "\n*HyDEを使用した補正検索を実行しました*"
 
             step.output = "回答生成完了"
 

@@ -4,9 +4,8 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from typing import TypedDict, List, Optional, Annotated
+from typing import TypedDict, List, Optional
 from langgraph.graph import StateGraph, START, END
-from operator import add
 from langchain_core.runnables import RunnableConfig
 
 from models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
@@ -192,7 +191,7 @@ def format_enhanced_result_node(state: ContentEnhancementState) -> ContentEnhanc
         )
 
         state["enhanced_result"] = enhanced_result
-        print(f"✅ Enhanced result formatted successfully")
+        print("✅ Enhanced result formatted successfully")
 
     except Exception as e:
         print(f"❌ Result formatting failed: {e}")

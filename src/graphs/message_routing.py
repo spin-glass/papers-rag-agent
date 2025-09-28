@@ -10,7 +10,6 @@ from langchain_core.runnables import RunnableConfig
 
 from models import EnhancedAnswerResult
 from graphs.corrective_rag import answer_with_correction_graph
-from graphs.content_enhancement import enhance_answer_content
 from retrieval.arxiv_searcher import run_arxiv_search
 from config import get_graph_recursion_limit
 
@@ -216,7 +215,7 @@ def format_rag_response_node(state: MessageState) -> MessageState:
 
         # Support score with detailed information
         support_level = _format_support_level(result.support)
-        response_parts.append(f"\n## 検索品質情報")
+        response_parts.append("\n## 検索品質情報")
 
         # Check if we have metadata with support details
         if result.metadata and result.metadata.get("baseline_support") is not None:
@@ -244,7 +243,7 @@ def format_rag_response_node(state: MessageState) -> MessageState:
 
         state["final_response"] = "\n".join(response_parts)
 
-        print(f"✅ RAG response formatted successfully")
+        print("✅ RAG response formatted successfully")
 
     except Exception as e:
         print(f"❌ RAG response formatting failed: {e}")
@@ -336,7 +335,7 @@ def process_message_with_routing(message_content: str, rag_index: Any = None) ->
             error=None
         )
 
-        print(f"🚀 Starting message routing workflow...")
+        print("🚀 Starting message routing workflow...")
 
         # Create RunnableConfig with recursion limit
         config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
@@ -351,7 +350,7 @@ def process_message_with_routing(message_content: str, rag_index: Any = None) ->
         # Return the final response
         response = final_state.get("final_response")
         if response:
-            print(f"✅ Message routing completed successfully")
+            print("✅ Message routing completed successfully")
             return response
         else:
             return "申し訳ございませんが、メッセージの処理中にエラーが発生しました。"

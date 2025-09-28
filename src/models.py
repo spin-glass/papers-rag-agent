@@ -3,7 +3,6 @@
 from typing import List, Optional, Any
 
 from pydantic import BaseModel, ConfigDict
-from datetime import datetime
 
 
 class CornellNote(BaseModel):

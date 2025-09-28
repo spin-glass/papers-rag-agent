@@ -31,10 +31,15 @@ jobs:
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
         echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
     
-    - name: Run linting
+    - name: Run Python linting
       run: |
         uv run ruff check src/ tests/
         uv run ruff format --check src/ tests/
+    
+    - name: Run Markdown linting
+      uses: DavidAnson/markdownlint-cli2-action@v16
+      with:
+        globs: '**/*.md'
     
     - name: Run type checking
       run: |

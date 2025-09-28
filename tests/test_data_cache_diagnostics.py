@@ -55,7 +55,7 @@ class TestCacheDiagnostics:
         # Test first paper structure
         first_paper = papers_data[0]
         required_fields = {'id', 'title', 'link', 'summary'}
-        assert required_fields.issubset(first_paper.keys()), f"Missing required fields in paper data"
+        assert required_fields.issubset(first_paper.keys()), "Missing required fields in paper data"
         
         # Test Paper model creation
         paper = Paper(**first_paper)
@@ -139,7 +139,7 @@ class TestCacheDiagnostics:
                     assert embedding.shape[0] > 0, "Embedding should have dimensions"
                     assert not np.isnan(embedding).any(), "Embedding should not contain NaN values"
                     
-                    print(f"✅ Embedding data integrity check passed")
+                    print("✅ Embedding data integrity check passed")
                     print(f"📊 Embedding vector shape: {embedding.shape}")
                     print(f"📊 Sample embedding values: {embedding[:5]}")
                     
