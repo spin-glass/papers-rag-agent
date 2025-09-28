@@ -148,9 +148,8 @@ class TestArxivIntegration:
         ]
 
         for message_content, should_be_arxiv in test_cases:
-            with self.subTest(content=message_content):
-                is_arxiv = message_content.lower().startswith("arxiv:")
-                self.assertEqual(is_arxiv, should_be_arxiv)
+            is_arxiv = message_content.lower().startswith("arxiv:")
+            assert is_arxiv == should_be_arxiv
 
     def test_query_extraction(self):
         """クエリ抽出のテスト"""
@@ -163,9 +162,8 @@ class TestArxivIntegration:
         ]
 
         for message_content, expected_query in test_cases:
-            with self.subTest(content=message_content):
-                query = message_content.split(":", 1)[1].strip()
-                self.assertEqual(query, expected_query)
+            query = message_content.split(":", 1)[1].strip()
+            assert query == expected_query
 
     @patch("ui.app.run_agent")
     @patch("ui.app.cl.Message")
@@ -228,7 +226,7 @@ class TestMessageFormatting:
         content = "### arXiv hits\n" + "\n".join(lines)
 
         expected = "### arXiv hits\n- [Test Paper 1](http://arxiv.org/abs/2301.00001)  •  [PDF](http://arxiv.org/pdf/2301.00001.pdf)"
-        self.assertEqual(content, expected)
+        assert content == expected
 
     def test_format_arxiv_results_without_pdf(self):
         """PDFなしの結果フォーマットテスト"""
@@ -249,7 +247,7 @@ class TestMessageFormatting:
         content = "### arXiv hits\n" + "\n".join(lines)
 
         expected = "### arXiv hits\n- [Test Paper 2](http://arxiv.org/abs/2301.00002)"
-        self.assertEqual(content, expected)
+        assert content == expected
 
     def test_format_multiple_arxiv_results(self):
         """複数結果のフォーマットテスト"""
@@ -276,7 +274,7 @@ class TestMessageFormatting:
             "- [Paper 2](http://arxiv.org/abs/2301.00002)",
         ]
         expected = "\n".join(expected_lines)
-        self.assertEqual(content, expected)
+        assert content == expected
 
 
 if __name__ == "__main__":
