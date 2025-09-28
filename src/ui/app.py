@@ -10,7 +10,7 @@ from pipelines.baseline import set_global_index
 from pipelines.corrective import answer_with_correction
 from ui.send import send_long_message
 from data.cache_loader import load_precomputed_cache, cache_exists
-from config import use_langgraph
+from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_key, get_langsmith_project, get_langsmith_endpoint
 import chainlit as cl
 
 from adapters.mock_agent import run_agent
@@ -28,15 +28,44 @@ except ImportError:
 _rag_index = None
 
 
+def initialize_langsmith_tracing():
+    """Initialize LangSmith tracing if enabled."""
+    import os
+
+    if enable_langsmith_tracing():
+        api_key = get_langsmith_api_key()
+        if api_key:
+            # Set environment variables for LangSmith
+            os.environ["LANGCHAIN_TRACING_V2"] = "true"
+            os.environ["LANGCHAIN_API_KEY"] = api_key  # LangChain uses LANGCHAIN_API_KEY
+            os.environ["LANGCHAIN_PROJECT"] = get_langsmith_project()
+            os.environ["LANGCHAIN_ENDPOINT"] = get_langsmith_endpoint()
+
+            # Also set legacy environment variables for backward compatibility
+            os.environ["LANGSMITH_TRACING"] = "true"
+            os.environ["LANGSMITH_API_KEY"] = api_key
+            os.environ["LANGSMITH_PROJECT"] = get_langsmith_project()
+            os.environ["LANGSMITH_ENDPOINT"] = get_langsmith_endpoint()
+
+            print(f"✅ LangSmith tracing enabled for project: {get_langsmith_project()}")
+        else:
+            print("⚠️ LangSmith tracing is enabled but API key not found")
+    else:
+        print("ℹ️ LangSmith tracing is disabled")
+
+
 @cl.on_chat_start
 async def on_chat_start():
     """Initialize the chat session with a greeting message."""
     global _rag_index
 
+    # Initialize LangSmith tracing if enabled
+    initialize_langsmith_tracing()
+
     # Check OpenAI API Key before initialization
     from config import get_openai_api_key_safe
     api_key = get_openai_api_key_safe()
-    
+
     if not api_key:
         await cl.Message(
             content=(
@@ -244,7 +273,7 @@ async def handle_message_with_langgraph(message: cl.Message):
                 )
             else:
                 response_content = f"LangGraphワークフローでエラーが発生しました: {error_msg}"
-            
+
             step.output = f"エラー: {error_msg}"
             print(f"❌ LangGraph workflow failed: {e}")
 

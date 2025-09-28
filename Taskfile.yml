@@ -116,9 +116,11 @@ tasks:
       - rm -rf .coverage htmlcov/ .pytest_cache/ .ruff_cache/
 
   run:
-    desc: Run the Chainlit application
+    desc: Run the Chainlit application with LangSmith tracing
     cmds:
-      - ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
+      - pkill -f "chainlit run" || true
+      - sleep 1
+      - LANGCHAIN_TRACING_V2=true LANGCHAIN_PROJECT=papers-rag-agent LANGSMITH_TRACING=true LANGSMITH_PROJECT=papers-rag-agent USE_LANGGRAPH=true ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
 
   run:force:
     desc: Run with maximum buffer settings (if errors persist)
@@ -162,7 +164,7 @@ tasks:
     desc: Build precomputed cache for fast startup
     cmds:
       - uv run python scripts/build_cache.py
-  
+
   cache:info:
     desc: Show cache information
     cmds:

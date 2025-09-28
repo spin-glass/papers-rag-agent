@@ -68,3 +68,23 @@ def get_graph_recursion_limit() -> int:
     except (ValueError, TypeError):
         print("⚠️ Invalid GRAPH_RECURSION_LIMIT value, using default 10")
         return 10
+
+
+def get_langsmith_api_key() -> str | None:
+    """Get LangSmith API key safely."""
+    return os.getenv("LANGSMITH_API_KEY")
+
+
+def get_langsmith_project() -> str:
+    """Get LangSmith project name."""
+    return os.getenv("LANGSMITH_PROJECT", "papers-rag-agent")
+
+
+def enable_langsmith_tracing() -> bool:
+    """Check if LangSmith tracing should be enabled."""
+    return os.getenv("LANGSMITH_TRACING", "false").lower() == "true"
+
+
+def get_langsmith_endpoint() -> str:
+    """Get LangSmith endpoint URL."""
+    return os.getenv("LANGSMITH_ENDPOINT", "https://api.smith.langchain.com")

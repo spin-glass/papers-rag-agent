@@ -33,18 +33,12 @@ def classify_message_node(state: MessageState) -> MessageState:
 
         print(f"📝 Classifying message: {message[:50]}...")
 
-        # Check for explicit arxiv search command
+        # Check for explicit arxiv search command ONLY
         if message.startswith("arxiv:"):
             state["message_type"] = "arxiv"
             print("✅ Classified as: ArXiv search")
-        # Check for paper search keywords
-        elif any(keyword in message for keyword in [
-            "論文を探し", "論文を検索", "論文を見つけ", "paper search", "find paper",
-            "最近の論文", "recent paper", "論文が知りたい", "新しい論文"
-        ]):
-            state["message_type"] = "arxiv"
-            print("✅ Classified as: ArXiv search (paper search detected)")
         else:
+            # All other messages are treated as RAG questions
             state["message_type"] = "rag"
             print("✅ Classified as: RAG question")
 

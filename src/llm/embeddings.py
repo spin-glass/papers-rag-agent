@@ -1,7 +1,8 @@
-"""Embedding functionality using OpenAI."""
+"""Embedding functionality using OpenAI with LangSmith tracing."""
 
 import numpy as np
-from openai import OpenAI
+from langchain_openai import OpenAIEmbeddings
+from langsmith import traceable
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -16,12 +17,16 @@ def setup_embedder():
         raise ValueError(f"Unsupported LLM provider: {provider}")
     
     api_key = get_openai_api_key()
-    return OpenAI(api_key=api_key)
+    return OpenAIEmbeddings(
+        model="text-embedding-3-small",  # Cost-efficient model
+        openai_api_key=api_key
+    )
 
 
+@traceable
 def get_embed(text: str) -> np.ndarray:
     """
-    Get embedding vector for text using OpenAI's embedding model.
+    Get embedding vector for text using OpenAI's embedding model with LangSmith tracing.
     
     Args:
         text: Input text to embed
@@ -32,17 +37,12 @@ def get_embed(text: str) -> np.ndarray:
     Raises:
         Exception: If embedding generation fails
     """
-    client = setup_embedder()
+    embeddings = setup_embedder()
     
     try:
-        response = client.embeddings.create(
-            model="text-embedding-3-small",  # Cost-efficient model
-            input=text.strip()
-        )
-        
-        # Extract embedding vector
-        embedding = response.data[0].embedding
-        return np.array(embedding, dtype=np.float32)
+        # Use LangChain's OpenAIEmbeddings for automatic LangSmith tracing
+        embedding_vector = embeddings.embed_query(text.strip())
+        return np.array(embedding_vector, dtype=np.float32)
         
     except Exception as e:
         # Don't suppress exceptions - let them bubble up

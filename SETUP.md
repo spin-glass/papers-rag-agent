@@ -34,9 +34,29 @@ source ~/.zshrc
 
 ```bash
 # .env ファイルの内容
-OPENAI_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 LLM_PROVIDER=openai
+
+# LangSmith Configuration (Optional)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=your_langsmith_api_key_here
+LANGCHAIN_PROJECT=papers-rag-agent
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+
+# Legacy LangSmith variables (for backward compatibility)
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your_langsmith_api_key_here
+LANGSMITH_PROJECT=papers-rag-agent
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+
+# LangGraph Configuration
 USE_LANGGRAPH=true
+GRAPH_RECURSION_LIMIT=10
+
+# RAG Configuration
+TOP_K=5
+SUPPORT_THRESHOLD=0.35
+MAX_OUTPUT_CHARS=1400
 ```
 
 ### 2. 依存関係のインストール
