@@ -73,6 +73,16 @@ tasks:
     cmds:
       - uv run pytest tests/ -v
 
+  test:graphs:
+    desc: Run LangGraph workflow tests
+    cmds:
+      - uv run pytest tests/test_graphs/ -v
+
+  test:graphs:integration:
+    desc: Run LangGraph integration tests (requires OpenAI API key)
+    cmds:
+      - uv run pytest tests/test_graphs/ -v -m integration
+
   lint:
     desc: Run linting with ruff
     deps: [install:dev]
