@@ -82,3 +82,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Precomputed cache files (will be generated in CI/CD)
+src/data/precomputed_papers.json
+src/data/precomputed_embeddings.pkl

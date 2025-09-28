@@ -9,6 +9,7 @@ from retrieval.inmemory import InMemoryIndex
 from pipelines.baseline import set_global_index
 from pipelines.corrective import answer_with_correction
 from ui.send import send_long_message
+from data.cache_loader import load_precomputed_cache, cache_exists
 import chainlit as cl
 
 from adapters.mock_agent import run_agent
@@ -44,7 +45,38 @@ async def on_chat_start():
 
 
 async def initialize_rag_index():
-    """Initialize RAG index with sample papers."""
+    """Initialize RAG index with precomputed cache or fallback to dynamic loading."""
+    global _rag_index
+    
+    try:
+        # Try to load precomputed cache first
+        print("🚀 Initializing RAG index...")
+        
+        if cache_exists():
+            print("📖 Loading precomputed cache...")
+            _rag_index = load_precomputed_cache()
+            
+            if _rag_index is not None:
+                set_global_index(_rag_index)
+                print(f"✅ RAG index loaded from cache with {len(_rag_index.papers_with_embeddings)} papers")
+                return
+            else:
+                print("⚠️  Failed to load cache, falling back to dynamic loading...")
+        else:
+            print("⚠️  Precomputed cache not found, falling back to dynamic loading...")
+        
+        # Fallback to dynamic loading (original implementation)
+        await _initialize_rag_index_dynamic()
+            
+    except Exception as e:
+        print(f"❌ Error initializing RAG index: {e}")
+        import traceback
+        traceback.print_exc()
+        _rag_index = None
+
+
+async def _initialize_rag_index_dynamic():
+    """Fallback dynamic initialization (original implementation)."""
     global _rag_index
     
     try:
@@ -115,7 +147,7 @@ async def initialize_rag_index():
             _rag_index = None
             
     except Exception as e:
-        print(f"❌ Error initializing RAG index: {e}")
+        print(f"❌ Error in dynamic initialization: {e}")
         import traceback
         traceback.print_exc()
         _rag_index = None

@@ -147,6 +147,37 @@ tasks:
     cmds:
       - |
         sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
+  
+  build:cache:
+    desc: Build precomputed cache for fast startup
+    cmds:
+      - uv run python scripts/build_cache.py
+  
+  cache:info:
+    desc: Show cache information
+    cmds:
+      - |
+        if [ -f "src/data/precomputed_papers.json" ]; then
+          echo "✅ Papers cache exists ($(wc -l < src/data/precomputed_papers.json) lines)"
+          echo "   File: src/data/precomputed_papers.json"
+          echo "   Size: $(du -h src/data/precomputed_papers.json | cut -f1)"
+        else
+          echo "❌ Papers cache not found"
+        fi
+        if [ -f "src/data/precomputed_embeddings.pkl" ]; then
+          echo "✅ Embeddings cache exists"
+          echo "   File: src/data/precomputed_embeddings.pkl"
+          echo "   Size: $(du -h src/data/precomputed_embeddings.pkl | cut -f1)"
+        else
+          echo "❌ Embeddings cache not found"
+        fi
+  
+  cache:clean:
+    desc: Clean precomputed cache files
+    cmds:
+      - rm -f src/data/precomputed_papers.json
+      - rm -f src/data/precomputed_embeddings.pkl
+      - echo "🗑️  Cache files removed"
         echo "Switched to English locale"
       - task: run
 

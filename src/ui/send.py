@@ -90,3 +90,4 @@ def split_text_smartly(text: str, max_chars: int) -> list:
         remaining = remaining[chunk_end:].strip()
     
     return chunks
+

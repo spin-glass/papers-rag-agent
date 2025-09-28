@@ -107,3 +107,4 @@ class InMemoryIndex:
         
         # Clamp to [0, 1] range
         return max(0.0, float(similarity))
+

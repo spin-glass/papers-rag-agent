@@ -35,3 +35,4 @@ def get_support_threshold() -> float:
 def get_max_output_chars() -> int:
     """Get maximum output characters for chunked sending."""
     return int(os.getenv("MAX_OUTPUT_CHARS", "1400"))
+
