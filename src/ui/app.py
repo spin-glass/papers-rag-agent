@@ -257,7 +257,7 @@ async def handle_message_with_langgraph(message: cl.Message):
     except Exception as e:
         error_msg = str(e)
         print(f"❌ LangGraph workflow failed: {e}")
-        
+
         # Check for specific API key related errors
         if "OPENAI_API_KEY" in error_msg:
             response_content = (
@@ -284,11 +284,11 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
     from graphs.message_routing import create_message_routing_graph, MessageState
     from config import get_graph_recursion_limit
     from langchain_core.runnables import RunnableConfig
-    
+
     try:
         # グラフを作成
         routing_graph = create_message_routing_graph()
-        
+
         # 初期状態を準備
         initial_state = MessageState(
             message_content=message_content,
@@ -299,31 +299,31 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
             final_response=None,
             error=None
         )
-        
+
         # 最終回答用の空メッセージを準備
         agent_message = cl.Message(content="")
         await agent_message.send()
-        
+
         config = RunnableConfig(recursion_limit=get_graph_recursion_limit())
         response_chunks = []
-        
+
         # ストリーミング実行
         async for output in routing_graph.astream_log(initial_state, config=config, include_types=["llm"]):
             for op in output.ops:
                 # ノード実行結果の処理
                 if op["path"] == "/streamed_output/-":
                     await handle_node_output(op)
-                
+
                 # 最終回答のストリーミング（LLMからの出力）
-                elif (op["path"].startswith("/logs/") and 
+                elif (op["path"].startswith("/logs/") and
                       op["path"].endswith("/streamed_output_str/-")):
                     chunk = op["value"]
                     response_chunks.append(chunk)
                     await agent_message.stream_token(chunk)
-        
+
         # 最終的な回答を結合
         final_response = "".join(response_chunks)
-        
+
         # 回答が空の場合は、最終状態から取得
         if not final_response.strip():
             print("⚠️ No streaming response received, falling back to invoke...")
@@ -331,13 +331,13 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
             final_response = final_state.get("final_response", "回答の生成に失敗しました。")
             # 空のメッセージに最終回答を設定
             await agent_message.stream_token(final_response)
-            
+
         return final_response
-        
+
     except Exception as e:
         print(f"❌ Streaming workflow failed: {e}")
         # フォールバック：通常の処理
-        from graphs.message_routing import process_message_with_routing
+        from graphs.message_routing import process_message_with_routing  # noqa: F401
         return process_message_with_routing(message_content, rag_index)
 
 
@@ -349,7 +349,7 @@ async def handle_node_output(op):
         # ノード名を取得
         node_name = list(op["value"].keys())[0]
         node_state = op["value"][node_name]
-        
+
         # ノードに応じてステップを表示
         if node_name == "classify":
             await display_classification_step(node_state)
@@ -367,7 +367,7 @@ async def handle_node_output(op):
             await display_format_step(node_state)
         elif node_name == "format_arxiv":
             await display_arxiv_format_step(node_state)
-            
+
     except Exception as e:
         print(f"⚠️ Error displaying node output: {e}")
 
@@ -376,7 +376,7 @@ async def handle_node_output(op):
 async def display_classification_step(state):
     """メッセージ分類結果を表示"""
     message_type = state.get("message_type", "unknown")
-    
+
     async with cl.Step(name="メッセージ分類", type="tool") as step:
         if message_type == "rag":
             step.output = "📝 RAG質問として分類されました"
@@ -390,7 +390,7 @@ async def display_rag_pipeline_step(state):
     """RAGパイプライン実行結果を表示"""
     rag_result = state.get("rag_result")
     error = state.get("error")
-    
+
     async with cl.Step(name="RAG処理", type="run") as step:
         if error:
             step.output = f"❌ エラー: {error}"
@@ -406,7 +406,7 @@ async def display_arxiv_search_step(state):
     """ArXiv検索結果を表示"""
     results = state.get("arxiv_results", [])
     error = state.get("error")
-    
+
     async with cl.Step(name="ArXiv検索", type="tool") as step:
         if error:
             step.output = f"❌ 検索エラー: {error}"
@@ -417,7 +417,7 @@ async def display_arxiv_search_step(state):
 async def display_baseline_step(state):
     """ベースライン検索結果を表示"""
     answer = state.get("answer")
-    
+
     async with cl.Step(name="ベースライン検索", type="tool") as step:
         if answer:
             support = answer.support
@@ -430,7 +430,7 @@ async def display_baseline_step(state):
 async def display_hyde_step(state):
     """HyDE処理結果を表示"""
     hyde_query = state.get("hyde_query")
-    
+
     async with cl.Step(name="HyDE拡張", type="tool") as step:
         if hyde_query:
             # クエリが長い場合は省略
@@ -444,7 +444,7 @@ async def display_enhanced_retrieval_step(state):
     """拡張検索結果を表示"""
     answer = state.get("answer")
     baseline_support = state.get("baseline_support")
-    
+
     async with cl.Step(name="拡張検索", type="tool") as step:
         if answer and baseline_support is not None:
             improvement = answer.support - baseline_support
@@ -456,7 +456,7 @@ async def display_enhanced_retrieval_step(state):
 async def display_format_step(state):
     """最終フォーマット処理を表示"""
     final_response = state.get("final_response")
-    
+
     async with cl.Step(name="回答フォーマット", type="tool") as step:
         if final_response:
             response_length = len(final_response)
@@ -469,7 +469,7 @@ async def display_arxiv_format_step(state):
     """ArXiv検索結果フォーマット処理を表示"""
     final_response = state.get("final_response")
     results = state.get("arxiv_results", [])
-    
+
     async with cl.Step(name="検索結果フォーマット", type="tool") as step:
         if final_response:
             step.output = f"📝 ArXiv検索結果フォーマット完了 ({len(results)}件)"
