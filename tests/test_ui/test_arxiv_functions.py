@@ -38,7 +38,7 @@ class TestArxivFunctions:
         message.content = "arxiv:transformer"
 
         # 直接arxiv検索関数をテスト
-        from retrieval.arxiv_searcher import run_arxiv_search
+        from retrieval.arxiv_searcher import run_arxiv_search  # type: ignore
         query = message.content.split(":", 1)[1].strip()
         run_arxiv_search(query, max_results=5)
 
@@ -52,7 +52,7 @@ class TestArxivFunctions:
         # 空の結果を返すように設定
         mock_run_arxiv_search.return_value = []
 
-        from retrieval.arxiv_searcher import run_arxiv_search
+        from retrieval.arxiv_searcher import run_arxiv_search  # type: ignore
         results = run_arxiv_search("nonexistent topic", max_results=5)
 
         # モックが正しく動作することを確認
