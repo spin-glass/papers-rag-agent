@@ -16,14 +16,14 @@ from config import get_graph_recursion_limit, get_openai_api_key_safe
 
 class ContentEnhancementState(TypedDict):
     """State for content enhancement workflow."""
-    question: Annotated[str, add]  # Allow multiple updates
+    question: str  # Remove Annotated to avoid concurrent updates
     answer_text: str
     citations: List[dict]
     support: float
     attempts: List[dict]
     cornell_note: Optional[CornellNote]
     quiz_items: Optional[List[QuizItem]]
-    error: Annotated[Optional[str], add]  # Allow multiple error updates
+    error: Optional[str]  # Remove Annotated to avoid concurrent updates
 
 
 def cornell_note_generation_node(state: ContentEnhancementState) -> ContentEnhancementState:
@@ -212,10 +212,10 @@ def create_content_enhancement_graph() -> StateGraph:
     graph.add_node("quiz_generation", quiz_generation_node)
     graph.add_node("format_result", format_enhanced_result_node)
 
-    # Define the flow
-    graph.add_edge(START, "cornell_generation")
-    graph.add_edge(START, "quiz_generation")
-    graph.add_edge(["cornell_generation", "quiz_generation"], "format_result")
+    # Define the flow (sequential to avoid concurrent updates)
+    graph.add_edge(START, "cornell_generation")  # TODO: cornell_generation and quiz_generation should be parallel
+    graph.add_edge("cornell_generation", "quiz_generation")
+    graph.add_edge("quiz_generation", "format_result")
     graph.add_edge("format_result", END)
 
     return graph.compile()
@@ -267,7 +267,8 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             support=answer_result.support,
             attempts=answer_result.attempts,
             cornell_note=final_state.get("cornell_note"),
-            quiz_items=final_state.get("quiz_items") or []
+            quiz_items=final_state.get("quiz_items") or [],
+            metadata=answer_result.metadata  # Preserve support details
         )
 
     except Exception as e:
@@ -279,5 +280,6 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             support=answer_result.support,
             attempts=answer_result.attempts,
             cornell_note=None,
-            quiz_items=[]
+            quiz_items=[],
+            metadata=answer_result.metadata  # Preserve support details
         )

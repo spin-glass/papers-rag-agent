@@ -122,20 +122,26 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
         # Run corrective RAG workflow
         basic_result = answer_with_correction_graph(question, index=index)
 
-        # Temporarily skip content enhancement to fix immediate issues
-        # enhanced_result = enhance_answer_content(basic_result, question)
-
-        # Create a simple enhanced result without Cornell Note and Quiz
-        from models import EnhancedAnswerResult
-        enhanced_result = EnhancedAnswerResult(
-            text=basic_result.text,
-            citations=basic_result.citations,
-            support=basic_result.support,
-            attempts=basic_result.attempts,
-            cornell_note=None,
-            quiz_items=[],
-            metadata=basic_result.metadata  # Pass through support details
-        )
+        # Re-enable content enhancement with Cornell Note and Quiz
+        try:
+            from graphs.content_enhancement import enhance_answer_content
+            enhanced_result = enhance_answer_content(basic_result, question)
+            # Ensure metadata is preserved
+            if not enhanced_result.metadata and basic_result.metadata:
+                enhanced_result.metadata = basic_result.metadata
+        except Exception as e:
+            print(f"⚠️ Content enhancement failed, using basic result: {e}")
+            # Fallback to simple enhanced result
+            from models import EnhancedAnswerResult
+            enhanced_result = EnhancedAnswerResult(
+                text=basic_result.text,
+                citations=basic_result.citations,
+                support=basic_result.support,
+                attempts=basic_result.attempts,
+                cornell_note=None,
+                quiz_items=[],
+                metadata=basic_result.metadata  # Pass through support details
+            )
 
         state["rag_result"] = enhanced_result
 
