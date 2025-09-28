@@ -1,0 +1,109 @@
+name: Update README with Cloud Run URL
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update README even if URL has not changed'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: papers-rag-agent
+  REGION: asia-northeast1
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get current Cloud Run URL
+        id: get-url
+        run: |
+          URL=$(gcloud run services describe $SERVICE_NAME --region=$REGION --format="value(status.url)" 2>/dev/null || echo "")
+          
+          if [[ -z "$URL" ]]; then
+            echo "❌ Cloud Run service '$SERVICE_NAME' not found in region '$REGION'"
+            echo "Please make sure the service is deployed first."
+            exit 1
+          fi
+          
+          echo "CLOUDRUN_URL=$URL" >> $GITHUB_OUTPUT
+          echo "📍 Current Cloud Run URL: $URL"
+
+      - name: Check if URL has changed
+        id: check-change
+        run: |
+          CURRENT_URL="${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+          
+          # READMEから現在のURLを抽出
+          README_URL=$(grep -o 'https://[^)]*' README.md | head -1 || echo "")
+          
+          echo "Current URL in README: $README_URL"
+          echo "New URL from Cloud Run: $CURRENT_URL"
+          
+          if [[ "$README_URL" != "$CURRENT_URL" ]] || [[ "${{ inputs.force_update }}" == "true" ]]; then
+            echo "URL_CHANGED=true" >> $GITHUB_OUTPUT
+            echo "✅ URL needs to be updated"
+          else
+            echo "URL_CHANGED=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ URL is already up to date"
+          fi
+
+      - name: Update README with Cloud Run URL
+        if: steps.check-change.outputs.URL_CHANGED == 'true'
+        run: |
+          CLOUDRUN_URL="${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+          
+          # READMEのCloud Run URLセクションを更新
+          sed -i.bak '/<!-- CLOUDRUN_URL_START -->/,/<!-- CLOUDRUN_URL_END -->/c\
+          <!-- CLOUDRUN_URL_START -->\
+          🚀 **Live Demo**: ['$CLOUDRUN_URL']('$CLOUDRUN_URL')\
+          <!-- CLOUDRUN_URL_END -->' README.md
+          
+          # バックアップファイルを削除
+          rm README.md.bak
+          
+          echo "✅ README updated with new URL: $CLOUDRUN_URL"
+
+      - name: Commit and push README changes
+        if: steps.check-change.outputs.URL_CHANGED == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [[ -n $(git diff --name-only) ]]; then
+            git add README.md
+            git commit -m "chore: update Cloud Run URL in README"
+            git push
+            echo "📝 Changes committed and pushed to repository"
+          else
+            echo "ℹ️ No changes to commit"
+          fi
+
+      - name: Display results
+        run: |
+          if [[ "${{ steps.check-change.outputs.URL_CHANGED }}" == "true" ]]; then
+            echo "🎉 README successfully updated!"
+            echo "📍 New URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+          else
+            echo "ℹ️ No update needed - URL is already current"
+            echo "📍 Current URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+          fi
