@@ -37,9 +37,10 @@ Question: {question}
 Hypothetical paper summary:"""
 
     try:
-        hypothetical_summary = generate_answer(prompt)
+        hypothetical_summary = generate_answer(prompt, question)
+        print(f"HyDE summary: {hypothetical_summary}")
         return hypothetical_summary.strip()
-        
+
     except Exception as e:
         # Don't suppress exceptions - let them bubble up
         raise Exception(f"Failed to generate HyDE query: {str(e)}") from e

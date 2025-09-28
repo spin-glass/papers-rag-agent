@@ -35,17 +35,17 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
         AnswerResult with answer, citations, support score, and attempts
     """
     global _global_index
-    
+
     # Use provided index or fall back to global
     search_index = index if index is not None else _global_index
-    
+
     if search_index is None:
         raise ValueError("No index provided and global index not initialized. Call set_global_index() first.")
-    
+
     # 1. Retrieve contexts
     top_k = get_top_k()
     contexts = search_index.search(question, top_k)
-    
+
     if not contexts:
         return AnswerResult(
             text="申し訳ございませんが、関連する論文が見つかりませんでした。",
@@ -53,13 +53,13 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
             support=0.0,
             attempts=[{"type": "baseline", "top_ids": [], "support": 0.0}]
         )
-    
+
     # 2. Build prompt with contexts
     prompt = _build_baseline_prompt(question, contexts)
-    
-    # 3. Generate answer
+
+    # 3. Generate answer using retrieved contexts
     try:
-        answer_text = generate_answer(prompt)
+        answer_text = generate_answer(prompt, question)
     except Exception as e:
         return AnswerResult(
             text=f"回答の生成中にエラーが発生しました: {str(e)}",
@@ -67,20 +67,20 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
             support=0.0,
             attempts=[{"type": "baseline", "top_ids": [ctx.paper_id for ctx in contexts], "support": 0.0}]
         )
-    
+
     # 4. Calculate support score
     support_score = calculate_support(question, contexts)
-    
+
     # 5. Generate citations
     citations = generate_citations(contexts)
-    
+
     # 6. Record attempt
     attempt = {
         "type": "baseline",
         "top_ids": [ctx.paper_id for ctx in contexts],
         "support": support_score
     }
-    
+
     return AnswerResult(
         text=answer_text,
         citations=citations,
@@ -102,11 +102,11 @@ def calculate_support(question: str, contexts: List[RetrievedContext]) -> float:
     """
     if not contexts:
         return 0.0
-    
+
     try:
         # Get question embedding
         question_embedding = get_embed(question)
-        
+
         # Calculate max cosine similarity with used contexts
         max_similarity = 0.0
         for ctx in contexts:
@@ -116,9 +116,9 @@ def calculate_support(question: str, contexts: List[RetrievedContext]) -> float:
                 ctx_norm = ctx.embedding / (np.linalg.norm(ctx.embedding) + 1e-8)
                 similarity = np.dot(q_norm, ctx_norm)
                 max_similarity = max(max_similarity, float(similarity))
-        
+
         return max(0.0, min(1.0, max_similarity))  # Clamp to [0, 1]
-        
+
     except Exception as e:
         print(f"Warning: Failed to calculate support score: {e}")
         return 0.0
@@ -136,7 +136,7 @@ def generate_citations(contexts: List[RetrievedContext]) -> List[dict]:
     """
     citations = []
     seen_titles = set()
-    
+
     for ctx in contexts:
         if ctx.title not in seen_titles:
             citations.append({
@@ -144,7 +144,7 @@ def generate_citations(contexts: List[RetrievedContext]) -> List[dict]:
                 "link": ctx.link
             })
             seen_titles.add(ctx.title)
-    
+
     return citations
 
 
@@ -175,10 +175,10 @@ Requirements:
 
 Citations:
 """
-    
+
     # Format contexts
     context_text = ""
     for i, ctx in enumerate(contexts, 1):
         context_text += f"{i}) {ctx.title}\n{ctx.summary}\n\n"
-    
+
     return prompt.format(question=question, contexts=context_text.strip())

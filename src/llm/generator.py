@@ -8,7 +8,7 @@ from openai import OpenAI
 from config import get_openai_api_key, get_llm_provider
 
 
-def generate_answer(prompt: str) -> str:
+def generate_answer(prompt: str, question: str = None) -> str:
     """
     Generate answer using OpenAI GPT model.
     
@@ -24,22 +24,29 @@ def generate_answer(prompt: str) -> str:
     provider = get_llm_provider()
     if provider != "openai":
         raise ValueError(f"Unsupported LLM provider: {provider}")
-    
+
     api_key = get_openai_api_key()
     client = OpenAI(api_key=api_key)
-    
+
+    # Add language instruction if question is provided
+    final_prompt = prompt
+    if question:
+        from utils.language_utils import get_response_language_instruction
+        language_instruction = get_response_language_instruction(question)
+        final_prompt = final_prompt + language_instruction
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",  # Cost-efficient model
             messages=[
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": final_prompt}
             ],
             temperature=0.1,  # Low temperature for factual responses
             max_tokens=1500   # Reasonable limit for responses
         )
-        
+
         return response.choices[0].message.content.strip()
-        
+
     except Exception as e:
         # Don't suppress exceptions - let them bubble up
         raise Exception(f"Failed to generate answer: {str(e)}") from e

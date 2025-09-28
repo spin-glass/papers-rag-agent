@@ -51,7 +51,7 @@ NOTES: [your notes here]
 SUMMARY: [your summary here]
 """
 
-        response = generate_answer(prompt)
+        response = generate_answer(prompt, question=state['question'])
 
         # Parse the response
         lines = response.strip().split('\n')
@@ -128,7 +128,7 @@ CORRECT: [A/B/C/D]
 Make sure the questions test key concepts from the answer and have clear correct answers.
 """
 
-        response = generate_answer(prompt)
+        response = generate_answer(prompt, question=state['question'])
 
         # Parse the response
         quiz_items = []
