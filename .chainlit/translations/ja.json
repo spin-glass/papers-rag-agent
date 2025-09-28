@@ -1,0 +1,93 @@
+{
+    "common": {
+        "actions": {
+            "cancel": "キャンセル",
+            "confirm": "確認",
+            "continue": "続行",
+            "goBack": "戻る",
+            "reset": "リセット",
+            "submit": "送信"
+        },
+        "status": {
+            "loading": "読み込み中...",
+            "error": {
+                "default": "エラーが発生しました",
+                "serverConnection": "サーバーに接続できませんでした"
+            }
+        }
+    },
+    "components": {
+        "atoms": {
+            "buttons": {
+                "userButton": {
+                    "menu": {
+                        "settings": "設定",
+                        "settingsKey": "S",
+                        "APIKeys": "APIキー",
+                        "logout": "ログアウト"
+                    }
+                }
+            }
+        },
+        "molecules": {
+            "newChatButton": {
+                "newChat": "新しいチャット"
+            },
+            "tasklist": {
+                "TaskList": {
+                    "title": "📝 タスクリスト",
+                    "loading": "読み込み中...",
+                    "error": "エラーが発生しました"
+                }
+            },
+            "attachments": {
+                "cancelUpload": "アップロードをキャンセル",
+                "removeAttachment": "添付ファイルを削除"
+            },
+            "newChatDialog": {
+                "createNewChat": "新しいチャットを作成しますか？",
+                "clearChat": "現在のメッセージをクリアして新しいチャットを開始します。"
+            }
+        },
+        "organisms": {
+            "chat": {
+                "history": {
+                    "index": {
+                        "showHistory": "履歴を表示",
+                        "lastConversations": "最近の会話",
+                        "noConversations": "会話履歴がありません",
+                        "deleteConversation": "会話を削除"
+                    }
+                },
+                "inputBox": {
+                    "input": {
+                        "placeholder": "メッセージを入力してください..."
+                    }
+                },
+                "Messages": {
+                    "index": {
+                        "running": "実行中...",
+                        "executedSuccessfully": "正常に実行されました",
+                        "failed": "失敗しました",
+                        "feedbackUpdated": "フィードバックが更新されました",
+                        "updating": "更新中..."
+                    }
+                }
+            },
+            "threadHistory": {
+                "sidebar": {
+                    "filters": {
+                        "FeedbackSelect": {
+                            "feedbackAll": "すべてのフィードバック",
+                            "feedbackPositive": "ポジティブ",
+                            "feedbackNegative": "ネガティブ"
+                        },
+                        "SearchBar": {
+                            "placeholder": "会話を検索..."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
