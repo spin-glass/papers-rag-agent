@@ -24,7 +24,10 @@ EXPOSE 8000
 
 # 環境変数を設定
 ENV CHAINLIT_HOST=0.0.0.0
-ENV CHAINLIT_PORT=8000
+
+# エントリーポイントスクリプトでCloud RunのPORT環境変数に対応
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # アプリケーションを起動
-CMD ["chainlit", "run", "src/ui/app.py", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
