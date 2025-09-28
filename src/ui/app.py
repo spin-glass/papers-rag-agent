@@ -36,23 +36,10 @@ print("✅ Application module loaded successfully")
 
 def initialize_langsmith_tracing():
     """Initialize LangSmith tracing if enabled."""
-    import os
-
+    # Simplified: Only log status, don't modify environment variables at runtime
     if enable_langsmith_tracing():
         api_key = get_langsmith_api_key()
         if api_key:
-            # Set environment variables for LangSmith
-            os.environ["LANGCHAIN_TRACING_V2"] = "true"
-            os.environ["LANGCHAIN_API_KEY"] = api_key  # LangChain uses LANGCHAIN_API_KEY
-            os.environ["LANGCHAIN_PROJECT"] = get_langsmith_project()
-            os.environ["LANGCHAIN_ENDPOINT"] = get_langsmith_endpoint()
-
-            # Also set legacy environment variables for backward compatibility
-            os.environ["LANGSMITH_TRACING"] = "true"
-            os.environ["LANGSMITH_API_KEY"] = api_key
-            os.environ["LANGSMITH_PROJECT"] = get_langsmith_project()
-            os.environ["LANGSMITH_ENDPOINT"] = get_langsmith_endpoint()
-
             print(f"✅ LangSmith tracing enabled for project: {get_langsmith_project()}")
         else:
             print("⚠️ LangSmith tracing is enabled but API key not found")
@@ -247,11 +234,12 @@ async def on_message(message: cl.Message):
     """
     global _rag_index
 
-    # Check if we should use LangGraph workflows
-    if use_langgraph() and LANGGRAPH_AVAILABLE:
-        await handle_message_with_langgraph(message)
-    else:
-        await handle_message_legacy(message)
+    # Temporarily use legacy implementation for stability
+    # TODO: Re-enable LangGraph after Cloud Run deployment is stable
+    # if use_langgraph() and LANGGRAPH_AVAILABLE:
+    #     await handle_message_with_langgraph(message)
+    # else:
+    await handle_message_legacy(message)
 
 
 async def handle_message_with_langgraph(message: cl.Message):
