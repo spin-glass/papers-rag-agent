@@ -38,8 +38,16 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
             return None
 
         print("📖 Loading precomputed cache...")
+        print(f"  📂 Data directory: {data_dir}")
         print(f"  📂 Papers file: {papers_file} (exists: {papers_file.exists()})")
         print(f"  📂 Embeddings file: {embeddings_file} (exists: {embeddings_file.exists()})")
+        
+        # List all files in data directory for debugging
+        try:
+            all_files = list(data_dir.iterdir())
+            print(f"  📋 Files in data directory: {[f.name for f in all_files]}")
+        except Exception as e:
+            print(f"  ❌ Could not list data directory: {e}")
 
         # Load papers
         with open(papers_file, 'r', encoding='utf-8') as f:
@@ -48,16 +56,31 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
         papers = [Paper(**data) for data in papers_data]
         print(f"  ✅ Loaded {len(papers)} papers")
 
-        # Load embeddings
+        # Load embeddings with detailed diagnostics
         try:
-            with open(embeddings_file, 'rb') as f:
-                papers_with_embeddings = pickle.load(f)
-
-            print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
+            print(f"  📁 Attempting to load embeddings from: {embeddings_file}")
+            print(f"  📂 File exists: {embeddings_file.exists()}")
+            
+            if embeddings_file.exists():
+                file_size = embeddings_file.stat().st_size
+                print(f"  📊 File size: {file_size} bytes")
+                
+                if file_size == 0:
+                    print(f"  ⚠️  Embeddings file is empty!")
+                    papers_with_embeddings = []
+                else:
+                    with open(embeddings_file, 'rb') as f:
+                        papers_with_embeddings = pickle.load(f)
+                    print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
+            else:
+                print(f"  ❌ Embeddings file does not exist!")
+                papers_with_embeddings = []
+                
         except Exception as e:
             print(f"  ❌ Failed to load embeddings: {e}")
-            print(f"  📂 Embeddings file exists: {embeddings_file.exists()}")
-            print(f"  📊 Embeddings file size: {embeddings_file.stat().st_size if embeddings_file.exists() else 'N/A'} bytes")
+            print(f"  🔍 Exception type: {type(e).__name__}")
+            import traceback
+            print(f"  📋 Traceback: {traceback.format_exc()}")
             papers_with_embeddings = []
 
         # Create index and populate with precomputed data
