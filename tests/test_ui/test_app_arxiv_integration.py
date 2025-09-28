@@ -291,4 +291,4 @@ if __name__ == "__main__":
         finally:
             loop.close()
 
-    unittest.main()
+# Removed unittest.main() as this file now uses pytest
