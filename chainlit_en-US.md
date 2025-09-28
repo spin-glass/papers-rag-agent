@@ -5,11 +5,13 @@ Hi there! 👋 Welcome to the Papers RAG Agent - your intelligent research assis
 ## Features ✨
 
 ### 🔍 ArXiv Paper Search
+
 - Use `arxiv:` prefix to search real papers from ArXiv
 - Example: `arxiv:transformer attention`
 - Get direct links to papers and PDFs
 
 ### 🤖 Research Assistant
+
 - Ask questions about machine learning, AI, and research topics
 - Get answers in Cornell Note format
 - Interactive quiz questions to test your understanding
@@ -18,14 +20,16 @@ Hi there! 👋 Welcome to the Papers RAG Agent - your intelligent research assis
 ## How to Use 🚀
 
 ### Search Papers
-```
+
+```text
 arxiv:machine learning
 arxiv:neural networks
 arxiv:computer vision
 ```
 
 ### Ask Questions
-```
+
+```text
 What is a transformer in deep learning?
 Explain the attention mechanism
 How do neural networks work?
@@ -39,5 +43,3 @@ How do neural networks work?
 - `What is transfer learning?` - Learn about transfer learning
 
 Happy researching! 🎓✨
-
-
