@@ -40,3 +40,8 @@ def get_max_output_chars() -> int:
 def use_langgraph() -> bool:
     """Check if LangGraph workflows should be used."""
     return os.getenv("USE_LANGGRAPH", "false").lower() == "true"
+
+
+def get_graph_recursion_limit() -> int:
+    """Get recursion limit for LangGraph workflows."""
+    return int(os.getenv("GRAPH_RECURSION_LIMIT", "10"))

@@ -10,6 +10,7 @@ from langchain_core.runnables import RunnableConfig
 
 from models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
 from llm.generator import generate_answer
+from config import get_graph_recursion_limit
 
 
 class ContentEnhancementState(TypedDict):
@@ -43,15 +44,15 @@ CUE: [your cue here]
 NOTES: [your notes here]
 SUMMARY: [your summary here]
 """
-        
+
         response = generate_answer(prompt)
-        
+
         # Parse the response
         lines = response.strip().split('\n')
         cue = ""
         notes = ""
         summary = ""
-        
+
         current_section = None
         for line in lines:
             line = line.strip()
@@ -71,20 +72,20 @@ SUMMARY: [your summary here]
                     notes += f"\n{line}"
                 elif current_section == "summary":
                     summary += f" {line}"
-        
+
         cornell_note = CornellNote(
             cue=cue.strip(),
             notes=notes.strip(),
             summary=summary.strip()
         )
-        
+
         state["cornell_note"] = cornell_note
         print(f"✅ Cornell Note generated: {cue}")
-        
+
     except Exception as e:
         print(f"❌ Cornell Note generation failed: {e}")
         state["error"] = f"Cornell Note generation failed: {str(e)}"
-    
+
     return state
 
 
@@ -115,17 +116,17 @@ CORRECT: [A/B/C/D]
 
 Make sure the questions test key concepts from the answer and have clear correct answers.
 """
-        
+
         response = generate_answer(prompt)
-        
+
         # Parse the response
         quiz_items = []
         lines = response.strip().split('\n')
-        
+
         current_question = None
         current_options = []
         current_correct = None
-        
+
         for line in lines:
             line = line.strip()
             if line.startswith("QUESTION"):
@@ -136,7 +137,7 @@ Make sure the questions test key concepts from the answer and have clear correct
                         options=current_options,
                         correct_answer=current_correct.lower()
                     ))
-                
+
                 # Start new question
                 current_question = line.split(":", 1)[1].strip()
                 current_options = []
@@ -147,7 +148,7 @@ Make sure the questions test key concepts from the answer and have clear correct
                 current_options.append(QuizOption(id=option_id, text=option_text))
             elif line.startswith("CORRECT:"):
                 current_correct = line[8:].strip().lower()
-        
+
         # Save the last question
         if current_question and len(current_options) == 4 and current_correct:
             quiz_items.append(QuizItem(
@@ -155,14 +156,14 @@ Make sure the questions test key concepts from the answer and have clear correct
                 options=current_options,
                 correct_answer=current_correct
             ))
-        
+
         state["quiz_items"] = quiz_items
         print(f"✅ Quiz generated: {len(quiz_items)} questions")
-        
+
     except Exception as e:
         print(f"❌ Quiz generation failed: {e}")
         state["error"] = f"Quiz generation failed: {str(e)}"
-    
+
     return state
 
 
@@ -178,35 +179,38 @@ def format_enhanced_result_node(state: ContentEnhancementState) -> ContentEnhanc
             cornell_note=state.get("cornell_note"),
             quiz_items=state.get("quiz_items")
         )
-        
+
         state["enhanced_result"] = enhanced_result
         print(f"✅ Enhanced result formatted successfully")
-        
+
     except Exception as e:
         print(f"❌ Result formatting failed: {e}")
         state["error"] = f"Result formatting failed: {str(e)}"
-    
+
     return state
 
 
 def create_content_enhancement_graph() -> StateGraph:
     """Create the content enhancement workflow graph."""
-    
+
     # Define the graph
     graph = StateGraph(ContentEnhancementState)
-    
+
     # Add nodes
     graph.add_node("cornell_generation", cornell_note_generation_node)
     graph.add_node("quiz_generation", quiz_generation_node)
     graph.add_node("format_result", format_enhanced_result_node)
-    
+
     # Define the flow
     graph.add_edge(START, "cornell_generation")
     graph.add_edge(START, "quiz_generation")
     graph.add_edge(["cornell_generation", "quiz_generation"], "format_result")
     graph.add_edge("format_result", END)
-    
-    return graph.compile()
+
+    return graph.compile(
+        # Set recursion limit for safety
+        {"recursion_limit": get_graph_recursion_limit()}
+    )
 
 
 def enhance_answer_content(answer_result: AnswerResult, question: str) -> EnhancedAnswerResult:
@@ -223,7 +227,7 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
     try:
         # Create the enhancement graph
         enhancement_graph = create_content_enhancement_graph()
-        
+
         # Prepare initial state
         initial_state = ContentEnhancementState(
             question=question,
@@ -235,15 +239,15 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             quiz_items=None,
             error=None
         )
-        
+
         # Run the enhancement workflow
         print("🚀 Starting content enhancement workflow...")
         final_state = enhancement_graph.invoke(initial_state)
-        
+
         # Check for errors
         if final_state.get("error"):
             print(f"⚠️ Enhancement completed with errors: {final_state['error']}")
-        
+
         # Return enhanced result
         return EnhancedAnswerResult(
             text=answer_result.text,
@@ -253,7 +257,7 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             cornell_note=final_state.get("cornell_note"),
             quiz_items=final_state.get("quiz_items") or []
         )
-        
+
     except Exception as e:
         print(f"❌ Content enhancement workflow failed: {e}")
         # Return basic result without enhancements

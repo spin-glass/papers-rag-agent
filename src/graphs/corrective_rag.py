@@ -10,7 +10,7 @@ from langgraph.graph import StateGraph, START, END
 from models import AnswerResult
 from pipelines.baseline import baseline_answer
 from llm.hyde import hyde_rewrite
-from config import get_support_threshold
+from config import get_support_threshold, get_graph_recursion_limit
 
 
 class CorrectionState(TypedDict):
@@ -22,6 +22,7 @@ class CorrectionState(TypedDict):
     hyde_query: Optional[str]
     attempts: list
     final_result: Optional[AnswerResult]
+    hyde_attempted: bool  # Flag to track if HyDE has been attempted
 
 
 def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
@@ -79,12 +80,14 @@ def hyde_rewrite_node(state: CorrectionState) -> CorrectionState:
         # Generate HyDE query
         hyde_query = hyde_rewrite(state["question"])
         state["hyde_query"] = hyde_query
+        state["hyde_attempted"] = True  # Mark HyDE as attempted
 
         print(f"✅ HyDE rewrite completed: {hyde_query[:100]}...")
 
     except Exception as e:
         print(f"❌ HyDE rewrite failed: {e}")
         state["hyde_query"] = None
+        state["hyde_attempted"] = True  # Mark as attempted even if failed
 
     return state
 
@@ -192,7 +195,7 @@ def should_continue_correction(state: CorrectionState) -> Literal["sufficient", 
         return "sufficient"
 
     # If we haven't tried HyDE yet, try it
-    if not state.get("hyde_query"):
+    if not state.get("hyde_attempted", False):
         return "try_hyde"
 
     # If we've tried HyDE and still insufficient, give up
@@ -233,7 +236,10 @@ def create_corrective_rag_graph() -> StateGraph:
     graph.add_edge("no_answer", "finalize")
     graph.add_edge("finalize", END)
 
-    return graph.compile()
+    return graph.compile(
+        # Set recursion limit to prevent infinite loops
+        {"recursion_limit": get_graph_recursion_limit()}
+    )
 
 
 def answer_with_correction_graph(question: str, theta: float = None, index=None) -> AnswerResult:
@@ -263,10 +269,12 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
             answer=None,
             hyde_query=None,
             attempts=[],
-            final_result=None
+            final_result=None,
+            hyde_attempted=False
         )
 
         print(f"🚀 Starting corrective RAG workflow for: {question[:50]}...")
+        print(f"⚙️ Recursion limit set to: {get_graph_recursion_limit()}")
 
         # Run the corrective RAG workflow
         final_state = corrective_graph.invoke(initial_state)
@@ -287,11 +295,20 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
             )
 
     except Exception as e:
-        print(f"❌ Corrective RAG workflow failed: {e}")
+        error_message = str(e)
+        print(f"❌ Corrective RAG workflow failed: {error_message}")
+
+        # Check if it's a recursion limit error
+        if "recursion_limit" in error_message.lower() or "GRAPH_RECURSION_LIMIT" in error_message:
+            error_text = f"RAGワークフローの再帰制限({get_graph_recursion_limit()})に達しました。質問を簡潔にするか、GRAPH_RECURSION_LIMIT環境変数を調整してください。"
+            print(f"🔄 Recursion limit reached. Current limit: {get_graph_recursion_limit()}")
+        else:
+            error_text = f"RAGワークフローでエラーが発生しました: {error_message}"
+
         # Return error result
         return AnswerResult(
-            text=f"RAGワークフローでエラーが発生しました: {str(e)}",
+            text=error_text,
             citations=[],
             support=0.0,
-            attempts=[{"type": "workflow_error", "error": str(e), "support": 0.0}]
+            attempts=[{"type": "workflow_error", "error": error_message, "support": 0.0}]
         )
