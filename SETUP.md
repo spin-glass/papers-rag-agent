@@ -151,6 +151,29 @@ A: 現在はOpenAI APIが必須です。将来的にローカルLLMサポート�
 **Q: 独自の論文データを追加できますか？**
 A: `scripts/build_cache.py`を使用してカスタムデータセットを構築できます。
 
+## セキュリティ保護設定
+
+### Cursorでのシークレット保護
+
+このプロジェクトでは以下の方法でAPI KeyなどのシークレットをCursor AIから保護しています：
+
+1. **`.cursorignore`ファイル**: Cursor AIが`.env`ファイルを読み取らないよう設定
+2. **`.gitignore`設定**: Gitリポジトリからの除外
+3. **環境変数の使用**: ファイルではなく環境変数での設定を推奨
+
+### 追加の保護手順
+
+```bash
+# 1. .env.exampleをコピーして.envを作成
+cp .env.example .env
+
+# 2. .envファイルに実際のAPI Keyを設定
+# （Cursor AIはこのファイルを読み取りません）
+
+# 3. 環境変数での設定も可能
+export OPENAI_API_KEY="your_key_here"
+```
+
 ## サポート
 
 問題が解決しない場合：

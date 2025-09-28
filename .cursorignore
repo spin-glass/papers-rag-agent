@@ -1,0 +1,42 @@
+# Cursor AI should ignore these files
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+.env.staging
+*.env
+
+# API Keys and secrets
+**/secrets/
+**/*secret*
+**/*key*
+**/*token*
+**/*credential*
+
+# Service account files
+*.json
+github-actions-key.json
+service-account-*.json
+
+# SSH keys
+id_rsa
+id_ed25519
+*.pem
+*.key
+
+# Database and configuration files with secrets
+config.ini
+settings.local.py
+secrets.yaml
+
+# Logs that might contain sensitive info
+*.log
+
+# Backup files that might contain sensitive info
+*.bak
+*.backup
+
+# Certificate files
+*.crt
+*.p12
+*.pfx
