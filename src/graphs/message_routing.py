@@ -200,15 +200,15 @@ def format_rag_response_node(state: MessageState) -> MessageState:
 
         # Cornell Note
         if result.cornell_note:
-            response_parts.append(f"\n## Cornell Note\n\n### Cue\n{result.cornell_note.cue}")
-            response_parts.append(f"\n### Notes\n{result.cornell_note.notes}")
-            response_parts.append(f"\n### Summary\n{result.cornell_note.summary}")
+            response_parts.append(f"\n## Cornell Note\n\n### Cue\n\n{result.cornell_note.cue}")
+            response_parts.append(f"\n### Notes\n\n{result.cornell_note.notes}")
+            response_parts.append(f"\n### Summary\n\n{result.cornell_note.summary}")
 
         # Quiz
         if result.quiz_items:
             response_parts.append("\n## 理解度チェック\n")
             for i, quiz in enumerate(result.quiz_items, 1):
-                response_parts.append(f"\n### 問題 {i}\n{quiz.question}\n")
+                response_parts.append(f"\n### 問題 {i}\n\n{quiz.question}\n")
                 for option in quiz.options:
                     marker = "✓ " if option.id == quiz.correct_answer else ""
                     response_parts.append(f"- {marker}{option.id.upper()}: {option.text}")
@@ -239,7 +239,7 @@ def format_rag_response_node(state: MessageState) -> MessageState:
 
         # HyDE usage info
         if len(result.attempts) > 1:
-            response_parts.append("\n*HyDEを使用した補正検索を実行しました*")
+            response_parts.append("\n*HyDE補正検索を実行しました*")
 
         state["final_response"] = "\n".join(response_parts)
 
