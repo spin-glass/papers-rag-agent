@@ -14,7 +14,8 @@ from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_ke
 import chainlit as cl
 
 
-# LangGraph imports (conditional)
+# TODO: Remove this import - it's unused here. Actual import happens at line 340 where it's needed.
+# LangGraph availability check
 try:
     from graphs.message_routing import process_message_with_routing  # noqa: F401
     LANGGRAPH_AVAILABLE = True
@@ -337,7 +338,7 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
     except Exception as e:
         print(f"❌ Streaming workflow failed: {e}")
         # フォールバック：通常の処理
-        from graphs.message_routing import process_message_with_routing  # noqa: F401
+        from graphs.message_routing import process_message_with_routing
         return process_message_with_routing(message_content, rag_index)
 
 
