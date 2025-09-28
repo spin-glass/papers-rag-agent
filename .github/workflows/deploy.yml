@@ -15,18 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install uv
       uses: astral-sh/setup-uv@v3
       with:
         version: "latest"
-    
+
     - name: Set up Python 3.13
       run: uv python install 3.13
-    
+
     - name: Install dependencies
-      run: uv sync --dev
-    
+      run: |
+        uv sync --group test
+
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
@@ -62,19 +63,17 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Setup Python and Build Cache
-        uses: actions/setup-python@v4
+      - name: Install uv for build
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: '3.13'
+          version: "latest"
 
-      - name: Install uv
-        run: pip install uv
+      - name: Set up Python 3.13 for build
+        run: uv python install 3.13
 
-      - name: Install dependencies and build cache
+      - name: Install dependencies for build
         run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -r requirements.txt
+          uv sync
           # Skip cache building as precomputed cache is now included in Git
           # uv run python scripts/build_cache.py
 
