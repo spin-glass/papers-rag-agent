@@ -51,7 +51,8 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -r requirements.txt
-          uv run python scripts/build_cache.py
+          # Skip cache building as precomputed cache is now included in Git
+          # uv run python scripts/build_cache.py
 
       - name: Build and Push Container
         run: |-
@@ -90,11 +91,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          if [[ -n $(git diff --name-only) ]]; then
+          # Only check for README changes, ignore cache files
+          if [[ -n $(git diff --name-only | grep -v precomputed) ]]; then
             git add README.md
             git commit -m "chore: update Cloud Run URL in README"
             git push
             echo "📝 README updated and changes pushed"
           else
-            echo "ℹ️ No changes to commit"
+            echo "ℹ️ No README changes to commit"
           fi
