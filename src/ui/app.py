@@ -102,7 +102,7 @@ async def on_chat_start():
         content=(
             "## Papers RAG Agent (Baseline + Corrective RAG)\n\n"
             "こんにちは！論文に関する質問をしてください。\n"
-            "Baseline RAGまたはHyDEを使った回答を提供します。\n\n"
+            "Baseline RAGを実行し、Support値が閾値を超えない場合にHyDEを使った補正検索を実行します。\n\n"
             "**使い方:**\n"
             "- 通常の質問: RAGによる回答\n"
             "- `arxiv: <query>`: 論文検索\n\n"
