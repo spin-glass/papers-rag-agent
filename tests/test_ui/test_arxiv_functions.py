@@ -13,7 +13,9 @@ class TestArxivFunctions:
 
     @patch("retrieval.arxiv_searcher.run_arxiv_search")
     @patch("ui.app.cl.Message")
-    def test_arxiv_search_function_with_results(self, mock_cl_message_class, mock_run_arxiv_search):
+    def test_arxiv_search_function_with_results(
+        self, mock_cl_message_class, mock_run_arxiv_search
+    ):
         """ArXiv検索関数で結果がある場合のテスト"""
         # テストデータの準備
         mock_run_arxiv_search.return_value = [
@@ -39,6 +41,7 @@ class TestArxivFunctions:
 
         # 直接arxiv検索関数をテスト
         from retrieval.arxiv_searcher import run_arxiv_search  # type: ignore
+
         query = message.content.split(":", 1)[1].strip()
         run_arxiv_search(query, max_results=5)
 
@@ -53,6 +56,7 @@ class TestArxivFunctions:
         mock_run_arxiv_search.return_value = []
 
         from retrieval.arxiv_searcher import run_arxiv_search  # type: ignore
+
         results = run_arxiv_search("nonexistent topic", max_results=5)
 
         # モックが正しく動作することを確認
@@ -127,7 +131,9 @@ class TestArxivFunctions:
         ]
         content = "### arXiv検索結果\n" + "\n".join(lines)
 
-        expected = "### arXiv検索結果\n- [Test Paper 2](http://arxiv.org/abs/2301.00002)"
+        expected = (
+            "### arXiv検索結果\n- [Test Paper 2](http://arxiv.org/abs/2301.00002)"
+        )
         assert content == expected
 
     def test_format_multiple_arxiv_results(self):

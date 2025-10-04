@@ -1,6 +1,7 @@
 # LangGraph Workflow Diagrams
 
-This directory contains Mermaid diagrams for all LangGraph workflows in the Papers RAG Agent.
+This directory contains Mermaid diagrams for all LangGraph workflows in the
+Papers RAG Agent.
 
 ## Message Routing Workflow
 
@@ -22,4 +23,3 @@ Post-processing workflow to generate Cornell notes and quiz questions
 
 - [Mermaid file](content_enhancement.mmd)
 - [Markdown with diagram](content_enhancement.md)
-

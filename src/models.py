@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict
 
 class CornellNote(BaseModel):
     """Cornell Note-taking format structure."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     cue: str
@@ -16,6 +17,7 @@ class CornellNote(BaseModel):
 
 class Citation(BaseModel):
     """Citation information for a source."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: str
@@ -27,6 +29,7 @@ class Citation(BaseModel):
 
 class QuizOption(BaseModel):
     """Single option for a quiz question."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: str
@@ -35,6 +38,7 @@ class QuizOption(BaseModel):
 
 class QuizItem(BaseModel):
     """Quiz question with multiple options."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     question: str
@@ -44,6 +48,7 @@ class QuizItem(BaseModel):
 
 class AnswerPayload(BaseModel):
     """Complete response payload from the agent."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     answer: str
@@ -54,6 +59,7 @@ class AnswerPayload(BaseModel):
 
 class Paper(BaseModel):
     """arXiv paper model with RAG-required fields."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: str
@@ -68,6 +74,7 @@ class Paper(BaseModel):
 
 class RetrievedContext(BaseModel):
     """Retrieved context for RAG pipeline."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     paper_id: str
@@ -79,6 +86,7 @@ class RetrievedContext(BaseModel):
 
 class AnswerResult(BaseModel):
     """Complete answer result from RAG pipeline."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     text: str
@@ -90,6 +98,7 @@ class AnswerResult(BaseModel):
 
 class EnhancedAnswerResult(BaseModel):
     """Enhanced answer result with Cornell Note and Quiz integration."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     text: str

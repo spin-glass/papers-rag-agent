@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, Optional, Literal, Any
@@ -16,6 +17,7 @@ from config import get_graph_recursion_limit
 
 class MessageState(TypedDict):
     """State for message routing workflow."""
+
     message_content: str
     message_type: str
     rag_index: Optional[Any]
@@ -96,7 +98,12 @@ def extract_research_topic(message: str) -> str:
         return "reinforcement learning"
     else:
         # Default: extract key nouns or use the whole message
-        return message.replace("最近の", "").replace("論文を探しています", "").replace("について", "").strip()
+        return (
+            message.replace("最近の", "")
+            .replace("論文を探しています", "")
+            .replace("について", "")
+            .strip()
+        )
 
 
 def rag_pipeline_node(state: MessageState) -> MessageState:
@@ -118,6 +125,7 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
         # Re-enable content enhancement with Cornell Note and Quiz
         try:
             from graphs.content_enhancement import enhance_answer_content
+
             enhanced_result = enhance_answer_content(basic_result, question)
             # Ensure metadata is preserved
             if not enhanced_result.metadata and basic_result.metadata:
@@ -126,6 +134,7 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
             print(f"⚠️ Content enhancement failed, using basic result: {e}")
             # Fallback to simple enhanced result
             from models import EnhancedAnswerResult
+
             enhanced_result = EnhancedAnswerResult(
                 text=basic_result.text,
                 citations=basic_result.citations,
@@ -133,7 +142,7 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
                 attempts=basic_result.attempts,
                 cornell_note=None,
                 quiz_items=[],
-                metadata=basic_result.metadata  # Pass through support details
+                metadata=basic_result.metadata,  # Pass through support details
             )
 
         state["rag_result"] = enhanced_result
@@ -160,7 +169,9 @@ def format_arxiv_response_node(state: MessageState) -> MessageState:
         lines = []
         for result in results:
             if result.get("pdf"):
-                lines.append(f"- [{result['title']}]({result['link']})  •  [PDF]({result['pdf']})")
+                lines.append(
+                    f"- [{result['title']}]({result['link']})  •  [PDF]({result['pdf']})"
+                )
             else:
                 lines.append(f"- [{result['title']}]({result['link']})")
 
@@ -200,7 +211,9 @@ def format_rag_response_node(state: MessageState) -> MessageState:
 
         # Cornell Note
         if result.cornell_note:
-            response_parts.append(f"\n## Cornell Note\n\n### Cue\n\n{result.cornell_note.cue}")
+            response_parts.append(
+                f"\n## Cornell Note\n\n### Cue\n\n{result.cornell_note.cue}"
+            )
             response_parts.append(f"\n### Notes\n\n{result.cornell_note.notes}")
             response_parts.append(f"\n### Summary\n\n{result.cornell_note.summary}")
 
@@ -211,7 +224,9 @@ def format_rag_response_node(state: MessageState) -> MessageState:
                 response_parts.append(f"\n### 問題 {i}\n\n{quiz.question}\n")
                 for option in quiz.options:
                     marker = "✓ " if option.id == quiz.correct_answer else ""
-                    response_parts.append(f"- {marker}{option.id.upper()}: {option.text}")
+                    response_parts.append(
+                        f"- {marker}{option.id.upper()}: {option.text}"
+                    )
 
         # Support score with detailed information
         support_level = _format_support_level(result.support)
@@ -228,14 +243,22 @@ def format_rag_response_node(state: MessageState) -> MessageState:
             if enhanced_support is not None:
                 response_parts.append(f"**HyDE拡張後Support: {enhanced_support:.3f}**")
             response_parts.append(f"**閾値: {threshold:.3f}**")
-            response_parts.append(f"**最終Support: {result.support:.3f} ({support_level})**")
+            response_parts.append(
+                f"**最終Support: {result.support:.3f} ({support_level})**"
+            )
 
             if not threshold_met and result.support == 0.0:
-                response_parts.append("⚠️ **Support値が閾値を下回ったため、no-answer応答が生成されました**")
+                response_parts.append(
+                    "⚠️ **Support値が閾値を下回ったため、no-answer応答が生成されました**"
+                )
             elif threshold_met:
-                response_parts.append("✅ **閾値を満たしているため、回答が生成されました**")
+                response_parts.append(
+                    "✅ **閾値を満たしているため、回答が生成されました**"
+                )
         else:
-            response_parts.append(f"**Support: {support_level} (score={result.support:.3f})**")
+            response_parts.append(
+                f"**Support: {support_level} (score={result.support:.3f})**"
+            )
 
         # HyDE usage info
         if len(result.attempts) > 1:
@@ -291,12 +314,7 @@ def create_message_routing_graph() -> StateGraph:
 
     # Route based on message type
     graph.add_conditional_edges(
-        "classify",
-        route_message_type,
-        {
-            "arxiv": "arxiv_search",
-            "rag": "rag_pipeline"
-        }
+        "classify", route_message_type, {"arxiv": "arxiv_search", "rag": "rag_pipeline"}
     )
 
     # Route to appropriate formatter
@@ -312,11 +330,11 @@ def create_message_routing_graph() -> StateGraph:
 def process_message_with_routing(message_content: str, rag_index: Any = None) -> str:
     """
     Process incoming message using LangGraph routing workflow.
-    
+
     Args:
         message_content: User message content
         rag_index: RAG index for retrieval (required for RAG questions)
-        
+
     Returns:
         Formatted response string
     """
@@ -332,7 +350,7 @@ def process_message_with_routing(message_content: str, rag_index: Any = None) ->
             arxiv_results=None,
             rag_result=None,
             final_response=None,
-            error=None
+            error=None,
         )
 
         print("🚀 Starting message routing workflow...")

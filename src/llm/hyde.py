@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from llm.generator import generate_answer
@@ -10,16 +11,16 @@ from llm.generator import generate_answer
 def hyde_rewrite(question: str) -> str:
     """
     Rewrite question as hypothetical document summary for better retrieval.
-    
+
     HyDE approach: Generate a hypothetical answer/summary that would contain
     the information needed to answer the question, then use this as search query.
-    
+
     Args:
         question: Original user question
-        
+
     Returns:
         Hypothetical document summary for enhanced search
-        
+
     Raises:
         Exception: If HyDE generation fails
     """

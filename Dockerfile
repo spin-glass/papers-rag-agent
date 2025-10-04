@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # アプリケーションコードをコピー
 COPY src/ ./src/
-COPY chainlit.md .
+COPY docs/guides/chainlit.md ./chainlit.md
 COPY .chainlit/ ./.chainlit/
 
 # Cloud RunのPORT環境変数に対応（デフォルト8000）

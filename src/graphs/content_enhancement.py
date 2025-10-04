@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, List, Optional
@@ -15,6 +16,7 @@ from config import get_graph_recursion_limit, get_openai_api_key_safe
 
 class ContentEnhancementState(TypedDict):
     """State for content enhancement workflow."""
+
     question: str  # Remove Annotated to avoid concurrent updates
     answer_text: str
     citations: List[dict]
@@ -25,7 +27,9 @@ class ContentEnhancementState(TypedDict):
     error: Optional[str]  # Remove Annotated to avoid concurrent updates
 
 
-def cornell_note_generation_node(state: ContentEnhancementState) -> ContentEnhancementState:
+def cornell_note_generation_node(
+    state: ContentEnhancementState,
+) -> ContentEnhancementState:
     """Generate Cornell Note from answer content."""
     try:
         # Check if OpenAI API key is available
@@ -35,9 +39,9 @@ def cornell_note_generation_node(state: ContentEnhancementState) -> ContentEnhan
             return state
         prompt = f"""Based on the following question and answer, create a Cornell Note format summary.
 
-Question: {state['question']}
+Question: {state["question"]}
 
-Answer: {state['answer_text']}
+Answer: {state["answer_text"]}
 
 Generate a Cornell Note with:
 1. Cue: Key concepts and terms (1-2 short phrases)
@@ -50,10 +54,10 @@ NOTES: [your notes here]
 SUMMARY: [your summary here]
 """
 
-        response = generate_answer(prompt, question=state['question'])
+        response = generate_answer(prompt, question=state["question"])
 
         # Parse the response
-        lines = response.strip().split('\n')
+        lines = response.strip().split("\n")
         cue = ""
         notes = ""
         summary = ""
@@ -79,9 +83,7 @@ SUMMARY: [your summary here]
                     summary += f" {line}"
 
         cornell_note = CornellNote(
-            cue=cue.strip(),
-            notes=notes.strip(),
-            summary=summary.strip()
+            cue=cue.strip(), notes=notes.strip(), summary=summary.strip()
         )
 
         state["cornell_note"] = cornell_note
@@ -104,9 +106,9 @@ def quiz_generation_node(state: ContentEnhancementState) -> ContentEnhancementSt
             return state
         prompt = f"""Based on the following question and answer, create 2 multiple-choice quiz questions to test understanding.
 
-Question: {state['question']}
+Question: {state["question"]}
 
-Answer: {state['answer_text']}
+Answer: {state["answer_text"]}
 
 Generate 2 quiz questions with 4 options each. Format your response exactly as:
 
@@ -127,11 +129,11 @@ CORRECT: [A/B/C/D]
 Make sure the questions test key concepts from the answer and have clear correct answers.
 """
 
-        response = generate_answer(prompt, question=state['question'])
+        response = generate_answer(prompt, question=state["question"])
 
         # Parse the response
         quiz_items = []
-        lines = response.strip().split('\n')
+        lines = response.strip().split("\n")
 
         current_question = None
         current_options = []
@@ -142,11 +144,13 @@ Make sure the questions test key concepts from the answer and have clear correct
             if line.startswith("QUESTION"):
                 # Save previous question if exists
                 if current_question and len(current_options) == 4 and current_correct:
-                    quiz_items.append(QuizItem(
-                        question=current_question,
-                        options=current_options,
-                        correct_answer=current_correct.lower()
-                    ))
+                    quiz_items.append(
+                        QuizItem(
+                            question=current_question,
+                            options=current_options,
+                            correct_answer=current_correct.lower(),
+                        )
+                    )
 
                 # Start new question
                 current_question = line.split(":", 1)[1].strip()
@@ -161,11 +165,13 @@ Make sure the questions test key concepts from the answer and have clear correct
 
         # Save the last question
         if current_question and len(current_options) == 4 and current_correct:
-            quiz_items.append(QuizItem(
-                question=current_question,
-                options=current_options,
-                correct_answer=current_correct
-            ))
+            quiz_items.append(
+                QuizItem(
+                    question=current_question,
+                    options=current_options,
+                    correct_answer=current_correct,
+                )
+            )
 
         state["quiz_items"] = quiz_items
         print(f"✅ Quiz generated: {len(quiz_items)} questions")
@@ -177,7 +183,9 @@ Make sure the questions test key concepts from the answer and have clear correct
     return state
 
 
-def format_enhanced_result_node(state: ContentEnhancementState) -> ContentEnhancementState:
+def format_enhanced_result_node(
+    state: ContentEnhancementState,
+) -> ContentEnhancementState:
     """Format the final enhanced result."""
     try:
         # Create enhanced result
@@ -187,7 +195,7 @@ def format_enhanced_result_node(state: ContentEnhancementState) -> ContentEnhanc
             support=state["support"],
             attempts=state["attempts"],
             cornell_note=state.get("cornell_note"),
-            quiz_items=state.get("quiz_items")
+            quiz_items=state.get("quiz_items"),
         )
 
         state["enhanced_result"] = enhanced_result
@@ -212,7 +220,9 @@ def create_content_enhancement_graph() -> StateGraph:
     graph.add_node("format_result", format_enhanced_result_node)
 
     # Define the flow (sequential to avoid concurrent updates)
-    graph.add_edge(START, "cornell_generation")  # TODO: cornell_generation and quiz_generation should be parallel
+    graph.add_edge(
+        START, "cornell_generation"
+    )  # TODO: cornell_generation and quiz_generation should be parallel
     graph.add_edge("cornell_generation", "quiz_generation")
     graph.add_edge("quiz_generation", "format_result")
     graph.add_edge("format_result", END)
@@ -220,14 +230,16 @@ def create_content_enhancement_graph() -> StateGraph:
     return graph.compile()
 
 
-def enhance_answer_content(answer_result: AnswerResult, question: str) -> EnhancedAnswerResult:
+def enhance_answer_content(
+    answer_result: AnswerResult, question: str
+) -> EnhancedAnswerResult:
     """
     Enhance answer content with Cornell Note and Quiz using LangGraph.
-    
+
     Args:
         answer_result: Basic answer result from RAG pipeline
         question: Original user question
-        
+
     Returns:
         Enhanced answer result with Cornell Note and Quiz
     """
@@ -244,7 +256,7 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             attempts=answer_result.attempts,
             cornell_note=None,
             quiz_items=None,
-            error=None
+            error=None,
         )
 
         # Run the enhancement workflow
@@ -267,7 +279,7 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             attempts=answer_result.attempts,
             cornell_note=final_state.get("cornell_note"),
             quiz_items=final_state.get("quiz_items") or [],
-            metadata=answer_result.metadata  # Preserve support details
+            metadata=answer_result.metadata,  # Preserve support details
         )
 
     except Exception as e:
@@ -280,5 +292,5 @@ def enhance_answer_content(answer_result: AnswerResult, question: str) -> Enhanc
             attempts=answer_result.attempts,
             cornell_note=None,
             quiz_items=[],
-            metadata=answer_result.metadata  # Preserve support details
+            metadata=answer_result.metadata,  # Preserve support details
         )

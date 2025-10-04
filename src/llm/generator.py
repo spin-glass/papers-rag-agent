@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from langchain_openai import ChatOpenAI
@@ -14,14 +15,14 @@ from config import get_openai_api_key, get_llm_provider
 def generate_answer(prompt: str, question: str = None) -> str:
     """
     Generate answer using OpenAI GPT model with LangSmith tracing.
-    
+
     Args:
         prompt: Complete prompt including instructions and context
         question: Optional original question for language detection
-        
+
     Returns:
         Generated text response
-        
+
     Raises:
         Exception: If text generation fails
     """
@@ -34,15 +35,16 @@ def generate_answer(prompt: str, question: str = None) -> str:
     # Initialize ChatOpenAI with LangSmith tracing support
     llm = ChatOpenAI(
         model="gpt-4o-mini",  # Cost-efficient model
-        temperature=0.1,      # Low temperature for factual responses
-        max_tokens=1500,      # Reasonable limit for responses
-        openai_api_key=api_key
+        temperature=0.1,  # Low temperature for factual responses
+        max_tokens=1500,  # Reasonable limit for responses
+        openai_api_key=api_key,
     )
 
     # Add language instruction if question is provided
     final_prompt = prompt
     if question:
         from utils.language_utils import get_response_language_instruction
+
         language_instruction = get_response_language_instruction(question)
         final_prompt = final_prompt + language_instruction
 

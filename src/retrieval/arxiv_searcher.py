@@ -3,6 +3,7 @@ import feedparser
 from typing import List, Dict
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Paper
@@ -13,7 +14,7 @@ ARXIV_API = "https://export.arxiv.org/api/query"
 def build_improved_query(query: str) -> str:
     """
     改善されたarXiv検索クエリを構築する。
-    
+
     タイトルまたはアブストラクトに検索語が含まれる論文を検索し、
     関連するカテゴリも含める。
     """
@@ -25,11 +26,11 @@ def build_improved_query(query: str) -> str:
         "attention": "ti:attention OR abs:attention OR (cat:cs.CL AND attention)",
         "bert": "ti:BERT OR abs:BERT OR (cat:cs.CL AND BERT)",
         "gpt": "ti:GPT OR abs:GPT OR (cat:cs.CL AND GPT)",
-        "neural network": "ti:\"neural network\" OR abs:\"neural network\" OR (cat:cs.LG AND \"neural network\")",
+        "neural network": 'ti:"neural network" OR abs:"neural network" OR (cat:cs.LG AND "neural network")',
         "machine learning": "cat:cs.LG OR cat:stat.ML",
-        "deep learning": "ti:\"deep learning\" OR abs:\"deep learning\" OR (cat:cs.LG AND \"deep learning\")",
+        "deep learning": 'ti:"deep learning" OR abs:"deep learning" OR (cat:cs.LG AND "deep learning")',
         "computer vision": "cat:cs.CV",
-        "reinforcement learning": "ti:\"reinforcement learning\" OR abs:\"reinforcement learning\" OR (cat:cs.LG AND \"reinforcement learning\")"
+        "reinforcement learning": 'ti:"reinforcement learning" OR abs:"reinforcement learning" OR (cat:cs.LG AND "reinforcement learning")',
     }
 
     # 特定キーワードに一致する場合は専用クエリを使用
@@ -74,15 +75,17 @@ def run_arxiv_search(query: str, max_results: int = 5) -> List[Dict[str, str]]:
     return results
 
 
-def search_arxiv_papers(query: str, max_results: int = 5, date_range: str = None) -> List[Paper]:
+def search_arxiv_papers(
+    query: str, max_results: int = 5, date_range: str = None
+) -> List[Paper]:
     """
     Search arXiv and return Paper objects with full metadata including summary.
-    
+
     Args:
         query: Search query
         max_results: Maximum number of results
         date_range: Optional date range like "20170101+TO+20251231"
-        
+
     Returns:
         List of Paper objects with summary field populated
     """
@@ -132,7 +135,7 @@ def search_arxiv_papers(query: str, max_results: int = 5, date_range: str = None
             summary=getattr(e, "summary", "").strip(),
             authors=authors if authors else None,
             updated=getattr(e, "updated", None),
-            categories=categories if categories else None
+            categories=categories if categories else None,
         )
 
         papers.append(paper)

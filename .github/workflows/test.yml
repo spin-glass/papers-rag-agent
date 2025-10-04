@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.13"]
 
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        uv sync --dev
+        uv sync --dev --group test
     
     - name: Set environment variables for testing
       run: |
@@ -37,10 +37,10 @@ jobs:
         uv run ruff format --check src/ tests/
     
     - name: Run Markdown linting
-      uses: DavidAnson/markdownlint-cli2-action@v16
+      uses: DavidAnson/markdownlint-cli2-action@v20
       with:
         globs: '**/*.md'
-    
+
     - name: Run type checking
       run: |
         uv run mypy src/ || true  # mypy は警告のみ（エラーで停止しない）
@@ -71,7 +71,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        uv sync --dev
+        uv sync --dev --group test
     
     - name: Set environment variables for testing
       run: |

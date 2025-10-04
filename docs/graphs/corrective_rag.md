@@ -9,25 +9,25 @@ config:
     curve: linear
 ---
 graph TD;
-	__start__([<p>__start__</p>]):::first
-	baseline(baseline)
-	evaluate(evaluate)
-	hyde_rewrite(hyde_rewrite)
-	enhanced_retrieval(enhanced_retrieval)
-	no_answer(no_answer)
-	finalize(finalize)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> baseline;
-	baseline --> evaluate;
-	enhanced_retrieval --> evaluate;
-	evaluate -. &nbsp;sufficient&nbsp; .-> finalize;
-	evaluate -. &nbsp;try_hyde&nbsp; .-> hyde_rewrite;
-	evaluate -. &nbsp;give_up&nbsp; .-> no_answer;
-	hyde_rewrite --> enhanced_retrieval;
-	no_answer --> finalize;
-	finalize --> __end__;
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
+    __start__([<p>__start__</p>]):::first
+    baseline(baseline)
+    evaluate(evaluate)
+    hyde_rewrite(hyde_rewrite)
+    enhanced_retrieval(enhanced_retrieval)
+    no_answer(no_answer)
+    finalize(finalize)
+    __end__([<p>__end__</p>]):::last
+    __start__ --> baseline;
+    baseline --> evaluate;
+    enhanced_retrieval --> evaluate;
+    evaluate -. &nbsp;sufficient&nbsp; .-> finalize;
+    evaluate -. &nbsp;try_hyde&nbsp; .-> hyde_rewrite;
+    evaluate -. &nbsp;give_up&nbsp; .-> no_answer;
+    hyde_rewrite --> enhanced_retrieval;
+    no_answer --> finalize;
+    finalize --> __end__;
+    classDef default fill:#f2f0ff,line-height:1.2
+    classDef first fill-opacity:0
+    classDef last fill:#bfb6fc
 
 ```
