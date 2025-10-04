@@ -10,7 +10,7 @@ from pipelines.baseline import set_global_index
 from pipelines.corrective import answer_with_correction
 from ui.send import send_long_message
 from data.cache_loader import load_precomputed_cache, cache_exists
-from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_key, get_langsmith_project, get_langsmith_endpoint
+from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_key, get_langsmith_project
 import chainlit as cl
 
 
