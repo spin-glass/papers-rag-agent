@@ -37,10 +37,10 @@ jobs:
         uv run ruff format --check src/ tests/
     
     - name: Run Markdown linting
-      uses: DavidAnson/markdownlint-cli2-action@v16
+      uses: DavidAnson/markdownlint-cli2-action@v20
       with:
         globs: '**/*.md'
-    
+
     - name: Run type checking
       run: |
         uv run mypy src/ || true  # mypy は警告のみ（エラーで停止しない）
