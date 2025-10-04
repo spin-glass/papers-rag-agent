@@ -1,11 +1,13 @@
 # Environment Setup Guide
 
-This document describes how to prepare the Papers RAG Agent for local development. A Japanese translation is included in the second half of the file.
+This document describes how to prepare the Papers RAG Agent for local
+development. A Japanese translation is included in the second half of the file.
 
 ## Prerequisites
 
 1. **OpenAI API key** – required for embeddings and text generation.
-2. **Python environment** – install dependencies with [uv](https://github.com/astral-sh/uv) (recommended) or `pip`.
+2. **Python environment** – install dependencies with
+   [uv](https://github.com/astral-sh/uv) (recommended) or `pip`.
 
 ### Configure environment variables
 
@@ -72,7 +74,8 @@ You should see index loading and retrieval logs when the configuration is correc
 uv run chainlit run src/ui/app.py -w
 ```
 
-For LangGraph-specific instructions, see [`langgraph.md`](langgraph.md). Deployment details live in [`deployment.md`](deployment.md).
+For LangGraph-specific instructions, see [`langgraph.md`](langgraph.md).
+Deployment details live in [`deployment.md`](deployment.md).
 
 ---
 
@@ -150,4 +153,5 @@ uv run python debug_rag.py
 uv run chainlit run src/ui/app.py -w
 ```
 
-LangGraphの詳細は [`langgraph.md`](langgraph.md) を、Cloud Run へのデプロイ手順は [`deployment.md`](deployment.md) を参照してください。
+LangGraphの詳細は [`langgraph.md`](langgraph.md) を、Cloud Run へのデプロイ手順は
+[`deployment.md`](deployment.md) を参照してください。

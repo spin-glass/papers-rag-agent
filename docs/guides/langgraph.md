@@ -1,20 +1,25 @@
 # LangGraph Integration Guide
 
-This guide covers how LangGraph is used inside the Papers RAG Agent and how to configure it.
+This guide covers how LangGraph is used inside the Papers RAG Agent and how to
+configure it.
 
 ## Overview
 
 LangGraph workflows power three major features:
 
-1. **Content Enhancement** – adds Cornell Notes and quizzes in parallel to each answer.
-2. **Corrective RAG (CRAG)** – retries low-support answers using HyDE-based query rewriting.
-3. **Message Routing** – classifies user intent and dispatches to the appropriate pipeline.
+1. **Content Enhancement** – adds Cornell Notes and quizzes in parallel to
+   each answer.
+2. **Corrective RAG (CRAG)** – retries low-support answers using
+   HyDE-based query rewriting.
+3. **Message Routing** – classifies user intent and dispatches to the
+   appropriate pipeline.
 
 ## Setup
 
 ### Dependencies
 
-Install the project requirements (LangGraph, LangChain Core, and LangChain OpenAI are included in `pyproject.toml`).
+Install the project requirements (LangGraph, LangChain Core, and LangChain
+OpenAI are included in `pyproject.toml`).
 
 ```bash
 uv sync
@@ -22,7 +27,8 @@ uv sync
 
 ### Environment variables
 
-Enable or disable LangGraph through the `USE_LANGGRAPH` flag in your `.env` file:
+Enable or disable LangGraph through the `USE_LANGGRAPH` flag in your `.env`
+file:
 
 ```bash
 USE_LANGGRAPH=true  # use LangGraph workflows
@@ -44,7 +50,8 @@ OPENAI_API_KEY=your_openai_api_key_here
 ### Corrective RAG (`src/graphs/corrective_rag.py`)
 
 - Converts the corrective retry logic into an explicit graph.
-- Evaluates the baseline answer; if support is low it invokes HyDE rewriting and enhanced retrieval.
+- Evaluates the baseline answer; if support is low it invokes HyDE rewriting
+  and enhanced retrieval.
 - Falls back to a "no answer" node when retries fail.
 
 ### Message Routing (`src/graphs/message_routing.py`)
@@ -70,7 +77,8 @@ USE_LANGGRAPH=false
 uv run chainlit run src/ui/app.py -w
 ```
 
-With LangGraph enabled you will see real-time workflow updates such as "LangGraph Processing" in the Chainlit UI.
+With LangGraph enabled you will see real-time workflow updates such as
+"LangGraph Processing" in the Chainlit UI.
 
 ## Testing
 
@@ -87,6 +95,9 @@ uv run pytest tests/test_graphs/ -v -m integration
 
 ## Troubleshooting
 
-1. **`ImportError: LangGraph not available`** – run `uv sync` to install dependencies.
-2. **Workflow not triggered** – confirm `USE_LANGGRAPH=true` and restart the application.
-3. **Rate limit errors** – reduce concurrency or adjust quiz/note generation settings in the environment variables.
+1. **`ImportError: LangGraph not available`** – run `uv sync` to install
+   dependencies.
+2. **Workflow not triggered** – confirm `USE_LANGGRAPH=true` and restart the
+   application.
+3. **Rate limit errors** – reduce concurrency or adjust quiz/note generation
+   settings in the environment variables.

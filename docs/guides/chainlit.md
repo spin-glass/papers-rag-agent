@@ -1,42 +1,4 @@
-# Chainlit Quickstart Guide
-
-This guide explains how to interact with the Papers RAG Agent through the Chainlit UI. A Japanese translation is available in the expandable section below.
-
-## Core Features
-
-- **ArXiv Paper Search** – Prefix your message with `arxiv:` to retrieve relevant papers with abstract and PDF links.
-- **Research Q&A** – Ask questions about machine learning or AI topics and receive structured Cornell Notes, comprehension quizzes, and citations.
-
-## Usage Examples
-
-### Search for Papers
-
-```text
-arxiv:transformer attention
-arxiv:graph neural networks
-arxiv:computer vision survey
-```
-
-### Ask for Explanations
-
-```text
-Explain the transformer architecture.
-What is the attention mechanism?
-Tell me about transfer learning.
-```
-
-### Sample Prompts
-
-| Input example | Description |
-|---------------|-------------|
-| `arxiv:BERT transformer` | Search for the latest BERT and Transformer papers |
-| `arxiv:few-shot learning` | Explore few-shot learning research |
-| `Tell me about attention mechanisms` | Generate a detailed explanation with Cornell Notes |
-| `What is transfer learning?` | Get a structured summary plus quiz questions |
-
----
-
-## 日本語版ガイド
+# Chainlitガイド
 
 ## Papers RAG Agent の使い方
 
