@@ -36,8 +36,7 @@ Tell me about transfer learning.
 
 ---
 
-<details>
-<summary><strong>日本語版ガイド</strong></summary>
+## 日本語版ガイド
 
 ## Papers RAG Agent の使い方
 
@@ -72,5 +71,3 @@ Transformerアーキテクチャの仕組みを教えてください
 | `arxiv:few-shot learning` | Few-shot学習の研究論文を探索 |
 | `アテンション機構について教えて` | Cornell Note形式の解説とクイズを生成 |
 | `転移学習について詳しく教えて` | 転移学習の詳細解説と理解度チェック |
-
-</details>

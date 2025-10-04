@@ -22,4 +22,3 @@ Post-processing workflow to generate Cornell notes and quiz questions
 
 - [Mermaid file](content_enhancement.mmd)
 - [Markdown with diagram](content_enhancement.md)
-

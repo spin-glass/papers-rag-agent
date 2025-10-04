@@ -4,17 +4,13 @@ Build precomputed cache for RAG index.
 This script generates papers and embeddings cache for fast startup.
 """
 
-import sys
 import json
 import pickle
 import asyncio
 from pathlib import Path
 
-# Add src to path
-sys.path.append(str(Path(__file__).parent.parent / "src"))
-
-from retrieval.arxiv_searcher import search_arxiv_papers
-from retrieval.inmemory import InMemoryIndex
+from src.retrieval.arxiv_searcher import search_arxiv_papers
+from src.retrieval.inmemory import InMemoryIndex
 
 
 async def build_papers_cache():
