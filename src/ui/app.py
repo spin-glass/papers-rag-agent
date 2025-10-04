@@ -69,7 +69,7 @@ async def on_chat_start():
                     "1. [OpenAI Platform](https://platform.openai.com/api-keys) でAPI Keyを取得\n"
                     "2. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
                     "3. アプリケーションを再起動\n\n"
-                    "詳細は `SETUP.md` をご確認ください。\n\n"
+                    "詳細は `docs/guides/setup.md` をご確認ください。\n\n"
                     "**現在利用可能な機能:**\n"
                     "- `arxiv: <query>`: 論文検索（API Key不要）\n\n"
                     "API Key設定後に全機能をお使いいただけます。"
@@ -278,7 +278,7 @@ async def handle_message_with_langgraph(message: cl.Message):
                 "**解決方法:**\n"
                 "1. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
                 "2. アプリケーションを再起動\n\n"
-                "詳細は `SETUP.md` をご確認ください。\n\n"
+                "詳細は `docs/guides/setup.md` をご確認ください。\n\n"
                 "**利用可能な機能:**\n"
                 "- `arxiv: <query>`: 論文検索（API Key不要）"
             )

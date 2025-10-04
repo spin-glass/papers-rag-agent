@@ -91,7 +91,7 @@ HyDEを使った自己補正RAGシステム：
    uv run chainlit run src/ui/app.py -w
    ```
 
-詳細なセットアップ手順は [`SETUP.md`](SETUP.md) をご確認ください。
+詳細なセットアップ手順は [`docs/guides/setup.md`](docs/guides/setup.md) をご確認ください。
 
 ## 🔄 LangGraph ワークフロー図
 
@@ -244,10 +244,10 @@ papers-rag-agent/
 │   ├── build_cache.py           # キャッシュ構築
 │   └── generate_mermaid_graphs.py # 図表生成
 ├── docs/                      # ✅ ドキュメント
-│   └── graphs/                  # ワークフロー図
+│   ├── graphs/                  # ワークフロー図
+│   └── guides/                  # セットアップ・LangGraph・Chainlitなどのガイド
 ├── README.md
 ├── pyproject.toml
-├── chainlit.md
 └── uv.lock
 ```
 
