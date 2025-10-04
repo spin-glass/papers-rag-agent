@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 import numpy as np
@@ -26,11 +27,11 @@ def set_global_index(index: InMemoryIndex) -> None:
 def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
     """
     Generate answer using baseline RAG pipeline.
-    
+
     Args:
         question: User question
         index: Optional index to use (uses global if not provided)
-        
+
     Returns:
         AnswerResult with answer, citations, support score, and attempts
     """
@@ -40,7 +41,9 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
     search_index = index if index is not None else _global_index
 
     if search_index is None:
-        raise ValueError("No index provided and global index not initialized. Call set_global_index() first.")
+        raise ValueError(
+            "No index provided and global index not initialized. Call set_global_index() first."
+        )
 
     # 1. Retrieve contexts
     top_k = get_top_k()
@@ -51,7 +54,7 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
             text="申し訳ございませんが、関連する論文が見つかりませんでした。",
             citations=[],
             support=0.0,
-            attempts=[{"type": "baseline", "top_ids": [], "support": 0.0}]
+            attempts=[{"type": "baseline", "top_ids": [], "support": 0.0}],
         )
 
     # 2. Build prompt with contexts
@@ -65,7 +68,13 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
             text=f"回答の生成中にエラーが発生しました: {str(e)}",
             citations=[],
             support=0.0,
-            attempts=[{"type": "baseline", "top_ids": [ctx.paper_id for ctx in contexts], "support": 0.0}]
+            attempts=[
+                {
+                    "type": "baseline",
+                    "top_ids": [ctx.paper_id for ctx in contexts],
+                    "support": 0.0,
+                }
+            ],
         )
 
     # 4. Calculate support score
@@ -78,25 +87,22 @@ def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
     attempt = {
         "type": "baseline",
         "top_ids": [ctx.paper_id for ctx in contexts],
-        "support": support_score
+        "support": support_score,
     }
 
     return AnswerResult(
-        text=answer_text,
-        citations=citations,
-        support=support_score,
-        attempts=[attempt]
+        text=answer_text, citations=citations, support=support_score, attempts=[attempt]
     )
 
 
 def calculate_support(question: str, contexts: List[RetrievedContext]) -> float:
     """
     Calculate support score using cosine similarity between query and contexts.
-    
+
     Args:
         question: Original question
         contexts: Retrieved contexts with embeddings
-        
+
     Returns:
         Support score (0-1)
     """
@@ -110,9 +116,11 @@ def calculate_support(question: str, contexts: List[RetrievedContext]) -> float:
         # Calculate max cosine similarity with used contexts
         max_similarity = 0.0
         for ctx in contexts:
-            if hasattr(ctx, 'embedding') and ctx.embedding is not None:
+            if hasattr(ctx, "embedding") and ctx.embedding is not None:
                 # Calculate cosine similarity
-                q_norm = question_embedding / (np.linalg.norm(question_embedding) + 1e-8)
+                q_norm = question_embedding / (
+                    np.linalg.norm(question_embedding) + 1e-8
+                )
                 ctx_norm = ctx.embedding / (np.linalg.norm(ctx.embedding) + 1e-8)
                 similarity = np.dot(q_norm, ctx_norm)
                 max_similarity = max(max_similarity, float(similarity))
@@ -127,10 +135,10 @@ def calculate_support(question: str, contexts: List[RetrievedContext]) -> float:
 def generate_citations(contexts: List[RetrievedContext]) -> List[dict]:
     """
     Generate citations from retrieved contexts.
-    
+
     Args:
         contexts: Retrieved contexts
-        
+
     Returns:
         List of citation dictionaries with title and link
     """
@@ -139,10 +147,7 @@ def generate_citations(contexts: List[RetrievedContext]) -> List[dict]:
 
     for ctx in contexts:
         if ctx.title not in seen_titles:
-            citations.append({
-                "title": ctx.title,
-                "link": ctx.link
-            })
+            citations.append({"title": ctx.title, "link": ctx.link})
             seen_titles.add(ctx.title)
 
     return citations
@@ -151,11 +156,11 @@ def generate_citations(contexts: List[RetrievedContext]) -> List[dict]:
 def _build_baseline_prompt(question: str, contexts: List[RetrievedContext]) -> str:
     """
     Build prompt for baseline RAG generation.
-    
+
     Args:
         question: User question
         contexts: Retrieved contexts
-        
+
     Returns:
         Complete prompt string
     """

@@ -153,7 +153,9 @@ class TestArxivSearcherPytest:
         run_arxiv_search("test query with spaces")
 
         # urllib.parse.quote が正しく呼ばれたことを確認（新しいクエリ形式）
-        mock_quote.assert_called_once_with("ti:test query with spaces OR abs:test query with spaces")
+        mock_quote.assert_called_once_with(
+            "ti:test query with spaces OR abs:test query with spaces"
+        )
 
     @patch("retrieval.arxiv_searcher.feedparser.parse")
     def test_url_construction_components(self, mock_parse):

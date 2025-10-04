@@ -3,6 +3,7 @@
 import pytest
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 from graphs.corrective_rag import create_corrective_rag_graph
@@ -22,9 +23,15 @@ class TestGraphCompilation:
             print("✅ Corrective RAG graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, f"Checkpointer error occurred: {error_msg}"
-            assert "thread_id" not in error_msg, f"Thread ID error occurred: {error_msg}"
-            assert "checkpoint_ns" not in error_msg, f"Checkpoint namespace error occurred: {error_msg}"
+            assert "Checkpointer" not in error_msg, (
+                f"Checkpointer error occurred: {error_msg}"
+            )
+            assert "thread_id" not in error_msg, (
+                f"Thread ID error occurred: {error_msg}"
+            )
+            assert "checkpoint_ns" not in error_msg, (
+                f"Checkpoint namespace error occurred: {error_msg}"
+            )
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_message_routing_graph_compilation(self):
@@ -35,9 +42,15 @@ class TestGraphCompilation:
             print("✅ Message routing graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, f"Checkpointer error occurred: {error_msg}"
-            assert "thread_id" not in error_msg, f"Thread ID error occurred: {error_msg}"
-            assert "checkpoint_ns" not in error_msg, f"Checkpoint namespace error occurred: {error_msg}"
+            assert "Checkpointer" not in error_msg, (
+                f"Checkpointer error occurred: {error_msg}"
+            )
+            assert "thread_id" not in error_msg, (
+                f"Thread ID error occurred: {error_msg}"
+            )
+            assert "checkpoint_ns" not in error_msg, (
+                f"Checkpoint namespace error occurred: {error_msg}"
+            )
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_content_enhancement_graph_compilation(self):
@@ -48,9 +61,15 @@ class TestGraphCompilation:
             print("✅ Content enhancement graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, f"Checkpointer error occurred: {error_msg}"
-            assert "thread_id" not in error_msg, f"Thread ID error occurred: {error_msg}"
-            assert "checkpoint_ns" not in error_msg, f"Checkpoint namespace error occurred: {error_msg}"
+            assert "Checkpointer" not in error_msg, (
+                f"Checkpointer error occurred: {error_msg}"
+            )
+            assert "thread_id" not in error_msg, (
+                f"Thread ID error occurred: {error_msg}"
+            )
+            assert "checkpoint_ns" not in error_msg, (
+                f"Checkpoint namespace error occurred: {error_msg}"
+            )
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_recursion_limit_configuration(self):
@@ -67,9 +86,9 @@ class TestGraphCompilation:
         graphs = [
             ("corrective_rag", create_corrective_rag_graph),
             ("message_routing", create_message_routing_graph),
-            ("content_enhancement", create_content_enhancement_graph)
+            ("content_enhancement", create_content_enhancement_graph),
         ]
-        
+
         for graph_name, graph_factory in graphs:
             try:
                 graph = graph_factory()
@@ -88,17 +107,17 @@ class TestGraphConfigurationErrors:
         error_keywords = [
             "Checkpointer requires",
             "thread_id",
-            "checkpoint_ns", 
+            "checkpoint_ns",
             "checkpoint_id",
-            "configurable"
+            "configurable",
         ]
-        
+
         graphs = [
             create_corrective_rag_graph,
             create_message_routing_graph,
-            create_content_enhancement_graph
+            create_content_enhancement_graph,
         ]
-        
+
         for graph_factory in graphs:
             try:
                 graph = graph_factory()
@@ -117,12 +136,13 @@ class TestGraphConfigurationErrors:
             monkeypatch.delenv("GRAPH_RECURSION_LIMIT", raising=False)
         else:
             monkeypatch.setenv("GRAPH_RECURSION_LIMIT", str(invalid_limit))
-        
+
         # Re-import to get fresh config
         from importlib import reload
         import config
+
         reload(config)
-        
+
         try:
             limit = config.get_graph_recursion_limit()
             # Should fall back to default value (10) for invalid inputs
@@ -140,8 +160,8 @@ if __name__ == "__main__":
     test_compilation.test_content_enhancement_graph_compilation()
     test_compilation.test_recursion_limit_configuration()
     test_compilation.test_all_graphs_have_recursion_limit()
-    
+
     test_errors = TestGraphConfigurationErrors()
     test_errors.test_no_checkpointer_errors_in_compilation()
-    
+
     print("🎉 All graph compilation tests passed!")

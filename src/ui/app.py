@@ -10,7 +10,12 @@ from pipelines.baseline import set_global_index
 from pipelines.corrective import answer_with_correction
 from ui.send import send_long_message
 from data.cache_loader import load_precomputed_cache, cache_exists
-from config import use_langgraph, enable_langsmith_tracing, get_langsmith_api_key, get_langsmith_project
+from config import (
+    use_langgraph,
+    enable_langsmith_tracing,
+    get_langsmith_api_key,
+    get_langsmith_project,
+)
 import chainlit as cl
 
 
@@ -18,6 +23,7 @@ import chainlit as cl
 # LangGraph availability check
 try:
     from graphs.message_routing import process_message_with_routing  # noqa: F401
+
     LANGGRAPH_AVAILABLE = True
     HAS_MESSAGE_ROUTING = True
 except ImportError:
@@ -40,7 +46,9 @@ def initialize_langsmith_tracing():
     if enable_langsmith_tracing():
         api_key = get_langsmith_api_key()
         if api_key:
-            print(f"✅ LangSmith tracing enabled for project: {get_langsmith_project()}")
+            print(
+                f"✅ LangSmith tracing enabled for project: {get_langsmith_project()}"
+            )
         else:
             print("⚠️ LangSmith tracing is enabled but API key not found")
     else:
@@ -58,6 +66,7 @@ async def on_chat_start():
 
         # Check OpenAI API Key before initialization
         from config import get_openai_api_key_safe
+
         api_key = get_openai_api_key_safe()
 
         if not api_key:
@@ -67,7 +76,7 @@ async def on_chat_start():
                     "Papers RAG Agentを使用するには、OpenAI API Keyの設定が必要です。\n\n"
                     "**設定方法:**\n"
                     "1. [OpenAI Platform](https://platform.openai.com/api-keys) でAPI Keyを取得\n"
-                    "2. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
+                    '2. 環境変数を設定: `export OPENAI_API_KEY="your_key_here"`\n'
                     "3. アプリケーションを再起動\n\n"
                     "詳細は `docs/guides/setup.md` をご確認ください。\n\n"
                     "**現在利用可能な機能:**\n"
@@ -84,6 +93,7 @@ async def on_chat_start():
         error_msg = str(e)
         print(f"❌ Critical error during chat initialization: {error_msg}")
         import traceback
+
         traceback.print_exc()
 
         await cl.Message(
@@ -129,7 +139,9 @@ async def initialize_rag_index():
 
             if _rag_index is not None:
                 set_global_index(_rag_index)
-                print(f"✅ RAG index loaded from cache with {len(_rag_index.papers_with_embeddings)} papers")
+                print(
+                    f"✅ RAG index loaded from cache with {len(_rag_index.papers_with_embeddings)} papers"
+                )
                 return
             else:
                 print("⚠️  Failed to load cache, falling back to dynamic loading...")
@@ -142,6 +154,7 @@ async def initialize_rag_index():
     except Exception as e:
         print(f"❌ Error initializing RAG index: {e}")
         import traceback
+
         traceback.print_exc()
         _rag_index = None
 
@@ -156,14 +169,14 @@ async def _initialize_rag_index_dynamic():
 
         # Search queries targeting different aspects of NLP/Transformer research
         search_queries = [
-            'transformer attention mechanism language',
-            'BERT GPT language model pre-training',
-            'fine-tuning RLHF instruction following',
-            'efficient transformer attention flash',
-            'language model evaluation benchmark',
-            'neural machine translation attention',
-            'pre-trained language representation',
-            'self-attention multi-head transformer'
+            "transformer attention mechanism language",
+            "BERT GPT language model pre-training",
+            "fine-tuning RLHF instruction following",
+            "efficient transformer attention flash",
+            "language model evaluation benchmark",
+            "neural machine translation attention",
+            "pre-trained language representation",
+            "self-attention multi-head transformer",
         ]
 
         for i, query in enumerate(search_queries):
@@ -171,9 +184,11 @@ async def _initialize_rag_index_dynamic():
                 # Use relevance-based search for better results
                 batch_papers = search_arxiv_papers(query, max_results=8)
                 all_papers.extend(batch_papers)
-                print(f"  Query {i+1}/{len(search_queries)}: '{query}' -> {len(batch_papers)} papers")
+                print(
+                    f"  Query {i + 1}/{len(search_queries)}: '{query}' -> {len(batch_papers)} papers"
+                )
             except Exception as e:
-                print(f"  ❌ Query {i+1} failed: {e}")
+                print(f"  ❌ Query {i + 1} failed: {e}")
                 continue
 
         # Remove duplicates based on paper ID
@@ -187,7 +202,7 @@ async def _initialize_rag_index_dynamic():
         # If no papers found, try simple fallback searches
         if not papers:
             print("⚠️  No papers from specialized queries, trying fallback...")
-            fallback_queries = ['transformer', 'attention mechanism', 'BERT', 'GPT']
+            fallback_queries = ["transformer", "attention mechanism", "BERT", "GPT"]
             for query in fallback_queries:
                 try:
                     batch_papers = search_arxiv_papers(query, max_results=10)
@@ -212,7 +227,9 @@ async def _initialize_rag_index_dynamic():
             _rag_index.build(papers)
             set_global_index(_rag_index)
             print(f"✅ RAG index initialized with {len(papers)} papers")
-            print(f"✅ Index contains {len(_rag_index.papers_with_embeddings)} embedded papers")
+            print(
+                f"✅ Index contains {len(_rag_index.papers_with_embeddings)} embedded papers"
+            )
         else:
             print("❌ Warning: No papers found even with fallback searches")
             _rag_index = None
@@ -220,6 +237,7 @@ async def _initialize_rag_index_dynamic():
     except Exception as e:
         print(f"❌ Error in dynamic initialization: {e}")
         import traceback
+
         traceback.print_exc()
         _rag_index = None
 
@@ -248,7 +266,9 @@ async def handle_message_with_langgraph(message: cl.Message):
     # Ensure RAG index is initialized for RAG questions
     if not message.content.lower().startswith("arxiv:") and _rag_index is None:
         print("⚠️ RAG index is None, initializing...")
-        await cl.Message(content="RAG索引が初期化されています。しばらくお待ちください。").send()
+        await cl.Message(
+            content="RAG索引が初期化されています。しばらくお待ちください。"
+        ).send()
         await initialize_rag_index()
         if _rag_index is None:
             print("❌ RAG index initialization failed")
@@ -256,12 +276,13 @@ async def handle_message_with_langgraph(message: cl.Message):
             return
 
     try:
-        print(f"🚀 Using LangGraph workflow with streaming for: {message.content[:50]}...")
+        print(
+            f"🚀 Using LangGraph workflow with streaming for: {message.content[:50]}..."
+        )
 
         # Process message with streaming LangGraph workflow
         response_content = await process_message_with_routing_streaming(
-            message_content=message.content,
-            rag_index=_rag_index
+            message_content=message.content, rag_index=_rag_index
         )
 
         print("✅ LangGraph streaming workflow completed")
@@ -276,20 +297,24 @@ async def handle_message_with_langgraph(message: cl.Message):
                 "## ⚠️ API Key設定エラー\n\n"
                 "OpenAI API Keyが設定されていないため、質問に回答できません。\n\n"
                 "**解決方法:**\n"
-                "1. 環境変数を設定: `export OPENAI_API_KEY=\"your_key_here\"`\n"
+                '1. 環境変数を設定: `export OPENAI_API_KEY="your_key_here"`\n'
                 "2. アプリケーションを再起動\n\n"
                 "詳細は `docs/guides/setup.md` をご確認ください。\n\n"
                 "**利用可能な機能:**\n"
                 "- `arxiv: <query>`: 論文検索（API Key不要）"
             )
         else:
-            response_content = f"LangGraphワークフローでエラーが発生しました: {error_msg}"
+            response_content = (
+                f"LangGraphワークフローでエラーが発生しました: {error_msg}"
+            )
 
         # Send error response
         await send_long_message(response_content)
 
 
-async def process_message_with_routing_streaming(message_content: str, rag_index=None) -> str:
+async def process_message_with_routing_streaming(
+    message_content: str, rag_index=None
+) -> str:
     """
     LangGraphワークフローをストリーミングで実行し、途中結果をChainlitステップで表示
     """
@@ -309,7 +334,7 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
             arxiv_results=None,
             rag_result=None,
             final_response=None,
-            error=None
+            error=None,
         )
 
         # 最終回答用の空メッセージを準備
@@ -320,15 +345,18 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
         response_chunks = []
 
         # ストリーミング実行
-        async for output in routing_graph.astream_log(initial_state, config=config, include_types=["llm"]):
+        async for output in routing_graph.astream_log(
+            initial_state, config=config, include_types=["llm"]
+        ):
             for op in output.ops:
                 # ノード実行結果の処理
                 if op["path"] == "/streamed_output/-":
                     await handle_node_output(op)
 
                 # 最終回答のストリーミング（LLMからの出力）
-                elif (op["path"].startswith("/logs/") and
-                      op["path"].endswith("/streamed_output_str/-")):
+                elif op["path"].startswith("/logs/") and op["path"].endswith(
+                    "/streamed_output_str/-"
+                ):
                     chunk = op["value"]
                     response_chunks.append(chunk)
                     await agent_message.stream_token(chunk)
@@ -340,7 +368,9 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
         if not final_response.strip():
             print("⚠️ No streaming response received, falling back to invoke...")
             final_state = routing_graph.invoke(initial_state, config=config)
-            final_response = final_state.get("final_response", "回答の生成に失敗しました。")
+            final_response = final_state.get(
+                "final_response", "回答の生成に失敗しました。"
+            )
             # 空のメッセージに最終回答を設定
             await agent_message.stream_token(final_response)
 
@@ -350,6 +380,7 @@ async def process_message_with_routing_streaming(message_content: str, rag_index
         print(f"❌ Streaming workflow failed: {e}")
         # フォールバック：通常の処理
         from graphs.message_routing import process_message_with_routing
+
         return process_message_with_routing(message_content, rag_index)
 
 
@@ -446,7 +477,9 @@ async def display_hyde_step(state):
     async with cl.Step(name="HyDE拡張", type="tool") as step:
         if hyde_query:
             # クエリが長い場合は省略
-            display_query = hyde_query[:100] + "..." if len(hyde_query) > 100 else hyde_query
+            display_query = (
+                hyde_query[:100] + "..." if len(hyde_query) > 100 else hyde_query
+            )
             step.output = f"🔄 HyDE拡張クエリ生成完了\n```\n{display_query}\n```"
         else:
             step.output = "❌ HyDE拡張に失敗"
@@ -501,14 +534,18 @@ async def handle_message_legacy(message: cl.Message):
     # Handle RAG questions
     if _rag_index is None:
         print("⚠️ RAG index is None, initializing...")
-        await cl.Message(content="RAG索引が初期化されていません。しばらくお待ちください。").send()
+        await cl.Message(
+            content="RAG索引が初期化されていません。しばらくお待ちください。"
+        ).send()
         await initialize_rag_index()
         if _rag_index is None:
             print("❌ RAG index initialization failed")
             await cl.Message(content="RAG索引の初期化に失敗しました。").send()
             return
         else:
-            print(f"✅ RAG index initialized with {len(_rag_index.papers_with_embeddings)} papers")
+            print(
+                f"✅ RAG index initialized with {len(_rag_index.papers_with_embeddings)} papers"
+            )
 
     async with cl.Step(name="Legacy Processing", type="run") as step:
         step.output = "RAGパイプラインで回答を生成しています..."
@@ -516,7 +553,9 @@ async def handle_message_legacy(message: cl.Message):
         try:
             # Debug info
             print(f"🔍 Processing query: {message.content}")
-            print(f"🔍 Using index with {len(_rag_index.papers_with_embeddings)} papers")
+            print(
+                f"🔍 Using index with {len(_rag_index.papers_with_embeddings)} papers"
+            )
 
             # Use corrective RAG pipeline
             result = answer_with_correction(message.content, index=_rag_index)
@@ -535,11 +574,15 @@ async def handle_message_legacy(message: cl.Message):
             if result.citations:
                 response_content += "## Citations:\n\n"
                 for i, citation in enumerate(result.citations, 1):
-                    response_content += f"{i}. [{citation['title']}]({citation['link']})\n"
+                    response_content += (
+                        f"{i}. [{citation['title']}]({citation['link']})\n"
+                    )
                 response_content += "\n"
 
             # Add support score
-            response_content += f"**Support: {support_level} (score={result.support:.2f})**\n"
+            response_content += (
+                f"**Support: {support_level} (score={result.support:.2f})**\n"
+            )
 
             # Add debug info about attempts (optional)
             if len(result.attempts) > 1:

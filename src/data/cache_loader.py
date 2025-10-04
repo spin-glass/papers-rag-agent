@@ -18,7 +18,7 @@ from retrieval.inmemory import InMemoryIndex
 def load_precomputed_cache() -> Optional[InMemoryIndex]:
     """
     Load precomputed papers and embeddings cache.
-    
+
     Returns:
         InMemoryIndex with precomputed data, or None if loading fails
     """
@@ -39,8 +39,10 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
         print("📖 Loading precomputed cache...")
         print(f"  📂 Data directory: {data_dir}")
         print(f"  📂 Papers file: {papers_file} (exists: {papers_file.exists()})")
-        print(f"  📂 Embeddings file: {embeddings_file} (exists: {embeddings_file.exists()})")
-        
+        print(
+            f"  📂 Embeddings file: {embeddings_file} (exists: {embeddings_file.exists()})"
+        )
+
         # List all files in data directory for debugging
         try:
             all_files = list(data_dir.iterdir())
@@ -49,7 +51,7 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
             print(f"  ❌ Could not list data directory: {e}")
 
         # Load papers
-        with open(papers_file, 'r', encoding='utf-8') as f:
+        with open(papers_file, "r", encoding="utf-8") as f:
             papers_data = json.load(f)
 
         papers = [Paper(**data) for data in papers_data]
@@ -59,26 +61,27 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
         try:
             print(f"  📁 Attempting to load embeddings from: {embeddings_file}")
             print(f"  📂 File exists: {embeddings_file.exists()}")
-            
+
             if embeddings_file.exists():
                 file_size = embeddings_file.stat().st_size
                 print(f"  📊 File size: {file_size} bytes")
-                
+
                 if file_size == 0:
                     print("  ⚠️  Embeddings file is empty!")
                     papers_with_embeddings = []
                 else:
-                    with open(embeddings_file, 'rb') as f:
+                    with open(embeddings_file, "rb") as f:
                         papers_with_embeddings = pickle.load(f)
                     print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
             else:
                 print("  ❌ Embeddings file does not exist!")
                 papers_with_embeddings = []
-                
+
         except Exception as e:
             print(f"  ❌ Failed to load embeddings: {e}")
             print(f"  🔍 Exception type: {type(e).__name__}")
             import traceback
+
             print(f"  📋 Traceback: {traceback.format_exc()}")
             papers_with_embeddings = []
 
@@ -88,7 +91,9 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
 
         # Validate that we have both papers and embeddings
         if len(papers) == 0 or len(papers_with_embeddings) == 0:
-            print(f"⚠️  Warning: {len(papers)} papers, {len(papers_with_embeddings)} embeddings")
+            print(
+                f"⚠️  Warning: {len(papers)} papers, {len(papers_with_embeddings)} embeddings"
+            )
             print("⚠️  RAG functionality will be limited. Only arXiv search will work.")
 
         print("✅ Precomputed cache loaded successfully!")
@@ -97,6 +102,7 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
     except Exception as e:
         print(f"❌ Error loading precomputed cache: {e}")
         import traceback
+
         traceback.print_exc()
         return None
 
@@ -104,7 +110,7 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
 def cache_exists() -> bool:
     """
     Check if precomputed cache files exist.
-    
+
     Returns:
         True if both cache files exist, False otherwise
     """
@@ -118,7 +124,7 @@ def cache_exists() -> bool:
 def get_cache_info() -> dict:
     """
     Get information about the cache files.
-    
+
     Returns:
         Dictionary with cache file information
     """

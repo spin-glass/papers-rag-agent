@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, Optional, Literal
@@ -16,6 +17,7 @@ from config import get_support_threshold, get_graph_recursion_limit
 
 class CorrectionState(TypedDict):
     """State for corrective RAG workflow."""
+
     question: str
     index: Optional[object]
     theta: float
@@ -49,7 +51,7 @@ def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
             text=f"ベースライン検索中にエラーが発生しました: {str(e)}",
             citations=[],
             support=0.0,
-            attempts=[{"type": "baseline", "error": str(e), "support": 0.0}]
+            attempts=[{"type": "baseline", "error": str(e), "support": 0.0}],
         )
 
     return state
@@ -68,7 +70,9 @@ def evaluate_support_node(state: CorrectionState) -> CorrectionState:
         if answer.support >= theta:
             print(f"✅ Support sufficient ({answer.support:.3f} >= {theta:.3f})")
         else:
-            print(f"⚠️ Support insufficient ({answer.support:.3f} < {theta:.3f}), will try HyDE")
+            print(
+                f"⚠️ Support insufficient ({answer.support:.3f} < {theta:.3f}), will try HyDE"
+            )
 
     except Exception as e:
         print(f"❌ Support evaluation failed: {e}")
@@ -112,8 +116,10 @@ def enhanced_retrieval_node(state: CorrectionState) -> CorrectionState:
         hyde_attempt = {
             "type": "hyde",
             "query": state["hyde_query"],
-            "top_ids": hyde_answer.attempts[0]["top_ids"] if hyde_answer.attempts else [],
-            "support": hyde_answer.support
+            "top_ids": hyde_answer.attempts[0]["top_ids"]
+            if hyde_answer.attempts
+            else [],
+            "support": hyde_answer.support,
         }
 
         # Update answer and attempts
@@ -122,17 +128,15 @@ def enhanced_retrieval_node(state: CorrectionState) -> CorrectionState:
         state["attempts"].append(hyde_attempt)
         state["enhanced_support"] = hyde_answer.support  # Store for later display
 
-        print(f"✅ Enhanced retrieval completed. New support: {hyde_answer.support:.3f}")
+        print(
+            f"✅ Enhanced retrieval completed. New support: {hyde_answer.support:.3f}"
+        )
 
     except Exception as e:
         print(f"❌ Enhanced retrieval failed: {e}")
         # Keep the original answer if HyDE fails
         if state["attempts"]:
-            state["attempts"].append({
-                "type": "hyde",
-                "error": str(e),
-                "support": 0.0
-            })
+            state["attempts"].append({"type": "hyde", "error": str(e), "support": 0.0})
 
     return state
 
@@ -157,7 +161,7 @@ def no_answer_node(state: CorrectionState) -> CorrectionState:
             text="申し訳ございませんが、この質問に対する適切な回答を見つけることができませんでした。",
             citations=[],
             support=0.0,
-            attempts=state["attempts"]
+            attempts=state["attempts"],
         )
 
     return state
@@ -173,7 +177,7 @@ def finalize_result_node(state: CorrectionState) -> CorrectionState:
             text=answer.text,
             citations=answer.citations,
             support=answer.support,
-            attempts=state["attempts"]
+            attempts=state["attempts"],
         )
 
         # Add support evaluation details to result metadata
@@ -181,7 +185,7 @@ def finalize_result_node(state: CorrectionState) -> CorrectionState:
             "baseline_support": state.get("baseline_support"),
             "enhanced_support": state.get("enhanced_support"),
             "threshold": state["theta"],
-            "threshold_met": answer.support >= state["theta"]
+            "threshold_met": answer.support >= state["theta"],
         }
 
         state["final_result"] = final_result
@@ -194,7 +198,9 @@ def finalize_result_node(state: CorrectionState) -> CorrectionState:
     return state
 
 
-def should_continue_correction(state: CorrectionState) -> Literal["sufficient", "try_hyde", "give_up"]:
+def should_continue_correction(
+    state: CorrectionState,
+) -> Literal["sufficient", "try_hyde", "give_up"]:
     """Determine the next step based on current state."""
     answer = state["answer"]
     theta = state["theta"]
@@ -237,11 +243,7 @@ def create_corrective_rag_graph() -> StateGraph:
     graph.add_conditional_edges(
         "evaluate",
         should_continue_correction,
-        {
-            "sufficient": "finalize",
-            "try_hyde": "hyde_rewrite",
-            "give_up": "no_answer"
-        }
+        {"sufficient": "finalize", "try_hyde": "hyde_rewrite", "give_up": "no_answer"},
     )
 
     graph.add_edge("hyde_rewrite", "enhanced_retrieval")
@@ -252,15 +254,17 @@ def create_corrective_rag_graph() -> StateGraph:
     return graph.compile()
 
 
-def answer_with_correction_graph(question: str, theta: float = None, index=None) -> AnswerResult:
+def answer_with_correction_graph(
+    question: str, theta: float = None, index=None
+) -> AnswerResult:
     """
     Generate answer using corrective RAG with LangGraph workflow.
-    
+
     Args:
         question: User question
         theta: Support threshold (uses environment default if None)
         index: Index to use for retrieval
-        
+
     Returns:
         AnswerResult with answer or no-answer response
     """
@@ -282,7 +286,7 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
             final_result=None,
             hyde_attempted=False,
             baseline_support=None,
-            enhanced_support=None
+            enhanced_support=None,
         )
 
         print(f"🚀 Starting corrective RAG workflow for: {question[:50]}...")
@@ -306,7 +310,7 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
                 text="申し訳ございませんが、システムエラーが発生しました。",
                 citations=[],
                 support=0.0,
-                attempts=final_state.get("attempts", [])
+                attempts=final_state.get("attempts", []),
             )
 
     except Exception as e:
@@ -314,9 +318,14 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
         print(f"❌ Corrective RAG workflow failed: {error_message}")
 
         # Check if it's a recursion limit error
-        if "recursion_limit" in error_message.lower() or "GRAPH_RECURSION_LIMIT" in error_message:
+        if (
+            "recursion_limit" in error_message.lower()
+            or "GRAPH_RECURSION_LIMIT" in error_message
+        ):
             error_text = f"RAGワークフローの再帰制限({get_graph_recursion_limit()})に達しました。質問を簡潔にするか、GRAPH_RECURSION_LIMIT環境変数を調整してください。"
-            print(f"🔄 Recursion limit reached. Current limit: {get_graph_recursion_limit()}")
+            print(
+                f"🔄 Recursion limit reached. Current limit: {get_graph_recursion_limit()}"
+            )
         else:
             error_text = f"RAGワークフローでエラーが発生しました: {error_message}"
 
@@ -325,5 +334,7 @@ def answer_with_correction_graph(question: str, theta: float = None, index=None)
             text=error_text,
             citations=[],
             support=0.0,
-            attempts=[{"type": "workflow_error", "error": error_message, "support": 0.0}]
+            attempts=[
+                {"type": "workflow_error", "error": error_message, "support": 0.0}
+            ],
         )
