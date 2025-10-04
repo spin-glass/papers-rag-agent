@@ -1,12 +1,7 @@
 """ArXiv検索機能のテスト"""
 
-import sys
 import unittest
-from pathlib import Path
 from unittest.mock import Mock, patch
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 from retrieval.arxiv_searcher import run_arxiv_search  # noqa: E402
 

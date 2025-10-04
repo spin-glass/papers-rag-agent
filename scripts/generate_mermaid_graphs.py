@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 """Generate Mermaid diagrams for LangGraph workflows."""
 
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 from graphs.message_routing import create_message_routing_graph
 from graphs.corrective_rag import create_corrective_rag_graph

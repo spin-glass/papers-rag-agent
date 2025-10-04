@@ -1,10 +1,6 @@
 import urllib.parse
 import feedparser
 from typing import List, Dict
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Paper
 

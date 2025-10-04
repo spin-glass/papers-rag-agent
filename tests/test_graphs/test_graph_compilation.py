@@ -1,10 +1,6 @@
 """Tests for LangGraph compilation and configuration."""
 
 import pytest
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 from graphs.corrective_rag import create_corrective_rag_graph
 from graphs.message_routing import create_message_routing_graph

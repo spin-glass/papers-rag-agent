@@ -1,10 +1,4 @@
 """Corrective RAG workflow using LangGraph."""
-
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
-
 from typing import TypedDict, Optional, Literal
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig

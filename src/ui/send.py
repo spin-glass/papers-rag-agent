@@ -1,9 +1,5 @@
 """Chunked message sending for Chainlit."""
 
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 import chainlit as cl
 from config import get_max_output_chars

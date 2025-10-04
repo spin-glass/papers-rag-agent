@@ -1,11 +1,6 @@
 """ArXiv関連関数の単体テスト（Chainlitコンテキスト依存なし）"""
 
 from unittest.mock import AsyncMock, patch, Mock
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 
 class TestArxivFunctions:

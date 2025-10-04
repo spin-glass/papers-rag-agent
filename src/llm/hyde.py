@@ -1,9 +1,5 @@
 """HyDE (Hypothetical Document Embeddings) implementation."""
 
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 from llm.generator import generate_answer
 

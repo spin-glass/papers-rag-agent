@@ -1,9 +1,5 @@
 """Text generation using OpenAI GPT models with LangSmith tracing."""
 
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage

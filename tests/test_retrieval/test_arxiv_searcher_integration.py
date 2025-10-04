@@ -1,11 +1,6 @@
 """ArXiv検索機能の実際のAPI統合テスト"""
 
 import pytest
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 from retrieval.arxiv_searcher import run_arxiv_search
 

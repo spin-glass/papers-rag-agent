@@ -76,6 +76,9 @@ github-actions-key.json
 *.swp
 *.swo
 
+# LangGraph Studio
+.langgraph_api/
+
 # OS
 .DS_Store
 Thumbs.db

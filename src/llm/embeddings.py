@@ -3,10 +3,6 @@
 import numpy as np
 from langchain_openai import OpenAIEmbeddings
 from langsmith import traceable
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 from config import get_openai_api_key, get_llm_provider
 

@@ -6,10 +6,6 @@ import pytest
 import pickle
 import json
 from pathlib import Path
-import sys
-
-# Add src to path
-sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 from data.cache_loader import load_precomputed_cache, cache_exists
 from models import Paper

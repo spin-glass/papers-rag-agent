@@ -1,9 +1,5 @@
 """Content enhancement workflow using LangGraph for Cornell Note and Quiz generation."""
 
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
 
 from typing import TypedDict, List, Optional
 from langgraph.graph import StateGraph, START, END

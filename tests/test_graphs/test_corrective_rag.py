@@ -1,11 +1,6 @@
 """Tests for corrective RAG workflow."""
 
 import pytest
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 
 from models import AnswerResult
 from retrieval.inmemory import InMemoryIndex

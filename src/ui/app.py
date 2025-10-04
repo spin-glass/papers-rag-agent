@@ -1,9 +1,3 @@
-import sys
-from pathlib import Path
-
-# Add src to path for imports BEFORE other imports
-sys.path.append(str(Path(__file__).parent.parent))
-
 from retrieval.arxiv_searcher import run_arxiv_search, search_arxiv_papers
 from retrieval.inmemory import InMemoryIndex
 from pipelines.baseline import set_global_index
@@ -11,7 +5,6 @@ from pipelines.corrective import answer_with_correction
 from ui.send import send_long_message
 from data.cache_loader import load_precomputed_cache, cache_exists
 from config import (
-    use_langgraph,
     enable_langsmith_tracing,
     get_langsmith_api_key,
     get_langsmith_project,
@@ -19,24 +12,12 @@ from config import (
 import chainlit as cl
 
 
-# TODO: Remove this import - it's unused here. Actual import happens at line 340 where it's needed.
-# LangGraph availability check
-try:
-    from graphs.message_routing import process_message_with_routing  # noqa: F401
-
-    LANGGRAPH_AVAILABLE = True
-    HAS_MESSAGE_ROUTING = True
-except ImportError:
-    LANGGRAPH_AVAILABLE = False
-    HAS_MESSAGE_ROUTING = False
-    print("⚠️ LangGraph not available, using legacy implementation")
-
 # Global index for RAG
 _rag_index = None
 
 # Add startup logging for Cloud Run debugging
 print("🚀 Papers RAG Agent starting up...")
-print(f"📍 LangGraph available: {LANGGRAPH_AVAILABLE}")
+print("📍 Using LangGraph workflows")
 print("✅ Application module loaded successfully")
 
 
@@ -252,11 +233,8 @@ async def on_message(message: cl.Message):
     """
     global _rag_index
 
-    # Check if we should use LangGraph workflows
-    if use_langgraph() and LANGGRAPH_AVAILABLE:
-        await handle_message_with_langgraph(message)
-    else:
-        await handle_message_legacy(message)
+    # Use LangGraph workflows
+    await handle_message_with_langgraph(message)
 
 
 async def handle_message_with_langgraph(message: cl.Message):

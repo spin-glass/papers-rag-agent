@@ -1,10 +1,5 @@
 """Mock agent implementation for testing the UI."""
 
-import sys
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
 from models import AnswerPayload, Citation, CornellNote, QuizItem, QuizOption
 

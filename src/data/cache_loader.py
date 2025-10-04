@@ -4,12 +4,8 @@ Cache loading utilities for precomputed RAG data.
 
 import json
 import pickle
-import sys
 from pathlib import Path
 from typing import Optional
-
-# Add src to path
-sys.path.append(str(Path(__file__).parent.parent))
 
 from models import Paper
 from retrieval.inmemory import InMemoryIndex
