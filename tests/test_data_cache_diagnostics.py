@@ -7,8 +7,8 @@ import pickle
 import json
 from pathlib import Path
 
-from data.cache_loader import load_precomputed_cache, cache_exists
-from models import Paper
+from src.data.cache_loader import load_precomputed_cache, cache_exists
+from src.models import Paper
 
 
 class TestCacheDiagnostics:

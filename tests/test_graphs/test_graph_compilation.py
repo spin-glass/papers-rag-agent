@@ -2,10 +2,10 @@
 
 import pytest
 
-from graphs.corrective_rag import create_corrective_rag_graph
-from graphs.message_routing import create_message_routing_graph
-from graphs.content_enhancement import create_content_enhancement_graph
-from config import get_graph_recursion_limit
+from src.graphs.corrective_rag import create_corrective_rag_graph
+from src.graphs.message_routing import create_message_routing_graph
+from src.graphs.content_enhancement import create_content_enhancement_graph
+from src.config import get_graph_recursion_limit
 
 
 class TestGraphCompilation:
@@ -135,12 +135,12 @@ class TestGraphConfigurationErrors:
 
         # Re-import to get fresh config
         from importlib import reload
-        import config
+        import src.config
 
-        reload(config)
+        reload(src.config)
 
         try:
-            limit = config.get_graph_recursion_limit()
+            limit = src.config.get_graph_recursion_limit()
             # Should fall back to default value (10) for invalid inputs
             assert limit == 10, f"Expected default value 10, got {limit}"
         except ValueError:

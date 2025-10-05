@@ -2,13 +2,13 @@
 
 import pytest
 from unittest.mock import patch, Mock
-from retrieval.arxiv_searcher import run_arxiv_search
+from src.retrieval.arxiv_searcher import run_arxiv_search
 
 
 class TestArxivSearcherPytest:
     """PyTestを使用したArXiv検索機能のテストクラス"""
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_successful_search(self, mock_parse, mock_arxiv_response):
         """正常な検索結果のテスト"""
         # モックレスポンスの作成
@@ -39,7 +39,7 @@ class TestArxivSearcherPytest:
             == "BERT: Pre-training of Deep Bidirectional Transformers"
         )
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_empty_search_results(self, mock_parse, empty_arxiv_response):
         """空の検索結果のテスト"""
         mock_feed = Mock()
@@ -64,7 +64,7 @@ class TestArxivSearcherPytest:
             ("", ""),
         ],
     )
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_id_extraction(self, mock_parse, arxiv_id, expected_core_id):
         """ArXiv ID抽出のパラメータ化テスト"""
         mock_entry = Mock()
@@ -83,7 +83,7 @@ class TestArxivSearcherPytest:
         assert result[0]["id"] == expected_core_id
 
     @pytest.mark.parametrize("max_results", [1, 5, 10, 20])
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_max_results_parameter(self, mock_parse, max_results):
         """max_resultsパラメータのテスト"""
         mock_feed = Mock()
@@ -96,7 +96,7 @@ class TestArxivSearcherPytest:
         args, kwargs = mock_parse.call_args
         assert f"max_results={max_results}" in args[0]
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_pdf_link_priority(self, mock_parse):
         """複数のPDFリンクがある場合の優先順位テスト"""
         mock_entry = Mock()
@@ -118,7 +118,7 @@ class TestArxivSearcherPytest:
         # 最初のPDFリンクが使用されることを確認
         assert result[0]["pdf"] == "http://arxiv.org/pdf/first.pdf"
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_missing_attributes_handling(self, mock_parse):
         """属性が欠落している場合の処理テスト"""
         # 一部の属性が存在しないentryをシミュレート
@@ -141,8 +141,8 @@ class TestArxivSearcherPytest:
         assert result[0]["link"] == ""
         assert result[0]["pdf"] == ""
 
-    @patch("retrieval.arxiv_searcher.urllib.parse.quote")
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.urllib.parse.quote")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_query_encoding(self, mock_parse, mock_quote):
         """クエリのURL エンコーディングテスト"""
         mock_feed = Mock()
@@ -157,7 +157,7 @@ class TestArxivSearcherPytest:
             "ti:test query with spaces OR abs:test query with spaces"
         )
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_url_construction_components(self, mock_parse):
         """URL構築の各コンポーネントテスト"""
         mock_feed = Mock()
@@ -177,7 +177,7 @@ class TestArxivSearcherPytest:
         assert "max_results=10" in url
 
     @pytest.mark.integration
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_end_to_end_workflow(self, mock_parse):
         """エンドツーエンドのワークフローテスト"""
         # 実際のAPIレスポンスに近いモックデータ

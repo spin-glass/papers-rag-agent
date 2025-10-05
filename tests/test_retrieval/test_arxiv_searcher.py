@@ -3,13 +3,13 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from retrieval.arxiv_searcher import run_arxiv_search  # noqa: E402
+from src.retrieval.arxiv_searcher import run_arxiv_search  # noqa: E402
 
 
 class TestArxivSearcher(unittest.TestCase):
     """ArXiv検索機能のテストクラス"""
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_successful(self, mock_parse):
         """正常な検索結果のテスト"""
         # モックレスポンスの作成
@@ -52,7 +52,7 @@ class TestArxivSearcher(unittest.TestCase):
         self.assertEqual(result[1]["link"], "http://arxiv.org/abs/2301.00002")
         self.assertEqual(result[1]["pdf"], "")
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_empty_results(self, mock_parse):
         """空の検索結果のテスト"""
         mock_feed = Mock()
@@ -64,7 +64,7 @@ class TestArxivSearcher(unittest.TestCase):
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_missing_attributes(self, mock_parse):
         """属性が欠落している場合のテスト"""
         mock_entry = Mock()
@@ -86,7 +86,7 @@ class TestArxivSearcher(unittest.TestCase):
         self.assertEqual(result[0]["link"], "")
         self.assertEqual(result[0]["pdf"], "")
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_no_entries_attribute(self, mock_parse):
         """feedに entries 属性がない場合のテスト"""
         mock_feed = Mock()
@@ -99,7 +99,7 @@ class TestArxivSearcher(unittest.TestCase):
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_url_construction(self, mock_parse):
         """URL構築の確認"""
         mock_feed = Mock()
@@ -117,7 +117,7 @@ class TestArxivSearcher(unittest.TestCase):
         )
         mock_parse.assert_called_once_with(expected_url_pattern)
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_id_extraction(self, mock_parse):
         """ArXiv ID抽出の詳細テスト"""
         test_cases = [
@@ -150,7 +150,7 @@ class TestArxivSearcher(unittest.TestCase):
                 result = run_arxiv_search("test")
                 self.assertEqual(result[0]["id"], expected_core_id)
 
-    @patch("retrieval.arxiv_searcher.feedparser.parse")
+    @patch("src.retrieval.arxiv_searcher.feedparser.parse")
     def test_run_arxiv_search_pdf_link_extraction(self, mock_parse):
         """PDF リンク抽出のテスト"""
         # PDFリンクが複数ある場合、最初のものを使用することを確認
@@ -175,7 +175,7 @@ class TestArxivSearcher(unittest.TestCase):
 
     def test_run_arxiv_search_default_parameters(self):
         """デフォルトパラメータのテスト"""
-        with patch("retrieval.arxiv_searcher.feedparser.parse") as mock_parse:
+        with patch("src.retrieval.arxiv_searcher.feedparser.parse") as mock_parse:
             mock_feed = Mock()
             mock_feed.entries = []
             mock_parse.return_value = mock_feed

@@ -2,7 +2,7 @@
 
 import pytest
 
-from retrieval.arxiv_searcher import run_arxiv_search
+from src.retrieval.arxiv_searcher import run_arxiv_search
 
 
 class TestArxivSearcherIntegration:

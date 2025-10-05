@@ -2,8 +2,8 @@
 
 import pytest
 
-from models import AnswerResult, CornellNote, QuizItem, QuizOption
-from graphs.content_enhancement import enhance_answer_content
+from src.models import AnswerResult, CornellNote, QuizItem, QuizOption
+from src.graphs.content_enhancement import enhance_answer_content
 
 
 class TestContentEnhancement:
