@@ -8,11 +8,20 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# requirements.txtをコピーして依存関係をインストール
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# uvをインストール
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# pyproject.tomlとuv.lockをコピーして依存関係をインストール
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+
+# uv仮想環境をアクティベートするための環境変数を設定
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app/src:$PYTHONPATH"
 
 # アプリケーションコードをコピー
 COPY src/ ./src/

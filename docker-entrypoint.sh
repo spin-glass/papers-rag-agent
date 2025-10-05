@@ -30,6 +30,10 @@ echo "CHAINLIT_HOST: $CHAINLIT_HOST"
 echo "CHAINLIT_PORT: $CHAINLIT_PORT"
 echo "Command: chainlit run src/ui/app.py --host 0.0.0.0 --port $CHAINLIT_PORT"
 
+# uv仮想環境をアクティベート
+echo "=== Activating uv virtual environment ==="
+source /app/.venv/bin/activate || echo "❌ Failed to activate virtual environment"
+
 # Python環境とモジュールの確認
 echo "=== Python Environment Check ==="
 python -c "import sys; print('Python executable:', sys.executable)" || echo "❌ Python import test failed"
