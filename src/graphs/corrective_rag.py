@@ -1,12 +1,13 @@
 """Corrective RAG workflow using LangGraph."""
+
 from typing import TypedDict, Optional, Literal
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 
-from models import AnswerResult
-from pipelines.baseline import baseline_answer
-from llm.hyde import hyde_rewrite
-from config import get_support_threshold, get_graph_recursion_limit
+from src.models import AnswerResult
+from src.pipelines.baseline import baseline_answer
+from src.llm.hyde import hyde_rewrite
+from src.config import get_support_threshold, get_graph_recursion_limit
 
 
 class CorrectionState(TypedDict):
@@ -140,7 +141,7 @@ def no_answer_node(state: CorrectionState) -> CorrectionState:
     try:
         print("🚫 Generating no-answer response...")
 
-        from pipelines.corrective import no_answer
+        from src.pipelines.corrective import no_answer
 
         # Generate no-answer result
         no_answer_result = no_answer(state["question"], state["attempts"])

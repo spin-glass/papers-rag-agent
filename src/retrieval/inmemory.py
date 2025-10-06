@@ -1,10 +1,9 @@
 """In-memory vector index for RAG retrieval."""
 
-
 import numpy as np
 from typing import List, Tuple
-from models import Paper, RetrievedContext
-from llm.embeddings import get_embed
+from src.models import Paper, RetrievedContext
+from src.llm.embeddings import get_embed
 
 
 class InMemoryIndex:

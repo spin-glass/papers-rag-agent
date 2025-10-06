@@ -2,6 +2,7 @@
 
 import pytest
 
+
 @pytest.fixture(scope="session")
 def setup_test_environment():
     """テスト環境のセットアップ"""

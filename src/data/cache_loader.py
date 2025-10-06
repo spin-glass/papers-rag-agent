@@ -7,8 +7,8 @@ import pickle
 from pathlib import Path
 from typing import Optional
 
-from models import Paper
-from retrieval.inmemory import InMemoryIndex
+from src.models import Paper
+from src.retrieval.inmemory import InMemoryIndex
 
 
 def load_precomputed_cache() -> Optional[InMemoryIndex]:

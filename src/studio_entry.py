@@ -1,6 +1,6 @@
-from graphs.message_routing import create_message_routing_graph
-from graphs.corrective_rag import create_corrective_rag_graph
-from graphs.content_enhancement import create_content_enhancement_graph
+from src.graphs.message_routing import create_message_routing_graph
+from src.graphs.corrective_rag import create_corrective_rag_graph
+from src.graphs.content_enhancement import create_content_enhancement_graph
 
 
 process_message_graph = create_message_routing_graph()

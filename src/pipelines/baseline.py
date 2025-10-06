@@ -1,13 +1,12 @@
 """Baseline RAG pipeline implementation."""
 
-
 import numpy as np
 from typing import List
-from models import AnswerResult, RetrievedContext
-from llm.generator import generate_answer
-from llm.embeddings import get_embed
-from retrieval.inmemory import InMemoryIndex
-from config import get_top_k
+from src.models import AnswerResult, RetrievedContext
+from src.llm.generator import generate_answer
+from src.llm.embeddings import get_embed
+from src.retrieval.inmemory import InMemoryIndex
+from src.config import get_top_k
 
 
 # Global index instance - will be initialized when needed

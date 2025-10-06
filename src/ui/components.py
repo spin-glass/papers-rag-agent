@@ -2,7 +2,7 @@
 
 from typing import List
 
-from models import Citation, CornellNote, QuizItem
+from src.models import Citation, CornellNote, QuizItem
 
 
 def render_cornell(note: CornellNote) -> str:

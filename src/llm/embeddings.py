@@ -4,7 +4,7 @@ import numpy as np
 from langchain_openai import OpenAIEmbeddings
 from langsmith import traceable
 
-from config import get_openai_api_key, get_llm_provider
+from src.config import get_openai_api_key, get_llm_provider
 
 
 def setup_embedder():
