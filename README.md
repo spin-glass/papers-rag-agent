@@ -1,7 +1,7 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
-🚀 **Live Demo**: [https://papers-rag-ui-xxxxx-an.a.run.app](https://papers-rag-ui-xxxxx-an.a.run.app)
+🚀 **Live Demo (Chainlit UI)**: [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
 <!-- CLOUDRUN_URL_END -->
 
 このプロジェクトは **論文学習に特化した RAG × LangGraphワークフロー型チャットボット** です。
