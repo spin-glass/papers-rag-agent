@@ -1,6 +1,5 @@
 """Baseline RAG pipeline implementation."""
 
-
 import numpy as np
 from typing import List
 from models import AnswerResult, RetrievedContext

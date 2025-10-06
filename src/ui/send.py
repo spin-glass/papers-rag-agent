@@ -1,6 +1,5 @@
 """Chunked message sending for Chainlit."""
 
-
 import chainlit as cl
 from config import get_max_output_chars
 

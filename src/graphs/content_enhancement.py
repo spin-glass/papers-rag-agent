@@ -1,6 +1,5 @@
 """Content enhancement workflow using LangGraph for Cornell Note and Quiz generation."""
 
-
 from typing import TypedDict, List, Optional
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig

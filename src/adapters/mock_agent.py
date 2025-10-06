@@ -1,6 +1,5 @@
 """Mock agent implementation for testing the UI."""
 
-
 from models import AnswerPayload, Citation, CornellNote, QuizItem, QuizOption
 
 

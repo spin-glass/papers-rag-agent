@@ -1,6 +1,5 @@
 """Text generation using OpenAI GPT models with LangSmith tracing."""
 
-
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from langsmith import traceable

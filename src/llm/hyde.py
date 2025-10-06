@@ -1,6 +1,5 @@
 """HyDE (Hypothetical Document Embeddings) implementation."""
 
-
 from llm.generator import generate_answer
 
 

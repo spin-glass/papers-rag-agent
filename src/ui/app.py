@@ -8,12 +8,14 @@ import chainlit as cl
 
 API_BASE = os.getenv("PAPERS_API_BASE", "http://localhost:9000")
 
+
 # -------- helpers --------
 async def get_health() -> dict:
     async with httpx.AsyncClient(timeout=15.0) as client:
         r = await client.get(f"{API_BASE}/health")
         r.raise_for_status()
         return r.json()
+
 
 async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
     payload = {"query": query, "max_results": max_results}
@@ -22,10 +24,13 @@ async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
         r.raise_for_status()
         return r.json().get("items", [])
 
+
 async def sse_rag_stream(query: str):
     try:
         async with httpx.AsyncClient(timeout=None) as client:
-            async with client.stream("POST", f"{API_BASE}/rag/stream", json={"query": query}) as resp:
+            async with client.stream(
+                "POST", f"{API_BASE}/rag/stream", json={"query": query}
+            ) as resp:
                 resp.raise_for_status()
                 try:
                     async for line in resp.aiter_lines():
@@ -41,16 +46,33 @@ async def sse_rag_stream(query: str):
 
                         # ステータスメッセージの処理
                         if obj.get("type") == "status":
-                            yield {"type": "status", "text": obj.get("text", ""), "done": False}
+                            yield {
+                                "type": "status",
+                                "text": obj.get("text", ""),
+                                "done": False,
+                            }
                         # コンテンツの処理
                         elif obj.get("type") == "content":
-                            yield {"type": "content", "text": obj.get("text", ""), "done": obj.get("done", False)}
+                            yield {
+                                "type": "content",
+                                "text": obj.get("text", ""),
+                                "done": obj.get("done", False),
+                            }
                         # エラーの処理
                         elif obj.get("type") == "error":
-                            yield {"type": "error", "text": obj.get("text", ""), "done": True}
+                            yield {
+                                "type": "error",
+                                "text": obj.get("text", ""),
+                                "done": True,
+                            }
                         # 従来のフォーマットとの互換性
                         else:
-                            text = obj.get("delta") or obj.get("text") or obj.get("content") or ""
+                            text = (
+                                obj.get("delta")
+                                or obj.get("text")
+                                or obj.get("content")
+                                or ""
+                            )
                             if text:
                                 yield {"type": "content", "text": text, "done": False}
                 except asyncio.CancelledError:
@@ -58,13 +80,18 @@ async def sse_rag_stream(query: str):
                     raise
                 except Exception as e:
                     # ストリーミング中のエラーを適切に処理
-                    yield {"type": "error", "text": f"ストリーミングエラー: {str(e)}", "done": True}
+                    yield {
+                        "type": "error",
+                        "text": f"ストリーミングエラー: {str(e)}",
+                        "done": True,
+                    }
     except asyncio.CancelledError:
         # キャンセルされた場合は再発生
         raise
     except Exception as e:
         # その他のエラーを適切に処理
         yield {"type": "error", "text": f"接続エラー: {str(e)}", "done": True}
+
 
 # -------- chainlit hooks --------
 @cl.on_chat_start
@@ -103,6 +130,7 @@ async def on_chat_start():
             )
         ).send()
 
+
 @cl.on_message
 async def on_message(msg: cl.Message):
     text = (msg.content or "").strip()
@@ -131,7 +159,9 @@ async def on_message(msg: cl.Message):
                     lines.append(f"  \n  {s}")
             await cl.Message(content="### arXiv 検索結果\n" + "\n".join(lines)).send()
         except httpx.HTTPStatusError as he:
-            await cl.Message(content=f"❌ /arxiv/search {he.response.status_code}: {he.response.text}").send()
+            await cl.Message(
+                content=f"❌ /arxiv/search {he.response.status_code}: {he.response.text}"
+            ).send()
         except Exception as e:
             await cl.Message(content=f"❌ /arxiv/search 失敗: `{e}`").send()
         return
@@ -141,7 +171,9 @@ async def on_message(msg: cl.Message):
     try:
         h = await get_health()
         if not h.get("rag_ready"):
-            await cl.Message(content="⏳ RAG index 準備中です。しばらくしてからお試しください。").send()
+            await cl.Message(
+                content="⏳ RAG index 準備中です。しばらくしてからお試しください。"
+            ).send()
             return
     except Exception:
         # health失敗時も一応本番を叩いてみる
@@ -183,6 +215,8 @@ async def on_message(msg: cl.Message):
         if he.response.status_code == 503:
             await out.update(content="⚠️ RAG index が未準備です。（503）")
         else:
-            await out.update(content=f"❌ /rag/stream {he.response.status_code}: {he.response.text}")
+            await out.update(
+                content=f"❌ /rag/stream {he.response.status_code}: {he.response.text}"
+            )
     except Exception as e:
         await out.update(content=f"❌ /rag/stream 失敗: `{e}`")

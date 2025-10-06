@@ -298,9 +298,7 @@ class TestBuildIndexFromQueries:
                 mock_index.papers_with_embeddings = [1]
                 mock_index_class.return_value = mock_index
 
-                result = _build_index_from_queries(
-                    ["success_query", "fail_query"], 5
-                )
+                result = _build_index_from_queries(["success_query", "fail_query"], 5)
 
                 assert result is mock_index
                 called_papers = mock_index.build.call_args[0][0]
