@@ -9,6 +9,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-northeast1
+  REPO_NAME: papers-rag-agent          # ← 既存の Artifact Registry リポジトリ名
   FASTAPI_SERVICE: papers-rag-api
   CHAINLIT_SERVICE: papers-rag-ui
 
@@ -31,8 +32,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Configure Docker auth for GCR
-        run: gcloud auth configure-docker --quiet
+      - name: Configure Docker auth for Artifact Registry
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
 
       - name: Sanitize PROJECT_ID
         id: sanitize
@@ -44,15 +45,16 @@ jobs:
       - name: Build & Push FastAPI Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: .                       # ルート（src/ を拾う構成）
           file: fastapi/Dockerfile
           push: true
-          tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
+          tags: |
+            asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
 
       - name: Deploy FastAPI to Cloud Run
         run: |
           gcloud run deploy "$FASTAPI_SERVICE" \
-            --image gcr.io/${{ steps.sanitize.outputs.pid }}/$FASTAPI_SERVICE:${{ github.sha }} \
+            --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }} \
             --platform managed \
             --region "$REGION" \
             --allow-unauthenticated \
@@ -81,8 +83,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Configure Docker auth for GCR
-        run: gcloud auth configure-docker --quiet
+      - name: Configure Docker auth for Artifact Registry
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
 
       - name: Sanitize PROJECT_ID
         id: sanitize
@@ -100,15 +102,16 @@ jobs:
       - name: Build & Push Chainlit Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./chainlit              # Chainlit は chainlit ディレクトリをビルド
           file: chainlit/Dockerfile
           push: true
-          tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
+          tags: |
+            asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
 
       - name: Deploy Chainlit to Cloud Run
         run: |
           gcloud run deploy "$CHAINLIT_SERVICE" \
-            --image gcr.io/${{ steps.sanitize.outputs.pid }}/$CHAINLIT_SERVICE:${{ github.sha }} \
+            --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }} \
             --platform managed \
             --region "$REGION" \
             --allow-unauthenticated \
