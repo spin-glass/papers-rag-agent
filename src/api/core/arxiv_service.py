@@ -35,6 +35,6 @@ async def search(query: str, max_results: int = 10) -> List[Dict[str, Any]]:
 
         return formatted_results
 
-    except Exception as e:
+    except Exception:
         # Return empty results on error
         return []

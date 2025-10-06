@@ -1,4 +1,3 @@
-import asyncio
 import pytest
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from unittest.mock import Mock, patch
