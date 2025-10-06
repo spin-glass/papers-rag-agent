@@ -102,7 +102,7 @@ jobs:
       - name: Build & Push Chainlit Image
         uses: docker/build-push-action@v6
         with:
-          context: ./chainlit              # Chainlit は chainlit ディレクトリをビルド
+          context: .
           file: chainlit/Dockerfile
           push: true
           tags: |

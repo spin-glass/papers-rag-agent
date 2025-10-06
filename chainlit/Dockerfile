@@ -1,34 +1,26 @@
-# Chainlit専用のDockerfile
-# ARM環境対応のため、プラットフォームを明示的に指定
-FROM --platform=linux/amd64 python:3.13-slim
+# syntax=docker/dockerfile:1.7
+ARG TARGETPLATFORM
+FROM --platform=$TARGETPLATFORM python:3.13-slim
 
-# 作業ディレクトリを設定
 WORKDIR /app
 
-# システムの依存関係をインストール
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# 基本ツール
+RUN apt-get update && apt-get install -y gcc g++ curl && rm -rf /var/lib/apt/lists/*
 
-# uvをインストール
+# uv インストール
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="/root/.local/bin:${PATH}"
 
-# pyproject.tomlとuv.lockをコピーして依存関係をインストール
+# 依存関係（リポジトリ直下のファルを想定）
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen
 
-# uv仮想環境をアクティベートするための環境変数を設定
-ENV PATH="/app/.venv/bin:$PATH"
-ENV PYTHONPATH="/app/src:$PYTHONPATH"
-
-# アプリケーションコードをコピー
 COPY src/ ./src/
+ENV PYTHONPATH=/app/src
 
-# Cloud RunのPORT環境変数に対応（デフォルト8000）
-EXPOSE 8000
+COPY chainlit/ ./chainlit/
 
-# Chainlitアプリケーションを起動
-CMD ["chainlit", "run", "src/ui/app.py", "--host", "0.0.0.0", "--port", "8000"]
+# Cloud Run の PORT に合わせる（デフォルト 8000）
+ENV PORT=8000
+
+CMD ["sh", "-lc", ". .venv/bin/activate && chainlit run src/ui/app.py --host 0.0.0.0 --port ${PORT}"]
