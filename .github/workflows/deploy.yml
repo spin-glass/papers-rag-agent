@@ -28,25 +28,26 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure Docker auth for GCR
         run: gcloud auth configure-docker --quiet
 
-      - name: Build FastAPI Image
-        run: |
-          docker buildx build fastapi \
-            --file fastapi/Dockerfile \
-            --tag gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA \
-            --output type=docker .
-      - name: Push FastAPI Image
-        run: |
-          docker push gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA
+      - name: Build & Push FastAPI Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./fastapi
+          file: fastapi/Dockerfile
+          push: true
+          tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
 
       - name: Deploy FastAPI to Cloud Run
         run: |
-          gcloud run deploy $FASTAPI_SERVICE \
-            --image gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA \
+          gcloud run deploy "$FASTAPI_SERVICE" \
+            --image gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:${{ github.sha }} \
             --platform managed \
-            --region $REGION \
+            --region "$REGION" \
             --allow-unauthenticated \
             --port 8000 \
             --memory 2Gi \
@@ -70,32 +71,32 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure Docker auth for GCR
         run: gcloud auth configure-docker --quiet
 
       - name: Get FastAPI URL
         id: get-fastapi-url
         run: |
-          FASTAPI_URL=$(gcloud run services describe $FASTAPI_SERVICE --region=$REGION --format="value(status.url)")
-          echo "fastapi_url=$FASTAPI_URL" >> $GITHUB_OUTPUT
+          FASTAPI_URL=$(gcloud run services describe "$FASTAPI_SERVICE" --region="$REGION" --format="value(status.url)")
+          echo "fastapi_url=$FASTAPI_URL" >> "$GITHUB_OUTPUT"
 
-      - name: Build Chainlit Image
-        run: |
-          docker buildx build chainlit \
-            --file chainlit/Dockerfile \
-            --tag gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA \
-            --output type=docker .
-          
-      - name: Push Chainlit Image
-        run: |
-          docker push gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA
+      - name: Build & Push Chainlit Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./chainlit
+          file: chainlit/Dockerfile
+          push: true
+          tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
 
       - name: Deploy Chainlit to Cloud Run
         run: |
-          gcloud run deploy $CHAINLIT_SERVICE \
-            --image gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA \
+          gcloud run deploy "$CHAINLIT_SERVICE" \
+            --image gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:${{ github.sha }} \
             --platform managed \
-            --region $REGION \
+            --region "$REGION" \
             --allow-unauthenticated \
             --port 8000 \
             --memory 2Gi \
@@ -107,4 +108,4 @@ jobs:
       - name: Output URLs
         run: |
           echo "FastAPI URL: ${{ steps.get-fastapi-url.outputs.fastapi_url }}"
-          echo "Chainlit URL: $(gcloud run services describe $CHAINLIT_SERVICE --region=$REGION --format="value(status.url)")"
+          echo "Chainlit URL: $(gcloud run services describe "$CHAINLIT_SERVICE" --region="$REGION" --format="value(status.url)")"
