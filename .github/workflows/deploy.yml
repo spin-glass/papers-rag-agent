@@ -34,18 +34,25 @@ jobs:
       - name: Configure Docker auth for GCR
         run: gcloud auth configure-docker --quiet
 
+      - name: Sanitize PROJECT_ID
+        id: sanitize
+        shell: bash
+        run: |
+          CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
+          echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
+
       - name: Build & Push FastAPI Image
         uses: docker/build-push-action@v6
         with:
           context: ./fastapi
           file: fastapi/Dockerfile
           push: true
-          tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
+          tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
 
       - name: Deploy FastAPI to Cloud Run
         run: |
           gcloud run deploy "$FASTAPI_SERVICE" \
-            --image gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:${{ github.sha }} \
+            --image gcr.io/${{ steps.sanitize.outputs.pid }}/$FASTAPI_SERVICE:${{ github.sha }} \
             --platform managed \
             --region "$REGION" \
             --allow-unauthenticated \
@@ -77,6 +84,13 @@ jobs:
       - name: Configure Docker auth for GCR
         run: gcloud auth configure-docker --quiet
 
+      - name: Sanitize PROJECT_ID
+        id: sanitize
+        shell: bash
+        run: |
+          CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
+          echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
+
       - name: Get FastAPI URL
         id: get-fastapi-url
         run: |
@@ -89,12 +103,12 @@ jobs:
           context: ./chainlit
           file: chainlit/Dockerfile
           push: true
-          tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
+          tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
 
       - name: Deploy Chainlit to Cloud Run
         run: |
           gcloud run deploy "$CHAINLIT_SERVICE" \
-            --image gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:${{ github.sha }} \
+            --image gcr.io/${{ steps.sanitize.outputs.pid }}/$CHAINLIT_SERVICE:${{ github.sha }} \
             --platform managed \
             --region "$REGION" \
             --allow-unauthenticated \
