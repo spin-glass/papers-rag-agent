@@ -11,7 +11,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: papers-rag-agent
+  SERVICE_NAME: papers-rag-ui
   REGION: asia-northeast1
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
           fi
           
           echo "CLOUDRUN_URL=$URL" >> $GITHUB_OUTPUT
-          echo "📍 Current Cloud Run URL: $URL"
+          echo "📍 Current Chainlit URL: $URL"
 
       - name: Check if URL has changed
         id: check-change
@@ -74,10 +74,10 @@ jobs:
         run: |
           CLOUDRUN_URL="${{ steps.get-url.outputs.CLOUDRUN_URL }}"
           
-          # READMEのCloud Run URLセクションを更新
+          # READMEのChainlit URLセクションを更新
           sed -i.bak '/<!-- CLOUDRUN_URL_START -->/,/<!-- CLOUDRUN_URL_END -->/c\
           <!-- CLOUDRUN_URL_START -->\
-          🚀 **Live Demo**: ['$CLOUDRUN_URL']('$CLOUDRUN_URL')\
+          🚀 **Live Demo (Chainlit UI)**: ['$CLOUDRUN_URL']('$CLOUDRUN_URL')\
           <!-- CLOUDRUN_URL_END -->' README.md
           
           # バックアップファイルを削除
@@ -93,7 +93,7 @@ jobs:
           
           if [[ -n $(git diff --name-only) ]]; then
             git add README.md
-            git commit -m "chore: update Cloud Run URL in README"
+            git commit -m "chore: update Chainlit URL in README"
             
             # Fetch latest changes and rebase before pushing
             git fetch origin main
@@ -124,9 +124,9 @@ jobs:
       - name: Display results
         run: |
           if [[ "${{ steps.check-change.outputs.URL_CHANGED }}" == "true" ]]; then
-            echo "🎉 README successfully updated!"
-            echo "📍 New URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+            echo "🎉 README successfully updated with Chainlit URL!"
+            echo "📍 New Chainlit URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
           else
-            echo "ℹ️ No update needed - URL is already current"
-            echo "📍 Current URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
+            echo "ℹ️ No update needed - Chainlit URL is already current"
+            echo "📍 Current Chainlit URL: ${{ steps.get-url.outputs.CLOUDRUN_URL }}"
           fi
