@@ -5,7 +5,7 @@ from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 
 from src.models import EnhancedAnswerResult
-from graphs.corrective_rag import answer_with_correction_graph
+from src.graphs.corrective_rag import answer_with_correction_graph
 from retrieval.arxiv_searcher import run_arxiv_search
 from config import get_graph_recursion_limit
 
@@ -119,7 +119,7 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
 
         # Re-enable content enhancement with Cornell Note and Quiz
         try:
-            from graphs.content_enhancement import enhance_answer_content
+            from src.graphs.content_enhancement import enhance_answer_content
 
             enhanced_result = enhance_answer_content(basic_result, question)
             # Ensure metadata is preserved

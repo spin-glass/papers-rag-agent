@@ -20,7 +20,7 @@ async def stream_message(
     """
     try:
         # Import here to avoid circular imports
-        from graphs.message_routing import process_message_with_routing
+        from src.graphs.message_routing import process_message_with_routing
 
         # Show processing status
         yield {"type": "status", "text": "🔍 質問を処理中です...", "done": False}
