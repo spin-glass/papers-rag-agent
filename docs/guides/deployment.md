@@ -23,6 +23,7 @@
 
 - `GCP_PROJECT_ID`: Google Cloud プロジェクトID
 - `GCP_SA_KEY`: サービスアカウントのJSONキー
+- `OPENAI_API_KEY`: OpenAI APIキー（必須）
 
 ### サービスアカウント権限
 

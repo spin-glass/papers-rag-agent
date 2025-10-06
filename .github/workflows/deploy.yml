@@ -62,7 +62,8 @@ jobs:
             --memory 2Gi \
             --cpu 1 \
             --min-instances 0 \
-            --max-instances 10
+            --max-instances 10 \
+            --set-env-vars "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
 
   deploy-chainlit:
     name: Deploy Chainlit Service
@@ -120,7 +121,7 @@ jobs:
             --cpu 1 \
             --min-instances 0 \
             --max-instances 10 \
-            --set-env-vars "PAPERS_API_BASE=${{ steps.get-fastapi-url.outputs.fastapi_url }}"
+            --set-env-vars "PAPERS_API_BASE=${{ steps.get-fastapi-url.outputs.fastapi_url }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
 
       - name: Output URLs
         run: |
