@@ -27,8 +27,16 @@ app = FastAPI(title="Papers API", version="0.1.0", lifespan=lifespan)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_credentials=True, allow_methods=["*"], allow_headers=["*"], expose_headers=["*"],
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://127.0.0.1:3000",
+        "https://*.run.app",  # Cloud Runのデフォルトドメイン
+        "https://*.googleusercontent.com",  # Cloud Runのカスタムドメイン
+    ],
+    allow_credentials=True, 
+    allow_methods=["*"], 
+    allow_headers=["*"], 
+    expose_headers=["*"],
 )
 
 # ルーター
