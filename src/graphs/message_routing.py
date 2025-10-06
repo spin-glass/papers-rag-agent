@@ -6,8 +6,8 @@ from langchain_core.runnables import RunnableConfig
 
 from src.models import EnhancedAnswerResult
 from src.graphs.corrective_rag import answer_with_correction_graph
-from retrieval.arxiv_searcher import run_arxiv_search
-from config import get_graph_recursion_limit
+from src.retrieval.arxiv_searcher import run_arxiv_search
+from src.config import get_graph_recursion_limit
 
 
 class MessageState(TypedDict):

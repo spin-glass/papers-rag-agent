@@ -1,7 +1,7 @@
 """Chunked message sending for Chainlit."""
 
 import chainlit as cl
-from config import get_max_output_chars
+from src.config import get_max_output_chars
 
 
 async def send_long_message(content) -> None:

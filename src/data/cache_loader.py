@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from src.models import Paper
-from retrieval.inmemory import InMemoryIndex
+from src.retrieval.inmemory import InMemoryIndex
 
 
 def load_precomputed_cache() -> Optional[InMemoryIndex]:

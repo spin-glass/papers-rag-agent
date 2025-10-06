@@ -4,8 +4,8 @@ from threading import RLock
 from typing import List, Optional, Sequence
 
 from data.cache_loader import cache_exists, load_precomputed_cache
-from retrieval.arxiv_searcher import search_arxiv_papers
-from retrieval.inmemory import InMemoryIndex
+from src.retrieval.arxiv_searcher import search_arxiv_papers
+from src.retrieval.inmemory import InMemoryIndex
 
 log = logging.getLogger(__name__)
 

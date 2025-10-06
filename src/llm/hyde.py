@@ -1,6 +1,6 @@
 """HyDE (Hypothetical Document Embeddings) implementation."""
 
-from llm.generator import generate_answer
+from src.llm.generator import generate_answer
 
 
 def hyde_rewrite(question: str) -> str:

@@ -2,7 +2,7 @@
 
 import asyncio
 from typing import AsyncGenerator, Dict, Any
-from retrieval.inmemory import InMemoryIndex
+from src.retrieval.inmemory import InMemoryIndex
 
 
 async def stream_message(

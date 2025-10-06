@@ -1,8 +1,8 @@
 """RAG service for answering questions using the index."""
 
 from typing import Dict, Any
-from pipelines.corrective import answer_with_correction
-from retrieval.inmemory import InMemoryIndex
+from src.pipelines.corrective import answer_with_correction
+from src.retrieval.inmemory import InMemoryIndex
 
 
 def answer_question(question: str, index: InMemoryIndex) -> Dict[str, Any]:

@@ -1,7 +1,7 @@
 """ArXiv service for searching papers."""
 
 from typing import List, Dict, Any
-from retrieval.arxiv_searcher import run_arxiv_search
+from src.retrieval.arxiv_searcher import run_arxiv_search
 
 
 async def search(query: str, max_results: int = 10) -> List[Dict[str, Any]]:
