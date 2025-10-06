@@ -26,9 +26,9 @@ ENV PYTHONPATH="/app/src:$PYTHONPATH"
 # アプリケーションコードをコピー
 COPY src/ ./src/
 
-# Cloud RunのPORT環境変数に対応（デフォルト8080）
+# Cloud RunのPORT環境変数に対応（デフォルト8000）
 # Cloud Runは通常8080を設定するが、エントリーポイントで動的に処理
-EXPOSE 8080
+EXPOSE 8000 8080
 
 # 環境変数を設定
 # PORT環境変数はCloud Runが動的に設定（通常8080）
