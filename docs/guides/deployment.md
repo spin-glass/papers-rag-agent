@@ -1,41 +1,89 @@
 # Cloud Run Deployment Guide
 
-This document explains the GitHub Actions workflow that deploys the Papers RAG
-Agent to Cloud Run and automatically updates the live demo link in the README.
+このドキュメントでは、Papers RAG Agentを2つのCloud Runサービス（FastAPIとChainlit）にデプロイする方法を説明します。
 
-## Automated README updates
+## アーキテクチャ
 
-The workflow extends `.github/workflows/deploy.yml` with three steps:
+### サービス構成
+- **FastAPI Service** (`papers-rag-api`): RAG APIサーバー
+- **Chainlit Service** (`papers-rag-ui`): ユーザーインターフェース
 
-1. **Retrieve the deployed URL** using the
-   `google-github-actions/deploy-cloudrun@v2` output `url`.
-2. **Update the README** between the `<!-- CLOUDRUN_URL_START -->` and
-   `<!-- CLOUDRUN_URL_END -->` markers.
-3. **Commit changes** back to the repository only when the URL changes.
+### デプロイメントフロー
+1. FastAPIサービスをデプロイ
+2. FastAPIのURLを取得
+3. Chainlitサービスをデプロイ（FastAPIのURLを環境変数として設定）
 
-## Required configuration
+## 必要な設定
 
-- Ensure the workflow has the `contents: write` permission.
-- Keep the README markers in place so the URL can be replaced safely.
+### GitHub Secrets
+以下のシークレットをGitHubリポジトリに設定してください：
 
-```markdown
-<!-- CLOUDRUN_URL_START -->
-🚀 **Live Demo**: [https://your-url.run.app](https://your-url.run.app)
-<!-- CLOUDRUN_URL_END -->
+- `GCP_PROJECT_ID`: Google Cloud プロジェクトID
+- `GCP_SA_KEY`: サービスアカウントのJSONキー
+
+### サービスアカウント権限
+サービスアカウントには以下の権限が必要です：
+- Cloud Run Admin
+- Storage Admin
+- Container Registry Service Agent
+
+## ローカル開発
+
+### Docker Composeを使用
+```bash
+# 両方のサービスを起動
+docker-compose up
+
+# 個別に起動
+docker-compose up fastapi
+docker-compose up chainlit
 ```
 
-## Customisation
+### アクセスURL
+- FastAPI: http://localhost:9000
+- Chainlit: http://localhost:8000
 
-- Move the marker block anywhere in the README to change where the link
-  appears.
-- Adjust service name, region, or additional flags inside
-  `.github/workflows/deploy.yml` as needed.
+## デプロイメント
 
-## Troubleshooting
+### 自動デプロイ
+`main`または`develop`ブランチにプッシュすると自動的にデプロイされます。
 
-1. **URL does not update** – verify the README contains the marker block and
-   that the workflow has write permissions.
-2. **Commit loops** – mitigated by skipping commits when the URL is
-   unchanged.
-3. **Workflow errors** – inspect the "Deploy to Cloud Run" logs in the
-   GitHub Actions tab.
+### 手動デプロイ
+```bash
+# FastAPIサービスのデプロイ
+cd fastapi
+docker build -t gcr.io/$PROJECT_ID/papers-rag-api .
+docker push gcr.io/$PROJECT_ID/papers-rag-api
+gcloud run deploy papers-rag-api --image gcr.io/$PROJECT_ID/papers-rag-api
+
+# Chainlitサービスのデプロイ
+cd chainlit
+docker build -t gcr.io/$PROJECT_ID/papers-rag-ui .
+docker push gcr.io/$PROJECT_ID/papers-rag-ui
+gcloud run deploy papers-rag-ui --image gcr.io/$PROJECT_ID/papers-rag-ui \
+  --set-env-vars "PAPERS_API_BASE=https://papers-rag-api-xxx.run.app"
+```
+
+## トラブルシューティング
+
+### よくある問題
+
+1. **ChainlitがFastAPIに接続できない**
+   - `PAPERS_API_BASE`環境変数が正しく設定されているか確認
+   - FastAPIサービスが起動しているか確認
+
+2. **デプロイが失敗する**
+   - GitHub Actionsのログを確認
+   - サービスアカウントの権限を確認
+
+3. **メモリ不足エラー**
+   - Cloud Runのメモリ設定を増やす（現在2Gi）
+
+### ログの確認
+```bash
+# FastAPIサービスのログ
+gcloud run services logs read papers-rag-api --region=asia-northeast1
+
+# Chainlitサービスのログ
+gcloud run services logs read papers-rag-ui --region=asia-northeast1
+```

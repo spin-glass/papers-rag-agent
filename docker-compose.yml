@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: fastapi/Dockerfile
+    ports:
+      - "9000:8000"
+    environment:
+      - PYTHONPATH=/app/src
+    volumes:
+      - ./src:/app/src
+    networks:
+      - papers-network
+
+  chainlit:
+    build:
+      context: .
+      dockerfile: chainlit/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PAPERS_API_BASE=http://fastapi:8000
+      - PYTHONPATH=/app/src
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - fastapi
+    networks:
+      - papers-network
+
+networks:
+  papers-network:
+    driver: bridge
