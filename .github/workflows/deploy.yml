@@ -44,7 +44,7 @@ jobs:
       - name: Build & Push FastAPI Image
         uses: docker/build-push-action@v6
         with:
-          context: ./fastapi
+          context: .
           file: fastapi/Dockerfile
           push: true
           tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
@@ -100,7 +100,7 @@ jobs:
       - name: Build & Push Chainlit Image
         uses: docker/build-push-action@v6
         with:
-          context: ./chainlit
+          context: .
           file: chainlit/Dockerfile
           push: true
           tags: gcr.io/${{ steps.sanitize.outputs.pid }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
