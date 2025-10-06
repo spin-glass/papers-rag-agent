@@ -36,7 +36,7 @@ jobs:
           docker buildx build fastapi \
             --file fastapi/Dockerfile \
             --tag gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA \
-            --output type=docker
+            --output type=docker .
       - name: Push FastAPI Image
         run: |
           docker push gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA
@@ -84,7 +84,7 @@ jobs:
           docker buildx build chainlit \
             --file chainlit/Dockerfile \
             --tag gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA \
-            --output type=docker
+            --output type=docker .
           
       - name: Push Chainlit Image
         run: |
