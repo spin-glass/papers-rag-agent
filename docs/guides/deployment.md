@@ -47,8 +47,8 @@ docker-compose up chainlit
 
 ### アクセスURL
 
-- FastAPI: http://localhost:9000
-- Chainlit: http://localhost:8000
+- FastAPI: <http://localhost:9000>
+- Chainlit: <http://localhost:8000>
 
 ## デプロイメント
 
