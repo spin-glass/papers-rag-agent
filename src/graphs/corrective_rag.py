@@ -4,7 +4,7 @@ from typing import TypedDict, Optional, Literal
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 
-from models import AnswerResult
+from src.models import AnswerResult
 from pipelines.baseline import baseline_answer
 from llm.hyde import hyde_rewrite
 from config import get_support_threshold, get_graph_recursion_limit

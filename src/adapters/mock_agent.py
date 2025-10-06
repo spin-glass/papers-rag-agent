@@ -1,6 +1,6 @@
 """Mock agent implementation for testing the UI."""
 
-from models import AnswerPayload, Citation, CornellNote, QuizItem, QuizOption
+from src.models import AnswerPayload, Citation, CornellNote, QuizItem, QuizOption
 
 
 def run_agent(user_query: str) -> AnswerPayload:

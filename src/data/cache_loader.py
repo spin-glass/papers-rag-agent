@@ -7,7 +7,7 @@ import pickle
 from pathlib import Path
 from typing import Optional
 
-from models import Paper
+from src.models import Paper
 from retrieval.inmemory import InMemoryIndex
 
 

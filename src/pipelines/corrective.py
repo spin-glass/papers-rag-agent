@@ -1,6 +1,6 @@
 """Corrective RAG pipeline with HyDE."""
 
-from models import AnswerResult
+from src.models import AnswerResult
 from pipelines.baseline import baseline_answer
 from llm.hyde import hyde_rewrite
 from config import get_support_threshold

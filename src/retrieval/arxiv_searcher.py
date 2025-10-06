@@ -2,7 +2,7 @@ import urllib.parse
 import feedparser
 from typing import List, Dict
 
-from models import Paper
+from src.models import Paper
 
 ARXIV_API = "https://export.arxiv.org/api/query"
 

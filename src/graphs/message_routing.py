@@ -4,7 +4,7 @@ from typing import TypedDict, Optional, Literal, Any
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 
-from models import EnhancedAnswerResult
+from src.models import EnhancedAnswerResult
 from graphs.corrective_rag import answer_with_correction_graph
 from retrieval.arxiv_searcher import run_arxiv_search
 from config import get_graph_recursion_limit
@@ -128,7 +128,7 @@ def rag_pipeline_node(state: MessageState) -> MessageState:
         except Exception as e:
             print(f"⚠️ Content enhancement failed, using basic result: {e}")
             # Fallback to simple enhanced result
-            from models import EnhancedAnswerResult
+            from src.models import EnhancedAnswerResult
 
             enhanced_result = EnhancedAnswerResult(
                 text=basic_result.text,

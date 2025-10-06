@@ -4,7 +4,7 @@ from typing import TypedDict, List, Optional
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 
-from models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
+from src.models import CornellNote, QuizItem, QuizOption, AnswerResult, EnhancedAnswerResult
 from llm.generator import generate_answer
 from config import get_graph_recursion_limit, get_openai_api_key_safe
 

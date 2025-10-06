@@ -2,7 +2,7 @@
 
 import numpy as np
 from typing import List, Tuple
-from models import Paper, RetrievedContext
+from src.models import Paper, RetrievedContext
 from llm.embeddings import get_embed
 
 
