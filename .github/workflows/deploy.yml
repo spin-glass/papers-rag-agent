@@ -33,7 +33,7 @@ jobs:
 
       - name: Build FastAPI Image
         run: |
-          docker build -f fastapi/Dockerfile -t gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA .
+          docker buildx build -f fastapi/Dockerfile -t gcr.io/$PROJECT_ID/$FASTAPI_SERVICE:$GITHUB_SHA --load .
 
       - name: Push FastAPI Image
         run: |
@@ -79,7 +79,7 @@ jobs:
 
       - name: Build Chainlit Image
         run: |
-          docker build -f chainlit/Dockerfile -t gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA .
+          docker buildx build -f chainlit/Dockerfile -t gcr.io/$PROJECT_ID/$CHAINLIT_SERVICE:$GITHUB_SHA --load .
 
       - name: Push Chainlit Image
         run: |
