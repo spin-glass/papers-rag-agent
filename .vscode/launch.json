@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "FastAPI Debug",
+          "type": "debugpy",
+          "request": "launch",
+          "module": "uvicorn",
+          "args": [
+              "src.api.main:app",
+              "--host", "127.0.0.1",
+              "--port", "9000",
+              "--reload",
+              "--log-level", "debug"
+          ],
+          "console": "integratedTerminal",
+          "cwd": "${workspaceFolder}",
+          "env": {
+              "PYTHONPATH": "${workspaceFolder}/src",
+              "LANGCHAIN_TRACING_V2": "true",
+              "LANGCHAIN_PROJECT": "papers-rag-agent",
+              "LANGSMITH_TRACING": "true",
+              "LANGSMITH_PROJECT": "papers-rag-agent"
+          },
+          "justMyCode": false,
+          "stopOnEntry": false
+      },
+      {
+          "name": "FastAPI Debug (Direct)",
+          "type": "debugpy",
+          "request": "launch",
+          "program": "${workspaceFolder}/src/api/main.py",
+          "args": [],
+          "console": "integratedTerminal",
+          "cwd": "${workspaceFolder}",
+          "env": {
+              "PYTHONPATH": "${workspaceFolder}/src",
+              "LANGCHAIN_TRACING_V2": "true",
+              "LANGCHAIN_PROJECT": "papers-rag-agent",
+              "LANGSMITH_TRACING": "true",
+              "LANGSMITH_PROJECT": "papers-rag-agent"
+          },
+          "justMyCode": false,
+          "stopOnEntry": false
+      },
+      {
+          "name": "Chainlit Debug",
+          "type": "debugpy",
+          "request": "launch",
+          "module": "chainlit",
+          "args": [
+              "run",
+              "src/ui/app.py",
+              "-w",
+              "--port", "8000",
+              "--host", "127.0.0.1",
+              "--debug"
+          ],
+          "console": "integratedTerminal",
+          "cwd": "${workspaceFolder}",
+          "env": {
+              "PYTHONPATH": "${workspaceFolder}/src",
+              "LANGCHAIN_TRACING_V2": "true",
+              "LANGCHAIN_PROJECT": "papers-rag-agent",
+              "LANGSMITH_TRACING": "true",
+              "LANGSMITH_PROJECT": "papers-rag-agent",
+              "USE_LANGGRAPH": "true",
+              "ENGINEIO_MAX_HTTP_BUFFER_SIZE": "100000000",
+              "ENGINEIO_PACKET_TIMEOUT": "300"
+          },
+          "justMyCode": false,
+          "stopOnEntry": false
+      },
+      {
+          "name": "Test Debug",
+          "type": "debugpy",
+          "request": "launch",
+          "module": "pytest",
+          "args": [
+              "tests/",
+              "-v",
+              "--tb=short"
+          ],
+          "console": "integratedTerminal",
+          "cwd": "${workspaceFolder}",
+          "env": {
+              "PYTHONPATH": "${workspaceFolder}/src"
+          },
+          "justMyCode": false,
+          "stopOnEntry": false
+      }
+  ]
+}

@@ -67,7 +67,6 @@ Pipfile.lock
 poetry.lock
 
 # GCP Service Account Keys
-*.json
 github-actions-key.json
 
 # IDE
@@ -88,3 +87,9 @@ Thumbs.db
 # Precomputed cache files (will be generated in CI/CD)
 # src/data/precomputed_papers.json  # Commented out to include in deployment
 # src/data/precomputed_embeddings.pkl  # Commented out to include in deployment
+
+# Chainlit translations
+.chainlit/translations/*.json
+
+# LangGraph Studio
+langgraph.json
