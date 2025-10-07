@@ -4,7 +4,6 @@
 .env.local
 .env.production
 .env.staging
-*.env
 
 # API Keys and secrets
 **/secrets/
@@ -14,7 +13,6 @@
 **/*credential*
 
 # Service account files
-*.json
 github-actions-key.json
 service-account-*.json
 

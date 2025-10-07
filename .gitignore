@@ -71,7 +71,6 @@ poetry.lock
 github-actions-key.json
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
