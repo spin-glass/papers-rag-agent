@@ -10,12 +10,35 @@ tasks:
     cmds:
       - task --list
 
+  # === 基本セットアップ ===
   install:
     desc: Install dependencies
     cmds:
       - uv sync
       - uv add --group test pytest pytest-asyncio pytest-mock
 
+  install:dev:
+    desc: Install development dependencies
+    cmds:
+      - uv add --group dev ruff
+    status:
+      - uv run ruff --version
+
+  install:coverage:
+    desc: Install coverage dependencies
+    cmds:
+      - uv add --group test pytest-cov
+    status:
+      - uv run pytest --version | grep cov
+
+  setup:
+    desc: Complete project setup (install all dependencies)
+    cmds:
+      - task: install
+      - task: install:dev
+      - task: install:coverage
+
+  # === テスト ===
   test:
     desc: Run all tests
     cmds:
@@ -37,52 +60,17 @@ tasks:
     cmds:
       - uv run pytest {{.TEST_DIRS}} --cov=src --cov-report=html --cov-report=term
 
-  test:arxiv:
-    desc: Run ArXiv searcher tests specifically
-    cmds:
-      - uv run pytest tests/test_retrieval/test_arxiv_searcher*.py -v
-
-  test:pytest:
-    desc: Run PyTest format tests
-    cmds:
-      - uv run pytest tests/test_retrieval/test_arxiv_searcher_pytest.py -v
-
-  test:unittest:
-    desc: Run unittest format tests
-    dir: src
-    cmds:
-      - python -m unittest ../tests/test_retrieval/test_arxiv_searcher.py -v
-
-  test:integration:real:
-    desc: Run integration tests with real ArXiv API
-    cmds:
-      - uv run pytest tests/test_retrieval/test_arxiv_searcher_integration.py -v -m integration
-
-  test:real:
-    desc: Run tests with real ArXiv API (alias for test:integration:real)
-    cmds:
-      - task: test:integration:real
-
-  test:mock:
-    desc: Run only mock-based tests (excluding real API calls)
-    cmds:
-      - uv run pytest tests/test_retrieval/test_arxiv_searcher.py tests/test_retrieval/test_arxiv_searcher_pytest.py tests/test_ui/ -v
-
-  test:all:
-    desc: Run all tests including real API integration tests
-    cmds:
-      - uv run pytest tests/ -v
-
   test:graphs:
     desc: Run LangGraph workflow tests
     cmds:
       - uv run pytest tests/test_graphs/ -v
 
-  test:graphs:integration:
-    desc: Run LangGraph integration tests (requires OpenAI API key)
+  test:real:
+    desc: Run tests with real ArXiv API
     cmds:
-      - uv run pytest tests/test_graphs/ -v -m integration
+      - uv run pytest tests/test_retrieval/test_arxiv_searcher_integration.py -v -m integration
 
+  # === コード品質 ===
   lint:
     desc: Run linting with ruff
     deps: [install:dev]
@@ -115,6 +103,19 @@ tasks:
       - find . -type d -name "*.egg-info" -exec rm -rf {} + || true
       - rm -rf .coverage htmlcov/ .pytest_cache/ .ruff_cache/
 
+  check:
+    desc: Run all checks (linting, formatting, tests)
+    deps: [lint, format:check, test]
+
+  ci:
+    desc: Run CI pipeline (install, check, test with coverage)
+    cmds:
+      - task: install
+      - task: lint
+      - task: format:check
+      - task: test:coverage
+
+  # === アプリケーション実行 ===
   run:
     desc: Run the Chainlit application with LangSmith tracing
     cmds:
@@ -122,26 +123,21 @@ tasks:
       - sleep 1
       - LANGCHAIN_TRACING_V2=true LANGCHAIN_PROJECT=papers-rag-agent LANGSMITH_TRACING=true LANGSMITH_PROJECT=papers-rag-agent USE_LANGGRAPH=true ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
 
-  run:force:
-    desc: Run with maximum buffer settings (if errors persist)
+  run:ja:
+    desc: Run the application in Japanese
     cmds:
-      - ENGINEIO_MAX_HTTP_BUFFER_SIZE=500000000 ENGINEIO_PACKET_TIMEOUT=600 ENGINEIO_PING_TIMEOUT=1200 uv run chainlit run src/ui/app.py -w --port 8002 --host 127.0.0.1
-
-  run:simple:
-    desc: Run the application without cleaning cache
-    cmds:
-      - uv run chainlit run src/ui/app.py -w
-
-  run:clean:
-    desc: Run the application with clean cache (alias for run)
-    cmds:
+      - |
+        sed -i '' 's/default_locale = ".*"/default_locale = "ja"/' .chainlit/config.toml
+        echo "Switched to Japanese locale"
       - task: run
 
-  run:safe:
-    desc: Run the application with safe settings (alternative port and reduced features)
+  run:en:
+    desc: Run the application in English
     cmds:
-      - task: clean
-      - uv run chainlit run src/ui/app.py -w --host 127.0.0.1 --port 8001 --no-cache
+      - |
+        sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
+        echo "Switched to English locale"
+      - task: run
 
   run:debug:
     desc: Run the application with debug settings
@@ -154,12 +150,29 @@ tasks:
     cmds:
       - uv run chainlit run src/ui/app.py -w --host 127.0.0.1 --port 8000
 
-  run:en:
-    desc: Run the application in English
+  # === ローカル開発環境 ===
+  api:
+    desc: Run FastAPI server locally
     cmds:
-      - |
-        sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
-  
+      - pkill -f "uvicorn src.api.main" || true
+      - sleep 1
+      - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload
+
+  ui:
+    desc: Run Chainlit UI locally (requires API server)
+    cmds:
+      - pkill -f "chainlit run" || true
+      - sleep 1
+      - PAPERS_API_BASE=http://localhost:9000 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
+
+  dev:local:
+    desc: Run both API and UI locally (requires two terminals)
+    cmds:
+      - echo "Starting local development environment..."
+      - echo "Terminal 1 - task api"
+      - echo "Terminal 2 - task ui"
+
+  # === キャッシュ管理 ===
   build:cache:
     desc: Build precomputed cache for fast startup
     cmds:
@@ -183,65 +196,15 @@ tasks:
         else
           echo "❌ Embeddings cache not found"
         fi
-  
+
   cache:clean:
     desc: Clean precomputed cache files
     cmds:
       - rm -f src/data/precomputed_papers.json
       - rm -f src/data/precomputed_embeddings.pkl
       - echo "🗑️  Cache files removed"
-        echo "Switched to English locale"
-      - task: run
 
-  run:ja:
-    desc: Run the application in Japanese
-    cmds:
-      - |
-        sed -i '' 's/default_locale = ".*"/default_locale = "ja"/' .chainlit/config.toml
-        echo "Switched to Japanese locale"
-      - task: run
-
-  check:
-    desc: Run all checks (linting, formatting, tests)
-    deps: [lint, format:check, test]
-
-  ci:
-    desc: Run CI pipeline (install, check, test with coverage)
-    cmds:
-      - task: install
-      - task: lint
-      - task: format:check
-      - task: test:coverage
-
-  # Helper tasks for installation
-  install:dev:
-    desc: Install development dependencies
-    cmds:
-      - uv add --group dev ruff
-    status:
-      - uv run ruff --version
-
-  install:coverage:
-    desc: Install coverage dependencies
-    cmds:
-      - uv add --group test pytest-cov
-    status:
-      - uv run pytest --version | grep cov
-
-  # Project setup
-  setup:
-    desc: Complete project setup (install all dependencies)
-    cmds:
-      - task: install
-      - task: install:dev
-      - task: install:coverage
-
-  # ArXiv specific tasks
-  arxiv:test:
-    desc: Test ArXiv functionality end-to-end
-    cmds:
-      - task: test:arxiv
-
+  # === デモ・検証 ===
   arxiv:demo:
     desc: Run a quick ArXiv search demo
     cmds:
@@ -260,46 +223,7 @@ tasks:
             print()
         "
 
-  # Git utilities
-  diff:
-    desc: Show git diff excluding noisy files
-    cmds:
-      - git diff --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff
-
-  diff:copy:
-    desc: Copy git diff (excluding noisy files) to clipboard
-    cmds:
-      - git diff --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff | pbcopy
-      - echo "Git diff copied to clipboard!"
-
-  diff:staged:
-    desc: Show staged git diff excluding noisy files
-    cmds:
-      - git diff --cached --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff --cached
-
-  diff:staged:copy:
-    desc: Copy staged git diff (excluding noisy files) to clipboard
-    cmds:
-      - git diff --cached --name-only | grep -v -E '\.(lock|pyc)$|__pycache__|\.coverage|htmlcov|\.pytest_cache|\.ruff_cache|\.egg-info' | xargs -r git diff --cached | pbcopy
-      - echo "Staged git diff copied to clipboard!"
-
-  diff:all:
-    desc: Show all git diff (including noisy files)
-    cmds:
-      - git diff
-
-  diff:all:copy:
-    desc: Copy all git diff (including noisy files) to clipboard
-    cmds:
-      - git diff | pbcopy
-      - echo "Complete git diff copied to clipboard!"
-
-  status:
-    desc: Show git status
-    cmds:
-      - git status
-
-  # Help and info
+  # === プロジェクト情報 ===
   info:
     desc: Display project information
     cmds:
@@ -311,8 +235,7 @@ tasks:
       - echo "Main commands:"
       - echo "  task setup     - Complete project setup"
       - echo "  task test      - Run all tests"
-      - echo "  task run       - Start the application (clean)"
+      - echo "  task run       - Start the application"
       - echo "  task dev       - Start development server"
       - echo "  task check     - Run all quality checks"
-      - echo "  task diff      - Show clean git diff"
-      - echo "  task diff:copy - Copy clean git diff to clipboard"
+      - echo "  task cache:info - Show cache information"
