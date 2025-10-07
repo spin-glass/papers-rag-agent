@@ -46,6 +46,81 @@ HyDEを使った自己補正RAGシステム：
 
 これにより、ユーザーはRAGの処理過程を透明性高く確認できます。
 
+## 🛠️ ローカル開発環境
+
+### 前提条件
+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) パッケージマネージャー
+- OpenAI API Key
+
+### セットアップ
+
+1. **依存関係のインストール**
+   ```bash
+   task setup
+   ```
+
+2. **環境変数の設定**
+   ```bash
+   cp env.example .env
+   # .envファイルを編集してOPENAI_API_KEYを設定
+   ```
+
+3. **キャッシュの構築（初回のみ）**
+   ```bash
+   task build:cache
+   ```
+
+### 実行方法
+
+#### 方法1: Docker Compose（推奨）
+```bash
+# 両方のサービスを起動
+docker compose up -d
+
+# アクセス
+# - Chainlit UI: http://localhost:8000
+# - FastAPI: http://localhost:9000
+```
+
+#### 方法2: ローカル実行
+```bash
+# ターミナル1: FastAPIサーバー
+task api
+
+# ターミナル2: Chainlit UI
+task ui
+
+# アクセス
+# - Chainlit UI: http://localhost:8000
+# - FastAPI: http://localhost:9000
+```
+
+### 利用可能なタスク
+
+```bash
+# 開発用
+task api          # FastAPIサーバーのみ起動
+task ui           # Chainlit UIのみ起動
+task dev:local    # ローカル開発の説明表示
+
+# テスト
+task test         # 全テスト実行
+task test:unit    # ユニットテストのみ
+task test:integration  # 統合テストのみ
+
+# キャッシュ管理
+task build:cache  # キャッシュ構築
+task cache:info   # キャッシュ情報表示
+task cache:clean  # キャッシュ削除
+
+# 品質チェック
+task lint         # リンティング
+task format       # コードフォーマット
+task check        # 全チェック実行
+```
+
 ## 🚀 将来実装予定の機能
 
 ### GraphRAG + ベクトルハイブリッド検索
