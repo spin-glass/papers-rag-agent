@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .                       # ルート（src/ を拾う構成）
-          file: fastapi/Dockerfile
+          file: docker/fastapi/Dockerfile
           push: true
           tags: |
             asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
@@ -104,7 +104,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: chainlit/Dockerfile
+          file: docker/chainlit/Dockerfile
           push: true
           tags: |
             asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
