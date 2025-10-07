@@ -29,8 +29,14 @@
           "name": "FastAPI Debug (Direct)",
           "type": "debugpy",
           "request": "launch",
-          "program": "${workspaceFolder}/src/api/main.py",
-          "args": [],
+          "module": "uvicorn",
+          "args": [
+              "src.api.main:app",
+              "--host", "127.0.0.1",
+              "--port", "9000",
+              "--reload",
+              "--log-level", "debug"
+          ],
           "console": "integratedTerminal",
           "cwd": "${workspaceFolder}",
           "env": {

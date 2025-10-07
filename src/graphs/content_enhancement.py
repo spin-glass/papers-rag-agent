@@ -38,20 +38,73 @@ def cornell_note_generation_node(
             print("⚠️ Skipping Cornell Note generation - OPENAI_API_KEY not set")
             state["error"] = "Cornell Note generation skipped - API key not available"
             return state
-        prompt = f"""Based on the following question and answer, create a Cornell Note format summary.
+
+        citations = state.get("citations", [])
+        citation_list = "\n".join(f"- {c['title']} -> {c['link'].replace('http://','https://')}" for c in citations)
+
+        prompt = f"""You will create a Cornell Note. Use only the papers listed below when describing content.
+Each paper title already has its correct URL — copy it exactly and make the title itself
+a Markdown link like [Title](URL). Do NOT make the title bold.
+
+CITATIONS (use exactly these titles and URLs, no others):
+{citation_list}
+
+Rules for links/titles in NOTES:
+- Only use URLs that appear in CITATIONS. Never output any other URL or arXiv ID.
+- When you refer to a paper, use the exact title from CITATIONS and put its URL on the last line of that paper’s bullet group.
+- If a paper is not in CITATIONS, do not include any URL for it (omit the link).
+
+Based on the following question and answer, create a Cornell Note:
 
 Question: {state["question"]}
 
 Answer: {state["answer_text"]}
 
 Generate a Cornell Note with:
-1. Cue: Key concepts and terms (1-2 short phrases)
-2. Notes: Main points in bullet format (3-5 bullets)
-3. Summary: Concise summary in 1-2 sentences
+1. cue: Key concepts and terms (1–2 short phrases)
+2. notes: A YAML list of papers, each with:
+   - title: Markdown link (exactly as in CITATIONS)
+   - points: List of 2–4 concise sentences
+3. summary: 1–2 sentence summary of all papers
 
-Format your response as:
+Rules for links/titles in NOTES:
+- Only use URLs that appear in CITATIONS. Never output any other URL or arXiv ID.
+- When you refer to a paper, use the exact title from CITATIONS.
+- The link must appear only in the title field (as a Markdown link).
+- If a paper is not in CITATIONS, omit it completely.
+- Do NOT include any explanation, prose, or commentary outside of YAML.
+
+Example:
+
 CUE: [your cue here]
-NOTES: [your notes here]
+
+NOTES: [
+  {
+    "title": "[Title 1](URL)",
+    "points": [
+      "sentence 1",
+      "sentence 2",
+      "sentence 3"
+    ]
+  },
+  {
+    "title": "[Title 2](URL)",
+    "points": [
+      "sentence 1",
+      "sentence 2",
+      "sentence 3"
+    ]
+  },
+  {
+    "title": "[Title 3](URL)",
+    "points": [
+      "sentence 1",
+      "sentence 2",
+      "sentence 3"
+    ]
+  }
+]
+
 SUMMARY: [your summary here]
 """
 
