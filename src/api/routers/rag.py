@@ -2,10 +2,10 @@ import asyncio
 import json
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
-from api.deps import get_index_holder
-from api.schema import AskRequest, AskResponse
-from api.core.rag_service import answer_question
-from api.core.graph_service import stream_message
+from src.api.deps import get_index_holder
+from src.api.schema import AskRequest, AskResponse
+from src.api.core.rag_service import answer_question
+from src.api.core.graph_service import stream_message
 
 router = APIRouter()
 

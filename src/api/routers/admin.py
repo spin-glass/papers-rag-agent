@@ -1,8 +1,8 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException
-from api.deps import get_index_holder
-from api.schema import InitIndexRequest, InitIndexResponse
-from api.core.rag_index import a_load_or_build_index
+from src.api.deps import get_index_holder
+from src.api.schema import InitIndexRequest, InitIndexResponse
+from src.api.core.rag_index import a_load_or_build_index
 
 log = logging.getLogger(__name__)
 router = APIRouter()

@@ -38,7 +38,7 @@ def generate_answer(prompt: str, question: str = None) -> str:
     # Add language instruction if question is provided
     final_prompt = prompt
     if question:
-        from utils.language_utils import get_response_language_instruction
+        from src.utils.language_utils import get_response_language_instruction
 
         language_instruction = get_response_language_instruction(question)
         final_prompt = final_prompt + language_instruction

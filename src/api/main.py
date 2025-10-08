@@ -4,8 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.deps import get_index_holder
-from api.core.rag_index import a_load_or_build_index
+from src.api.deps import get_index_holder
+from src.api.core.rag_index import a_load_or_build_index
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s - %(message)s"
@@ -44,7 +44,7 @@ app.add_middleware(
 )
 
 # ルーター
-from api.routers import health, admin, arxiv, rag  # noqa: E402
+from .routers import health, admin, arxiv, rag  # noqa: E402
 
 app.include_router(health.router, tags=["Health"])
 app.include_router(admin.router, tags=["Admin"])

@@ -117,10 +117,18 @@ tasks:
 
   # === アプリケーション実行 ===
   run:
-    desc: Run the Chainlit application with LangSmith tracing
+    desc: Run both FastAPI and Chainlit servers with LangSmith tracing
     cmds:
-      - pkill -f "chainlit run" || true
-      - sleep 1
+      - pkill -9 -f "chainlit\|uvicorn\|python.*src" || true
+      - lsof -ti:8000,9000 | xargs kill -9 || true
+      - sleep 3
+      - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload &
+      - |
+        echo "Waiting for FastAPI server to start..."
+        until curl -s http://localhost:9000/health > /dev/null; do
+          sleep 1
+        done
+        echo "FastAPI server is ready!"
       - LANGCHAIN_TRACING_V2=true LANGCHAIN_PROJECT=papers-rag-agent LANGSMITH_TRACING=true LANGSMITH_PROJECT=papers-rag-agent USE_LANGGRAPH=true ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
 
   run:ja:
