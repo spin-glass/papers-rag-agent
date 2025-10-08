@@ -24,6 +24,18 @@ class MessageState(BaseModel):
     final_response: Optional[str] = None
     error: Optional[str] = None
 
+    def __getitem__(self, key):
+        """Allow dictionary-style access for LangGraph compatibility."""
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        """Allow dictionary-style assignment for LangGraph compatibility."""
+        setattr(self, key, value)
+
+    def get(self, key, default=None):
+        """Allow .get() method for LangGraph compatibility."""
+        return getattr(self, key, default)
+
 
 def classify_message_node(state: MessageState) -> MessageState:
     """Classify the incoming message type."""

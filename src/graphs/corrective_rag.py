@@ -27,6 +27,18 @@ class CorrectionState(BaseModel):
     baseline_support: Optional[float] = None
     enhanced_support: Optional[float] = None
 
+    def __getitem__(self, key):
+        """Allow dictionary-style access for LangGraph compatibility."""
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        """Allow dictionary-style assignment for LangGraph compatibility."""
+        setattr(self, key, value)
+
+    def get(self, key, default=None):
+        """Allow .get() method for LangGraph compatibility."""
+        return getattr(self, key, default)
+
 
 def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
     """Perform baseline RAG retrieval and generation."""
