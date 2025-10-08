@@ -620,6 +620,24 @@ wheels = [
 ]
 
 [[package]]
+name = "go-task-bin"
+version = "3.45.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/7b/82b94abb641dfecb3fbf470555e8da362b51b581e5b63bba9c56f2a9c01e/go_task_bin-3.45.4.tar.gz", hash = "sha256:6b8753b37e45c0ba6a34610529a46e720109b04c54cd92de2b4a188e1c95e879", size = 444704 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/9d/1eb73dd582503847a71e4b83f26780959bcfc2e78d638d8ca105b8a7dcb0/go_task_bin-3.45.4-py3-none-android_33_arm64_v8a.whl", hash = "sha256:4db4e1393ec202abc887693de898f8d67061a4ef627e14b19b80518606d67b95", size = 6701150 },
+    { url = "https://files.pythonhosted.org/packages/85/1f/b91422953974a5eeda9082f65eaea754110981b1c425d8add2f86a986c84/go_task_bin-3.45.4-py3-none-macosx_12_0_arm64.whl", hash = "sha256:f48139a8ffbd0930ed59e02e9d7467364f4d7f3b89dd6ef9209d985f496f6072", size = 6609970 },
+    { url = "https://files.pythonhosted.org/packages/41/39/59e38049667cd8d7baa4be0ae93c9fcd0177c07256571afe36e53b50bf82/go_task_bin-3.45.4-py3-none-macosx_12_0_x86_64.whl", hash = "sha256:e549d1b14ee77360273a1e7463c3045c93f4302c61c74dbca76d4a1603781c8d", size = 7153394 },
+    { url = "https://files.pythonhosted.org/packages/26/3c/4a33065e0a9e4443f5982f93b5d35610779bcb1ec4b80955276956b7d041/go_task_bin-3.45.4-py3-none-manylinux_2_28_aarch64.musllinux_1_2_aarch64.whl", hash = "sha256:1726b909634ec0f2da78172c3c2114f5560e546097c637a15be78ded8894adae", size = 6379232 },
+    { url = "https://files.pythonhosted.org/packages/bd/ef/0543bc05d4dae0fa842d4337ecd120e019296d2eb6d8c49137e05c7f80b8/go_task_bin-3.45.4-py3-none-manylinux_2_28_ppc64le.musllinux_1_2_ppc64le.whl", hash = "sha256:c7833d663c2f1a14e1904b5786f9fcca72da7a15589cffab2df8a1e0118b47ae", size = 6433869 },
+    { url = "https://files.pythonhosted.org/packages/c8/41/ebf8f60b189d218815622c7e406fcd1be0476b30d8924c2aac16cf3d57b5/go_task_bin-3.45.4-py3-none-manylinux_2_28_riscv64.musllinux_1_2_riscv64.whl", hash = "sha256:17f27cd425897adfe03ba5842477ae3af860ef0ef137448c82b11b284ef4cb52", size = 6669864 },
+    { url = "https://files.pythonhosted.org/packages/6b/89/df91d6843a21e36e4f341852e3376b70b15e3d0a3a03d3b28975c8778f0f/go_task_bin-3.45.4-py3-none-manylinux_2_28_s390x.musllinux_1_2_s390x.whl", hash = "sha256:99b15a502d98ad3df314e284853cd75da0c0aa4c599bc1153a26295edddd8769", size = 6934558 },
+    { url = "https://files.pythonhosted.org/packages/87/c5/7c9c6bf99e84d0aaab2f2cabae77753a48e344346a9f3727605da6624f74/go_task_bin-3.45.4-py3-none-manylinux_2_28_x86_64.musllinux_1_2_x86_64.whl", hash = "sha256:1295acd7c09147513d7045be20bd53e43bed97bd69f9812c8c33c8d04f34beb4", size = 7056877 },
+    { url = "https://files.pythonhosted.org/packages/97/ab/4fcadce89561d09bb066044243071b687d441cdf44f402de49ccffbe1ba5/go_task_bin-3.45.4-py3-none-win_amd64.whl", hash = "sha256:1a5c84c15607b0141f4a681560dbd54b47fb029ee12e00a360e1626b45e2925c", size = 7251768 },
+    { url = "https://files.pythonhosted.org/packages/8e/03/c9f489eb219fe0c1775b46efeb765289211e2f9804824bc87a63c257f6a8/go_task_bin-3.45.4-py3-none-win_arm64.whl", hash = "sha256:4d5b70868ce9ca2ec11af233843093c6951de9c5beaed2a50e00d3a2b11016b2", size = 6481311 },
+]
+
+[[package]]
 name = "googleapis-common-protos"
 version = "1.70.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2077,6 +2095,7 @@ dependencies = [
     { name = "chainlit" },
     { name = "fastapi" },
     { name = "feedparser" },
+    { name = "go-task-bin" },
     { name = "grpcio" },
     { name = "grpcio-tools" },
     { name = "httpx" },
@@ -2116,6 +2135,7 @@ requires-dist = [
     { name = "chainlit", specifier = ">=2.8.1" },
     { name = "fastapi", specifier = ">=0.116.2" },
     { name = "feedparser", specifier = ">=6.0.12" },
+    { name = "go-task-bin", specifier = ">=3.45.4" },
     { name = "grpcio", specifier = ">=1.75.1" },
     { name = "grpcio-tools", specifier = "<=1.75.0" },
     { name = "httpx", specifier = ">=0.28.1" },

@@ -22,6 +22,7 @@ dependencies = [
     "fastapi>=0.116.2",
     "uvicorn[standard]>=0.37.0",
     "httpx>=0.28.1",
+    "go-task-bin>=3.45.4",
 ]
 
 [project.optional-dependencies]
