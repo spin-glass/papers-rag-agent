@@ -1,8 +1,9 @@
 """Message routing workflow using LangGraph."""
 
-from typing import TypedDict, Optional, Literal, Any
+from typing import Optional, Literal, Any
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
+from pydantic import BaseModel, ConfigDict
 
 from src.models import EnhancedAnswerResult
 from src.graphs.corrective_rag import answer_with_correction_graph
@@ -10,16 +11,30 @@ from src.retrieval.arxiv_searcher import run_arxiv_search
 from src.config import get_graph_recursion_limit
 
 
-class MessageState(TypedDict):
+class MessageState(BaseModel):
     """State for message routing workflow."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     message_content: str
     message_type: str
-    rag_index: Optional[Any]
-    arxiv_results: Optional[list]
-    rag_result: Optional[EnhancedAnswerResult]
-    final_response: Optional[str]
-    error: Optional[str]
+    rag_index: Optional[Any] = None
+    arxiv_results: Optional[list] = None
+    rag_result: Optional[EnhancedAnswerResult] = None
+    final_response: Optional[str] = None
+    error: Optional[str] = None
+
+    def __getitem__(self, key):
+        """Allow dictionary-style access for LangGraph compatibility."""
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        """Allow dictionary-style assignment for LangGraph compatibility."""
+        setattr(self, key, value)
+
+    def get(self, key, default=None):
+        """Allow .get() method for LangGraph compatibility."""
+        return getattr(self, key, default)
 
 
 def classify_message_node(state: MessageState) -> MessageState:

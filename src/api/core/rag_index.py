@@ -3,7 +3,7 @@ import logging
 from threading import RLock
 from typing import List, Optional, Sequence
 
-from data.cache_loader import cache_exists, load_precomputed_cache
+from src.data.cache_loader import cache_exists, load_precomputed_cache
 from src.retrieval.arxiv_searcher import search_arxiv_papers
 from src.retrieval.inmemory import InMemoryIndex
 

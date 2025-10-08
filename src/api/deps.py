@@ -1,5 +1,5 @@
 from __future__ import annotations
-from api.core.rag_index import RagIndexHolder
+from src.api.core.rag_index import RagIndexHolder
 
 _holder = RagIndexHolder()
 

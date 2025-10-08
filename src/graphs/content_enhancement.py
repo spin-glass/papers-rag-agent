@@ -1,8 +1,9 @@
 """Content enhancement workflow using LangGraph for Cornell Note and Quiz generation."""
 
-from typing import TypedDict, List, Optional
+from typing import List, Optional
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
+from pydantic import BaseModel, ConfigDict
 
 from src.models import (
     CornellNote,
@@ -15,17 +16,31 @@ from src.llm.generator import generate_answer
 from src.config import get_graph_recursion_limit, get_openai_api_key_safe
 
 
-class ContentEnhancementState(TypedDict):
+class ContentEnhancementState(BaseModel):
     """State for content enhancement workflow."""
 
-    question: str  # Remove Annotated to avoid concurrent updates
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    question: str
     answer_text: str
     citations: List[dict]
     support: float
     attempts: List[dict]
-    cornell_note: Optional[CornellNote]
-    quiz_items: Optional[List[QuizItem]]
-    error: Optional[str]  # Remove Annotated to avoid concurrent updates
+    cornell_note: Optional[CornellNote] = None
+    quiz_items: Optional[List[QuizItem]] = None
+    error: Optional[str] = None  # Remove Annotated to avoid concurrent updates
+
+    def __getitem__(self, key):
+        """Allow dictionary-style access for LangGraph compatibility."""
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        """Allow dictionary-style assignment for LangGraph compatibility."""
+        setattr(self, key, value)
+
+    def get(self, key, default=None):
+        """Allow .get() method for LangGraph compatibility."""
+        return getattr(self, key, default)
 
 
 def cornell_note_generation_node(
@@ -40,7 +55,10 @@ def cornell_note_generation_node(
             return state
 
         citations = state.get("citations", [])
-        citation_list = "\n".join(f"- {c['title']} -> {c['link'].replace('http://','https://')}" for c in citations)
+        citation_list = "\n".join(
+            f"- {c['title']} -> {c['link'].replace('http://', 'https://')}"
+            for c in citations
+        )
 
         prompt = f"""You will create a Cornell Note. Use only the papers listed below when describing content.
 Each paper title already has its correct URL — copy it exactly and make the title itself
@@ -80,7 +98,7 @@ CUE: [your cue here]
 
 NOTES: [
   {
-    "title": "[Title 1](URL)",
+            "title": "[Title 1](URL)",
     "points": [
       "sentence 1",
       "sentence 2",
@@ -88,7 +106,7 @@ NOTES: [
     ]
   },
   {
-    "title": "[Title 2](URL)",
+            "title": "[Title 2](URL)",
     "points": [
       "sentence 1",
       "sentence 2",
@@ -96,7 +114,7 @@ NOTES: [
     ]
   },
   {
-    "title": "[Title 3](URL)",
+            "title": "[Title 3](URL)",
     "points": [
       "sentence 1",
       "sentence 2",

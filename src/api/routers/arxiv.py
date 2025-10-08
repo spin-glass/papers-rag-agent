@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api.schema import ArxivSearchRequest, ArxivSearchResponse, Paper
-from api.core.arxiv_service import search
+from src.api.schema import ArxivSearchRequest, ArxivSearchResponse, Paper
+from src.api.core.arxiv_service import search
 
 router = APIRouter()
 

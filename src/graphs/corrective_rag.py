@@ -1,8 +1,9 @@
 """Corrective RAG workflow using LangGraph."""
 
-from typing import TypedDict, Optional, Literal
+from typing import Optional, Literal
 from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
+from pydantic import BaseModel, ConfigDict
 
 from src.models import AnswerResult
 from src.pipelines.baseline import baseline_answer
@@ -10,19 +11,33 @@ from src.llm.hyde import hyde_rewrite
 from src.config import get_support_threshold, get_graph_recursion_limit
 
 
-class CorrectionState(TypedDict):
+class CorrectionState(BaseModel):
     """State for corrective RAG workflow."""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     question: str
-    index: Optional[object]
+    index: Optional[object] = None
     theta: float
-    answer: Optional[AnswerResult]
-    hyde_query: Optional[str]
+    answer: Optional[AnswerResult] = None
+    hyde_query: Optional[str] = None
     attempts: list
-    final_result: Optional[AnswerResult]
-    hyde_attempted: bool  # Flag to track if HyDE has been attempted
-    baseline_support: Optional[float]  # Track baseline support score
-    enhanced_support: Optional[float]  # Track enhanced support score
+    final_result: Optional[AnswerResult] = None
+    hyde_attempted: bool = False
+    baseline_support: Optional[float] = None
+    enhanced_support: Optional[float] = None
+
+    def __getitem__(self, key):
+        """Allow dictionary-style access for LangGraph compatibility."""
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        """Allow dictionary-style assignment for LangGraph compatibility."""
+        setattr(self, key, value)
+
+    def get(self, key, default=None):
+        """Allow .get() method for LangGraph compatibility."""
+        return getattr(self, key, default)
 
 
 def baseline_retrieval_node(state: CorrectionState) -> CorrectionState:
@@ -250,7 +265,7 @@ def create_corrective_rag_graph() -> StateGraph:
 
 
 def answer_with_correction_graph(
-    question: str, theta: float = None, index=None
+    question: str, theta: Optional[float] = None, index: Optional[object] = None
 ) -> AnswerResult:
     """
     Generate answer using corrective RAG with LangGraph workflow.

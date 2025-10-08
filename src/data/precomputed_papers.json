@@ -1,5 +1,41 @@
 [
   {
+    "id": "2006.10270",
+    "title": "Multi-branch Attentive Transformer",
+    "link": "http://arxiv.org/abs/2006.10270v2",
+    "pdf": "http://arxiv.org/pdf/2006.10270v2",
+    "summary": "While the multi-branch architecture is one of the key ingredients to the\nsuccess of computer vision tasks, it has not been well investigated in natural\nlanguage processing, especially sequence learning tasks. In this work, we\npropose a simple yet effective variant of Transformer called multi-branch\nattentive Transformer (briefly, MAT), where the attention layer is the average\nof multiple branches and each branch is an independent multi-head attention\nlayer. We leverage two training techniques to regularize the training:\ndrop-branch, which randomly drops individual branches during training, and\nproximal initialization, which uses a pre-trained Transformer model to\ninitialize multiple branches. Experiments on machine translation, code\ngeneration and natural language understanding demonstrate that such a simple\nvariant of Transformer brings significant improvements. Our code is available\nat \\url{https://github.com/HA-Transformer}.",
+    "authors": [
+      "Yang Fan",
+      "Shufang Xie",
+      "Yingce Xia",
+      "Lijun Wu",
+      "Tao Qin",
+      "Xiang-Yang Li",
+      "Tie-Yan Liu"
+    ],
+    "updated": "2020-07-26T13:04:49Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "1807.11605",
+    "title": "Doubly Attentive Transformer Machine Translation",
+    "link": "http://arxiv.org/abs/1807.11605v1",
+    "pdf": "http://arxiv.org/pdf/1807.11605v1",
+    "summary": "In this paper a doubly attentive transformer machine translation model\n(DATNMT) is presented in which a doubly-attentive transformer decoder normally\njoins spatial visual features obtained via pretrained convolutional neural\nnetworks, conquering any gap between image captioning and translation. In this\nframework, the transformer decoder figures out how to take care of\nsource-language words and parts of an image freely by methods for two separate\nattention components in an Enhanced Multi-Head Attention Layer of doubly\nattentive transformer, as it generates words in the target language. We find\nthat the proposed model can effectively exploit not just the scarce multimodal\nmachine translation data, but also large general-domain text-only machine\ntranslation corpora, or image-text image captioning corpora. The experimental\nresults show that the proposed doubly-attentive transformer-decoder performs\nbetter than a single-decoder transformer model, and gives the state-of-the-art\nresults in the English-German multimodal machine translation task.",
+    "authors": [
+      "Hasan Sait Arslan",
+      "Mark Fishel",
+      "Gholamreza Anbarjafari"
+    ],
+    "updated": "2018-07-30T23:13:55Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
     "id": "2405.04515",
     "title": "A Transformer with Stack Attention",
     "link": "http://arxiv.org/abs/2405.04515v2",
@@ -17,18 +53,56 @@
     ]
   },
   {
-    "id": "2410.15578",
-    "title": "Generalized Probabilistic Attention Mechanism in Transformers",
-    "link": "http://arxiv.org/abs/2410.15578v1",
-    "pdf": "http://arxiv.org/pdf/2410.15578v1",
-    "summary": "The Transformer architecture has become widely adopted due to its\ndemonstrated success, attributed to the attention mechanism at its core.\nDespite these successes, the attention mechanism of Transformers is associated\nwith two well-known issues: rank-collapse and gradient vanishing. In this\npaper, we present a theoretical analysis that it is inherently difficult to\naddress both issues simultaneously in the conventional attention mechanism. To\nhandle these issues, we introduce a novel class of attention mechanism,\nreferred to as generalized probabilistic attention mechanism (GPAM), and its\ndual-attention implementation within the Transformer architecture. Unlike\nconventional attention mechanisms, GPAM allows for negative attention scores\nwhile preserving a fixed total sum. We provide theoretical evidence that the\nproposed dual-attention GPAM (daGPAM) effectively mitigates both the\nrank-collapse and gradient vanishing issues which are difficult to resolve\nsimultaneously with the conventional attention mechanisms. Furthermore, we\nempirically validate this theoretical evidence, demonstrating the superiority\nof daGPAM compared to other alternative attention mechanisms that were proposed\nto address the same issues. Additionally, we demonstrate the practical benefits\nof GPAM in natural language processing tasks, such as language modeling and\nneural machine translation.",
+    "id": "2109.12188",
+    "title": "Predicting Attention Sparsity in Transformers",
+    "link": "http://arxiv.org/abs/2109.12188v2",
+    "pdf": "http://arxiv.org/pdf/2109.12188v2",
+    "summary": "Transformers' quadratic complexity with respect to the input sequence length\nhas motivated a body of work on efficient sparse approximations to softmax. An\nalternative path, used by entmax transformers, consists of having built-in\nexact sparse attention; however this approach still requires quadratic\ncomputation. In this paper, we propose Sparsefinder, a simple model trained to\nidentify the sparsity pattern of entmax attention before computing it. We\nexperiment with three variants of our method, based on distances, quantization,\nand clustering, on two tasks: machine translation (attention in the decoder)\nand masked language modeling (encoder-only). Our work provides a new angle to\nstudy model efficiency by doing extensive analysis of the tradeoff between the\nsparsity and recall of the predicted attention graph. This allows for detailed\ncomparison between different models along their Pareto curves, important to\nguide future benchmarks for sparse attention models.",
     "authors": [
-      "DongNyeong Heo",
-      "Heeyoul Choi"
+      "Marcos Treviso",
+      "António Góis",
+      "Patrick Fernandes",
+      "Erick Fonseca",
+      "André F. T. Martins"
     ],
-    "updated": "2024-10-21T01:55:52Z",
+    "updated": "2022-04-21T07:17:11Z",
     "categories": [
-      "cs.LG",
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2306.13501",
+    "title": "Knowledge-Infused Self Attention Transformers",
+    "link": "http://arxiv.org/abs/2306.13501v1",
+    "pdf": "http://arxiv.org/pdf/2306.13501v1",
+    "summary": "Transformer-based language models have achieved impressive success in various\nnatural language processing tasks due to their ability to capture complex\ndependencies and contextual information using self-attention mechanisms.\nHowever, they are not without limitations. These limitations include\nhallucinations, where they produce incorrect outputs with high confidence, and\nalignment issues, where they generate unhelpful and unsafe outputs for human\nusers. These limitations stem from the absence of implicit and missing context\nin the data alone. To address this, researchers have explored augmenting these\nmodels with external knowledge from knowledge graphs to provide the necessary\nadditional context. However, the ad-hoc nature of existing methods makes it\ndifficult to properly analyze the effects of knowledge infusion on the many\nmoving parts or components of a transformer. This paper introduces a systematic\nmethod for infusing knowledge into different components of a transformer-based\nmodel. A modular framework is proposed to identify specific components within\nthe transformer architecture, such as the self-attention mechanism, encoder\nlayers, or the input embedding layer, where knowledge infusion can be applied.\nAdditionally, extensive experiments are conducted on the General Language\nUnderstanding Evaluation (GLUE) benchmark tasks, and the findings are reported.\nThis systematic approach aims to facilitate more principled approaches to\nincorporating knowledge into language model architectures.",
+    "authors": [
+      "Kaushik Roy",
+      "Yuxin Zi",
+      "Vignesh Narayanan",
+      "Manas Gaur",
+      "Amit Sheth"
+    ],
+    "updated": "2023-06-23T13:55:01Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2004.11886",
+    "title": "Lite Transformer with Long-Short Range Attention",
+    "link": "http://arxiv.org/abs/2004.11886v1",
+    "pdf": "http://arxiv.org/pdf/2004.11886v1",
+    "summary": "Transformer has become ubiquitous in natural language processing (e.g.,\nmachine translation, question answering); however, it requires enormous amount\nof computations to achieve high performance, which makes it not suitable for\nmobile applications that are tightly constrained by the hardware resources and\nbattery. In this paper, we present an efficient mobile NLP architecture, Lite\nTransformer to facilitate deploying mobile NLP applications on edge devices.\nThe key primitive is the Long-Short Range Attention (LSRA), where one group of\nheads specializes in the local context modeling (by convolution) while another\ngroup specializes in the long-distance relationship modeling (by attention).\nSuch specialization brings consistent improvement over the vanilla transformer\non three well-established language tasks: machine translation, abstractive\nsummarization, and language modeling. Under constrained resources (500M/100M\nMACs), Lite Transformer outperforms transformer on WMT'14 English-French by\n1.2/1.7 BLEU, respectively. Lite Transformer reduces the computation of\ntransformer base model by 2.5x with 0.3 BLEU score degradation. Combining with\npruning and quantization, we further compressed the model size of Lite\nTransformer by 18.2x. For language modeling, Lite Transformer achieves 1.8\nlower perplexity than the transformer at around 500M MACs. Notably, Lite\nTransformer outperforms the AutoML-based Evolved Transformer by 0.5 higher BLEU\nfor the mobile NLP setting without the costly architecture search that requires\nmore than 250 GPU years. Code has been made available at\nhttps://github.com/mit-han-lab/lite-transformer.",
+    "authors": [
+      "Zhanghao Wu",
+      "Zhijian Liu",
+      "Ji Lin",
+      "Yujun Lin",
+      "Song Han"
+    ],
+    "updated": "2020-04-24T17:52:25Z",
+    "categories": [
       "cs.CL"
     ]
   },
@@ -51,227 +125,164 @@
     ]
   },
   {
-    "id": "2209.15176",
-    "title": "Adaptive Sparse and Monotonic Attention for Transformer-based Automatic\n  Speech Recognition",
-    "link": "http://arxiv.org/abs/2209.15176v1",
-    "pdf": "http://arxiv.org/pdf/2209.15176v1",
-    "summary": "The Transformer architecture model, based on self-attention and multi-head\nattention, has achieved remarkable success in offline end-to-end Automatic\nSpeech Recognition (ASR). However, self-attention and multi-head attention\ncannot be easily applied for streaming or online ASR. For self-attention in\nTransformer ASR, the softmax normalization function-based attention mechanism\nmakes it impossible to highlight important speech information. For multi-head\nattention in Transformer ASR, it is not easy to model monotonic alignments in\ndifferent heads. To overcome these two limits, we integrate sparse attention\nand monotonic attention into Transformer-based ASR. The sparse mechanism\nintroduces a learned sparsity scheme to enable each self-attention structure to\nfit the corresponding head better. The monotonic attention deploys\nregularization to prune redundant heads for the multi-head attention structure.\nThe experiments show that our method can effectively improve the attention\nmechanism on widely used benchmarks of speech recognition.",
+    "id": "2103.13597",
+    "title": "Mask Attention Networks: Rethinking and Strengthen Transformer",
+    "link": "http://arxiv.org/abs/2103.13597v1",
+    "pdf": "http://arxiv.org/pdf/2103.13597v1",
+    "summary": "Transformer is an attention-based neural network, which consists of two\nsublayers, namely, Self-Attention Network (SAN) and Feed-Forward Network (FFN).\nExisting research explores to enhance the two sublayers separately to improve\nthe capability of Transformer for text representation. In this paper, we\npresent a novel understanding of SAN and FFN as Mask Attention Networks (MANs)\nand show that they are two special cases of MANs with static mask matrices.\nHowever, their static mask matrices limit the capability for localness modeling\nin text representation learning. We therefore introduce a new layer named\ndynamic mask attention network (DMAN) with a learnable mask matrix which is\nable to model localness adaptively. To incorporate advantages of DMAN, SAN, and\nFFN, we propose a sequential layered structure to combine the three types of\nlayers. Extensive experiments on various tasks, including neural machine\ntranslation and text summarization demonstrate that our model outperforms the\noriginal Transformer.",
     "authors": [
-      "Chendong Zhao",
-      "Jianzong Wang",
-      "Wen qi Wei",
-      "Xiaoyang Qu",
-      "Haoqian Wang",
-      "Jing Xiao"
-    ],
-    "updated": "2022-09-30T01:55:57Z",
-    "categories": [
-      "cs.CL",
-      "cs.AI"
-    ]
-  },
-  {
-    "id": "2108.01778",
-    "title": "Armour: Generalizable Compact Self-Attention for Vision Transformers",
-    "link": "http://arxiv.org/abs/2108.01778v1",
-    "pdf": "http://arxiv.org/pdf/2108.01778v1",
-    "summary": "Attention-based transformer networks have demonstrated promising potential as\ntheir applications extend from natural language processing to vision. However,\ndespite the recent improvements, such as sub-quadratic attention approximation\nand various training enhancements, the compact vision transformers to date\nusing the regular attention still fall short in comparison with its convnet\ncounterparts, in terms of \\textit{accuracy,} \\textit{model size}, \\textit{and}\n\\textit{throughput}. This paper introduces a compact self-attention mechanism\nthat is fundamental and highly generalizable. The proposed method reduces\nredundancy and improves efficiency on top of the existing attention\noptimizations. We show its drop-in applicability for both the regular attention\nmechanism and some most recent variants in vision transformers. As a result, we\nproduced smaller and faster models with the same or better accuracies.",
-    "authors": [
-      "Lingchuan Meng"
-    ],
-    "updated": "2021-08-03T22:33:58Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "1906.09777",
-    "title": "A Tensorized Transformer for Language Modeling",
-    "link": "http://arxiv.org/abs/1906.09777v3",
-    "pdf": "http://arxiv.org/pdf/1906.09777v3",
-    "summary": "Latest development of neural models has connected the encoder and decoder\nthrough a self-attention mechanism. In particular, Transformer, which is solely\nbased on self-attention, has led to breakthroughs in Natural Language\nProcessing (NLP) tasks. However, the multi-head attention mechanism, as a key\ncomponent of Transformer, limits the effective deployment of the model to a\nresource-limited setting. In this paper, based on the ideas of tensor\ndecomposition and parameters sharing, we propose a novel self-attention model\n(namely Multi-linear attention) with Block-Term Tensor Decomposition (BTD). We\ntest and verify the proposed attention method on three language modeling tasks\n(i.e., PTB, WikiText-103 and One-billion) and a neural machine translation task\n(i.e., WMT-2016 English-German). Multi-linear attention can not only largely\ncompress the model parameters but also obtain performance improvements,\ncompared with a number of language modeling approaches, such as Transformer,\nTransformer-XL, and Transformer with tensor train decomposition.",
-    "authors": [
-      "Xindian Ma",
-      "Peng Zhang",
-      "Shuai Zhang",
+      "Zhihao Fan",
+      "Yeyun Gong",
+      "Dayiheng Liu",
+      "Zhongyu Wei",
+      "Siyuan Wang",
+      "Jian Jiao",
       "Nan Duan",
-      "Yuexian Hou",
-      "Dawei Song",
-      "Ming Zhou"
+      "Ruofei Zhang",
+      "Xuanjing Huang"
     ],
-    "updated": "2019-11-06T13:53:14Z",
+    "updated": "2021-03-25T04:07:44Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2103.13799",
+    "title": "Bertinho: Galician BERT Representations",
+    "link": "http://arxiv.org/abs/2103.13799v1",
+    "pdf": "http://arxiv.org/pdf/2103.13799v1",
+    "summary": "This paper presents a monolingual BERT model for Galician. We follow the\nrecent trend that shows that it is feasible to build robust monolingual BERT\nmodels even for relatively low-resource languages, while performing better than\nthe well-known official multilingual BERT (mBERT). More particularly, we\nrelease two monolingual Galician BERT models, built using 6 and 12 transformer\nlayers, respectively; trained with limited resources (~45 million tokens on a\nsingle GPU of 24GB). We then provide an exhaustive evaluation on a number of\ntasks such as POS-tagging, dependency parsing and named entity recognition. For\nthis purpose, all these tasks are cast in a pure sequence labeling setup in\norder to run BERT without the need to include any additional layers on top of\nit (we only use an output classification layer to map the contextualized\nrepresentations into the predicted label). The experiments show that our\nmodels, especially the 12-layer one, outperform the results of mBERT in most\ntasks.",
+    "authors": [
+      "David Vilares",
+      "Marcos Garcia",
+      "Carlos Gómez-Rodríguez"
+    ],
+    "updated": "2021-03-25T12:51:34Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "1901.05287",
+    "title": "Assessing BERT's Syntactic Abilities",
+    "link": "http://arxiv.org/abs/1901.05287v1",
+    "pdf": "http://arxiv.org/pdf/1901.05287v1",
+    "summary": "I assess the extent to which the recently introduced BERT model captures\nEnglish syntactic phenomena, using (1) naturally-occurring subject-verb\nagreement stimuli; (2) \"coloreless green ideas\" subject-verb agreement stimuli,\nin which content words in natural sentences are randomly replaced with words\nsharing the same part-of-speech and inflection; and (3) manually crafted\nstimuli for subject-verb agreement and reflexive anaphora phenomena. The BERT\nmodel performs remarkably well on all cases.",
+    "authors": [
+      "Yoav Goldberg"
+    ],
+    "updated": "2019-01-16T14:01:15Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2004.09984",
+    "title": "BERT-ATTACK: Adversarial Attack Against BERT Using BERT",
+    "link": "http://arxiv.org/abs/2004.09984v3",
+    "pdf": "http://arxiv.org/pdf/2004.09984v3",
+    "summary": "Adversarial attacks for discrete data (such as texts) have been proved\nsignificantly more challenging than continuous data (such as images) since it\nis difficult to generate adversarial samples with gradient-based methods.\nCurrent successful attack methods for texts usually adopt heuristic replacement\nstrategies on the character or word level, which remains challenging to find\nthe optimal solution in the massive space of possible combinations of\nreplacements while preserving semantic consistency and language fluency. In\nthis paper, we propose \\textbf{BERT-Attack}, a high-quality and effective\nmethod to generate adversarial samples using pre-trained masked language models\nexemplified by BERT. We turn BERT against its fine-tuned models and other deep\nneural models in downstream tasks so that we can successfully mislead the\ntarget models to predict incorrectly. Our method outperforms state-of-the-art\nattack strategies in both success rate and perturb percentage, while the\ngenerated adversarial samples are fluent and semantically preserved. Also, the\ncost of calculation is low, thus possible for large-scale generations. The code\nis available at https://github.com/LinyangLee/BERT-Attack.",
+    "authors": [
+      "Linyang Li",
+      "Ruotian Ma",
+      "Qipeng Guo",
+      "Xiangyang Xue",
+      "Xipeng Qiu"
+    ],
+    "updated": "2020-10-02T03:08:04Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "1904.08398",
+    "title": "DocBERT: BERT for Document Classification",
+    "link": "http://arxiv.org/abs/1904.08398v3",
+    "pdf": "http://arxiv.org/pdf/1904.08398v3",
+    "summary": "We present, to our knowledge, the first application of BERT to document\nclassification. A few characteristics of the task might lead one to think that\nBERT is not the most appropriate model: syntactic structures matter less for\ncontent categories, documents can often be longer than typical BERT input, and\ndocuments often have multiple labels. Nevertheless, we show that a\nstraightforward classification model using BERT is able to achieve the state of\nthe art across four popular datasets. To address the computational expense\nassociated with BERT inference, we distill knowledge from BERT-large to small\nbidirectional LSTMs, reaching BERT-base parity on multiple datasets using 30x\nfewer parameters. The primary contribution of our paper is improved baselines\nthat can provide the foundation for future work.",
+    "authors": [
+      "Ashutosh Adhikari",
+      "Achyudh Ram",
+      "Raphael Tang",
+      "Jimmy Lin"
+    ],
+    "updated": "2019-08-22T05:09:47Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2010.00454",
+    "title": "Evaluating Multilingual BERT for Estonian",
+    "link": "http://arxiv.org/abs/2010.00454v2",
+    "pdf": "http://arxiv.org/pdf/2010.00454v2",
+    "summary": "Recently, large pre-trained language models, such as BERT, have reached\nstate-of-the-art performance in many natural language processing tasks, but for\nmany languages, including Estonian, BERT models are not yet available. However,\nthere exist several multilingual BERT models that can handle multiple languages\nsimultaneously and that have been trained also on Estonian data. In this paper,\nwe evaluate four multilingual models -- multilingual BERT, multilingual\ndistilled BERT, XLM and XLM-RoBERTa -- on several NLP tasks including POS and\nmorphological tagging, NER and text classification. Our aim is to establish a\ncomparison between these multilingual BERT models and the existing baseline\nneural models for these tasks. Our results show that multilingual BERT models\ncan generalise well on different Estonian NLP tasks outperforming all baselines\nmodels for POS and morphological tagging and text classification, and reaching\nthe comparable level with the best baseline for NER, with XLM-RoBERTa achieving\nthe highest results compared with other multilingual models.",
+    "authors": [
+      "Claudia Kittask",
+      "Kirill Milintsevich",
+      "Kairit Sirts"
+    ],
+    "updated": "2021-01-08T10:00:42Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "1910.14296",
+    "title": "LIMIT-BERT : Linguistic Informed Multi-Task BERT",
+    "link": "http://arxiv.org/abs/1910.14296v2",
+    "pdf": "http://arxiv.org/pdf/1910.14296v2",
+    "summary": "In this paper, we present a Linguistic Informed Multi-Task BERT (LIMIT-BERT)\nfor learning language representations across multiple linguistic tasks by\nMulti-Task Learning (MTL). LIMIT-BERT includes five key linguistic syntax and\nsemantics tasks: Part-Of-Speech (POS) tags, constituent and dependency\nsyntactic parsing, span and dependency semantic role labeling (SRL). Besides,\nLIMIT-BERT adopts linguistics mask strategy: Syntactic and Semantic Phrase\nMasking which mask all of the tokens corresponding to a syntactic/semantic\nphrase. Different from recent Multi-Task Deep Neural Networks (MT-DNN) (Liu et\nal., 2019), our LIMIT-BERT is linguistically motivated and learning in a\nsemi-supervised method which provides large amounts of linguistic-task data as\nsame as BERT learning corpus. As a result, LIMIT-BERT not only improves\nlinguistic tasks performance but also benefits from a regularization effect and\nlinguistic information that leads to more general representations to help adapt\nto new tasks and domains. LIMIT-BERT obtains new state-of-the-art or\ncompetitive results on both span and dependency semantic parsing on Propbank\nbenchmarks and both dependency and constituent syntactic parsing on Penn\nTreebank.",
+    "authors": [
+      "Junru Zhou",
+      "Zhuosheng Zhang",
+      "Hai Zhao",
+      "Shuailiang Zhang"
+    ],
+    "updated": "2020-10-06T03:11:55Z",
     "categories": [
       "cs.CL",
       "cs.LG"
     ]
   },
   {
-    "id": "1907.06607",
-    "title": "Agglomerative Attention",
-    "link": "http://arxiv.org/abs/1907.06607v1",
-    "pdf": "http://arxiv.org/pdf/1907.06607v1",
-    "summary": "Neural networks using transformer-based architectures have recently\ndemonstrated great power and flexibility in modeling sequences of many types.\nOne of the core components of transformer networks is the attention layer,\nwhich allows contextual information to be exchanged among sequence elements.\nWhile many of the prevalent network structures thus far have utilized full\nattention -- which operates on all pairs of sequence elements -- the quadratic\nscaling of this attention mechanism significantly constrains the size of models\nthat can be trained. In this work, we present an attention model that has only\nlinear requirements in memory and computation time. We show that, despite the\nsimpler attention model, networks using this attention mechanism can attain\ncomparable performance to full attention networks on language modeling tasks.",
+    "id": "1912.09582",
+    "title": "BERTje: A Dutch BERT Model",
+    "link": "http://arxiv.org/abs/1912.09582v1",
+    "pdf": "http://arxiv.org/pdf/1912.09582v1",
+    "summary": "The transformer-based pre-trained language model BERT has helped to improve\nstate-of-the-art performance on many natural language processing (NLP) tasks.\nUsing the same architecture and parameters, we developed and evaluated a\nmonolingual Dutch BERT model called BERTje. Compared to the multilingual BERT\nmodel, which includes Dutch but is only based on Wikipedia text, BERTje is\nbased on a large and diverse dataset of 2.4 billion tokens. BERTje consistently\noutperforms the equally-sized multilingual BERT model on downstream NLP tasks\n(part-of-speech tagging, named-entity recognition, semantic role labeling, and\nsentiment analysis). Our pre-trained Dutch BERT model is made available at\nhttps://github.com/wietsedv/bertje.",
     "authors": [
-      "Matthew Spellings"
+      "Wietse de Vries",
+      "Andreas van Cranenburgh",
+      "Arianna Bisazza",
+      "Tommaso Caselli",
+      "Gertjan van Noord",
+      "Malvina Nissim"
     ],
-    "updated": "2019-07-15T17:11:05Z",
-    "categories": [
-      "cs.LG",
-      "stat.ML"
-    ]
-  },
-  {
-    "id": "2009.07053",
-    "title": "Attention Flows: Analyzing and Comparing Attention Mechanisms in\n  Language Models",
-    "link": "http://arxiv.org/abs/2009.07053v1",
-    "pdf": "http://arxiv.org/pdf/2009.07053v1",
-    "summary": "Advances in language modeling have led to the development of deep\nattention-based models that are performant across a wide variety of natural\nlanguage processing (NLP) problems. These language models are typified by a\npre-training process on large unlabeled text corpora and subsequently\nfine-tuned for specific tasks. Although considerable work has been devoted to\nunderstanding the attention mechanisms of pre-trained models, it is less\nunderstood how a model's attention mechanisms change when trained for a target\nNLP task. In this paper, we propose a visual analytics approach to\nunderstanding fine-tuning in attention-based language models. Our\nvisualization, Attention Flows, is designed to support users in querying,\ntracing, and comparing attention within layers, across layers, and amongst\nattention heads in Transformer-based language models. To help users gain\ninsight on how a classification decision is made, our design is centered on\ndepicting classification-based attention at the deepest layer and how attention\nfrom prior layers flows throughout words in the input. Attention Flows supports\nthe analysis of a single model, as well as the visual comparison between\npre-trained and fine-tuned models via their similarities and differences. We\nuse Attention Flows to study attention mechanisms in various sentence\nunderstanding tasks and highlight how attention evolves to address the nuances\nof solving these tasks.",
-    "authors": [
-      "Joseph F DeRose",
-      "Jiayao Wang",
-      "Matthew Berger"
-    ],
-    "updated": "2020-09-03T19:56:30Z",
-    "categories": [
-      "cs.HC",
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2204.04477",
-    "title": "FoundationLayerNorm: Scaling BERT and GPT to 1,000 Layers",
-    "link": "http://arxiv.org/abs/2204.04477v1",
-    "pdf": "http://arxiv.org/pdf/2204.04477v1",
-    "summary": "The mainstream BERT/GPT model contains only 10 to 20 layers, and there is\nlittle literature to discuss the training of deep BERT/GPT. This paper proposes\na simple yet effective method to stabilize BERT and GPT training. We\nsuccessfully scale up BERT and GPT to 1,000 layers, which is an order of\nmagnitude deeper than previous BERT and GPT. The proposed method\nFoundationLayerNormalization enables efficient training of deep neural networks\nand is validated at the 1000-layer scale.",
-    "authors": [
-      "Dezhou Shen"
-    ],
-    "updated": "2022-04-09T14:03:28Z",
-    "categories": [
-      "cs.CL",
-      "cs.AI",
-      "I.2.7"
-    ]
-  },
-  {
-    "id": "2108.07789",
-    "title": "Adapting GPT, GPT-2 and BERT Language Models for Speech Recognition",
-    "link": "http://arxiv.org/abs/2108.07789v2",
-    "pdf": "http://arxiv.org/pdf/2108.07789v2",
-    "summary": "Language models (LMs) pre-trained on massive amounts of text, in particular\nbidirectional encoder representations from Transformers (BERT), generative\npre-training (GPT), and GPT-2, have become a key technology for many natural\nlanguage processing tasks. In this paper, we present results using fine-tuned\nGPT, GPT-2, and their combination for automatic speech recognition (ASR).\nUnlike unidirectional LM GPT and GPT-2, BERT is bidirectional whose direct\nproduct of the output probabilities is no longer a valid language prior\nprobability. A conversion method is proposed to compute the correct language\nprior probability based on bidirectional LM outputs in a mathematically exact\nway. Experimental results on the widely used AMI and Switchboard ASR tasks\nshowed that the combination of the fine-tuned GPT and GPT-2 outperformed the\ncombination of three neural LMs with different architectures trained from\nscratch on the in-domain text by up to a 12% relative word error rate reduction\n(WERR). Furthermore, on the AMI corpus, the proposed conversion for language\nprior probabilities enables BERT to obtain an extra 3% relative WERR, and the\ncombination of BERT, GPT and GPT-2 results in further improvements.",
-    "authors": [
-      "Xianrui Zheng",
-      "Chao Zhang",
-      "Philip C. Woodland"
-    ],
-    "updated": "2021-10-01T14:19:39Z",
-    "categories": [
-      "cs.CL",
-      "cs.SD",
-      "eess.AS"
-    ]
-  },
-  {
-    "id": "2401.14040",
-    "title": "(Chat)GPT v BERT: Dawn of Justice for Semantic Change Detection",
-    "link": "http://arxiv.org/abs/2401.14040v3",
-    "pdf": "http://arxiv.org/pdf/2401.14040v3",
-    "summary": "In the universe of Natural Language Processing, Transformer-based language\nmodels like BERT and (Chat)GPT have emerged as lexical superheroes with great\npower to solve open research problems. In this paper, we specifically focus on\nthe temporal problem of semantic change, and evaluate their ability to solve\ntwo diachronic extensions of the Word-in-Context (WiC) task: TempoWiC and\nHistoWiC. In particular, we investigate the potential of a novel, off-the-shelf\ntechnology like ChatGPT (and GPT) 3.5 compared to BERT, which represents a\nfamily of models that currently stand as the state-of-the-art for modeling\nsemantic change. Our experiments represent the first attempt to assess the use\nof (Chat)GPT for studying semantic change. Our results indicate that ChatGPT\nperforms significantly worse than the foundational GPT version. Furthermore,\nour results demonstrate that (Chat)GPT achieves slightly lower performance than\nBERT in detecting long-term changes but performs significantly worse in\ndetecting short-term changes.",
-    "authors": [
-      "Francesco Periti",
-      "Haim Dubossarsky",
-      "Nina Tahmasebi"
-    ],
-    "updated": "2024-04-29T07:07:45Z",
+    "updated": "2019-12-19T22:59:26Z",
     "categories": [
       "cs.CL"
     ]
   },
   {
-    "id": "2408.16749",
-    "title": "Assessing Large Language Models for Online Extremism Research:\n  Identification, Explanation, and New Knowledge",
-    "link": "http://arxiv.org/abs/2408.16749v1",
-    "pdf": "http://arxiv.org/pdf/2408.16749v1",
-    "summary": "The United States has experienced a significant increase in violent\nextremism, prompting the need for automated tools to detect and limit the\nspread of extremist ideology online. This study evaluates the performance of\nBidirectional Encoder Representations from Transformers (BERT) and Generative\nPre-Trained Transformers (GPT) in detecting and classifying online domestic\nextremist posts. We collected social media posts containing \"far-right\" and\n\"far-left\" ideological keywords and manually labeled them as extremist or\nnon-extremist. Extremist posts were further classified into one or more of five\ncontributing elements of extremism based on a working definitional framework.\nThe BERT model's performance was evaluated based on training data size and\nknowledge transfer between categories. We also compared the performance of GPT\n3.5 and GPT 4 models using different prompts: na\\\"ive, layperson-definition,\nrole-playing, and professional-definition. Results showed that the best\nperforming GPT models outperformed the best performing BERT models, with more\ndetailed prompts generally yielding better results. However, overly complex\nprompts may impair performance. Different versions of GPT have unique\nsensitives to what they consider extremist. GPT 3.5 performed better at\nclassifying far-left extremist posts, while GPT 4 performed better at\nclassifying far-right extremist posts. Large language models, represented by\nGPT models, hold significant potential for online extremism classification\ntasks, surpassing traditional BERT models in a zero-shot setting. Future\nresearch should explore human-computer interactions in optimizing GPT models\nfor extremist detection and classification tasks to develop more efficient\n(e.g., quicker, less effort) and effective (e.g., fewer errors or mistakes)\nmethods for identifying extremist content.",
+    "id": "2203.06390",
+    "title": "BiBERT: Accurate Fully Binarized BERT",
+    "link": "http://arxiv.org/abs/2203.06390v1",
+    "pdf": "http://arxiv.org/pdf/2203.06390v1",
+    "summary": "The large pre-trained BERT has achieved remarkable performance on Natural\nLanguage Processing (NLP) tasks but is also computation and memory expensive.\nAs one of the powerful compression approaches, binarization extremely reduces\nthe computation and memory consumption by utilizing 1-bit parameters and\nbitwise operations. Unfortunately, the full binarization of BERT (i.e., 1-bit\nweight, embedding, and activation) usually suffer a significant performance\ndrop, and there is rare study addressing this problem. In this paper, with the\ntheoretical justification and empirical analysis, we identify that the severe\nperformance drop can be mainly attributed to the information degradation and\noptimization direction mismatch respectively in the forward and backward\npropagation, and propose BiBERT, an accurate fully binarized BERT, to eliminate\nthe performance bottlenecks. Specifically, BiBERT introduces an efficient\nBi-Attention structure for maximizing representation information statistically\nand a Direction-Matching Distillation (DMD) scheme to optimize the full\nbinarized BERT accurately. Extensive experiments show that BiBERT outperforms\nboth the straightforward baseline and existing state-of-the-art quantized BERTs\nwith ultra-low bit activations by convincing margins on the NLP benchmark. As\nthe first fully binarized BERT, our method yields impressive 56.3 times and\n31.2 times saving on FLOPs and model size, demonstrating the vast advantages\nand potential of the fully binarized BERT model in real-world\nresource-constrained scenarios.",
     "authors": [
-      "Beidi Dong",
-      "Jin R. Lee",
-      "Ziwei Zhu",
-      "Balassubramanian Srinivasan"
+      "Haotong Qin",
+      "Yifu Ding",
+      "Mingyuan Zhang",
+      "Qinghua Yan",
+      "Aishan Liu",
+      "Qingqing Dang",
+      "Ziwei Liu",
+      "Xianglong Liu"
     ],
-    "updated": "2024-08-29T17:43:03Z",
-    "categories": [
-      "cs.CL",
-      "cs.AI"
-    ]
-  },
-  {
-    "id": "2405.12990",
-    "title": "BERT vs GPT for financial engineering",
-    "link": "http://arxiv.org/abs/2405.12990v1",
-    "pdf": "http://arxiv.org/pdf/2405.12990v1",
-    "summary": "The paper benchmarks several Transformer models [4], to show how these models\ncan judge sentiment from a news event. This signal can then be used for\ndownstream modelling and signal identification for commodity trading. We find\nthat fine-tuned BERT models outperform fine-tuned or vanilla GPT models on this\ntask. Transformer models have revolutionized the field of natural language\nprocessing (NLP) in recent years, achieving state-of-the-art results on various\ntasks such as machine translation, text summarization, question answering, and\nnatural language generation. Among the most prominent transformer models are\nBidirectional Encoder Representations from Transformers (BERT) and Generative\nPre-trained Transformer (GPT), which differ in their architectures and\nobjectives.\n  A CopBERT model training data and process overview is provided. The CopBERT\nmodel outperforms similar domain specific BERT trained models such as FinBERT.\nThe below confusion matrices show the performance on CopBERT & CopGPT\nrespectively. We see a ~10 percent increase in f1_score when compare CopBERT vs\nGPT4 and 16 percent increase vs CopGPT. Whilst GPT4 is dominant It highlights\nthe importance of considering alternatives to GPT models for financial\nengineering tasks, given risks of hallucinations, and challenges with\ninterpretability. We unsurprisingly see the larger LLMs outperform the BERT\nmodels, with predictive power. In summary BERT is partially the new XGboost,\nwhat it lacks in predictive power it provides with higher levels of\ninterpretability. Concluding that BERT models might not be the next XGboost\n[2], but represent an interesting alternative for financial engineering tasks,\nthat require a blend of interpretability and accuracy.",
-    "authors": [
-      "Edward Sharkey",
-      "Philip Treleaven"
-    ],
-    "updated": "2024-04-24T11:30:04Z",
-    "categories": [
-      "q-fin.ST",
-      "cs.AI",
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "1909.02209",
-    "title": "Semantics-aware BERT for Language Understanding",
-    "link": "http://arxiv.org/abs/1909.02209v3",
-    "pdf": "http://arxiv.org/pdf/1909.02209v3",
-    "summary": "The latest work on language representations carefully integrates\ncontextualized features into language model training, which enables a series of\nsuccess especially in various machine reading comprehension and natural\nlanguage inference tasks. However, the existing language representation models\nincluding ELMo, GPT and BERT only exploit plain context-sensitive features such\nas character or word embeddings. They rarely consider incorporating structured\nsemantic information which can provide rich semantics for language\nrepresentation. To promote natural language understanding, we propose to\nincorporate explicit contextual semantics from pre-trained semantic role\nlabeling, and introduce an improved language representation model,\nSemantics-aware BERT (SemBERT), which is capable of explicitly absorbing\ncontextual semantics over a BERT backbone. SemBERT keeps the convenient\nusability of its BERT precursor in a light fine-tuning way without substantial\ntask-specific modifications. Compared with BERT, semantics-aware BERT is as\nsimple in concept but more powerful. It obtains new state-of-the-art or\nsubstantially improves results on ten reading comprehension and language\ninference tasks.",
-    "authors": [
-      "Zhuosheng Zhang",
-      "Yuwei Wu",
-      "Hai Zhao",
-      "Zuchao Li",
-      "Shuailiang Zhang",
-      "Xi Zhou",
-      "Xiang Zhou"
-    ],
-    "updated": "2020-02-04T09:43:22Z",
+    "updated": "2022-03-12T09:46:13Z",
     "categories": [
       "cs.CL"
-    ]
-  },
-  {
-    "id": "2410.24159",
-    "title": "GPT or BERT: why not both?",
-    "link": "http://arxiv.org/abs/2410.24159v2",
-    "pdf": "http://arxiv.org/pdf/2410.24159v2",
-    "summary": "We present a simple way to merge masked language modeling with causal\nlanguage modeling. This hybrid training objective results in a model that\ncombines the strengths of both modeling paradigms within a single transformer\nstack: GPT-BERT can be transparently used like any standard causal or masked\nlanguage model. We test the pretraining process that enables this flexible\nbehavior on the BabyLM Challenge 2024. The results show that the hybrid\npretraining outperforms masked-only or causal-only models. We openly release\nthe models, training corpora and code.",
-    "authors": [
-      "Lucas Georges Gabriel Charpentier",
-      "David Samuel"
-    ],
-    "updated": "2024-12-29T18:00:05Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2411.05050",
-    "title": "Selecting Between BERT and GPT for Text Classification in Political\n  Science Research",
-    "link": "http://arxiv.org/abs/2411.05050v1",
-    "pdf": "http://arxiv.org/pdf/2411.05050v1",
-    "summary": "Political scientists often grapple with data scarcity in text classification.\nRecently, fine-tuned BERT models and their variants have gained traction as\neffective solutions to address this issue. In this study, we investigate the\npotential of GPT-based models combined with prompt engineering as a viable\nalternative. We conduct a series of experiments across various classification\ntasks, differing in the number of classes and complexity, to evaluate the\neffectiveness of BERT-based versus GPT-based models in low-data scenarios. Our\nfindings indicate that while zero-shot and few-shot learning with GPT models\nprovide reasonable performance and are well-suited for early-stage research\nexploration, they generally fall short - or, at best, match - the performance\nof BERT fine-tuning, particularly as the training set reaches a substantial\nsize (e.g., 1,000 samples). We conclude by comparing these approaches in terms\nof performance, ease of use, and cost, providing practical guidance for\nresearchers facing data limitations. Our results are particularly relevant for\nthose engaged in quantitative text analysis in low-resource settings or with\nlimited labeled data.",
-    "authors": [
-      "Yu Wang",
-      "Wen Qu",
-      "Xin Ye"
-    ],
-    "updated": "2024-11-07T07:29:39Z",
-    "categories": [
-      "cs.CL",
-      "cs.AI"
     ]
   },
   {
@@ -311,6 +322,63 @@
     ]
   },
   {
+    "id": "2501.17703",
+    "title": "Critique Fine-Tuning: Learning to Critique is More Effective than\n  Learning to Imitate",
+    "link": "http://arxiv.org/abs/2501.17703v4",
+    "pdf": "http://arxiv.org/pdf/2501.17703v4",
+    "summary": "Supervised Fine-Tuning (SFT) is commonly used to train language models to\nimitate annotated responses for given instructions. In this paper, we propose\nCritique Fine-Tuning (CFT), a method more effective than SFT for reasoning\ntasks. Instead of simply imitating correct responses, CFT trains models to\ncritique noisy responses, inspired by human learning processes that emphasize\ncritical thinking, deeper analysis, and nuanced understanding - traits often\noverlooked by standard SFT. To validate the effectiveness of CFT, we construct\nmultiple critique datasets (e.g., WebInstruct, MetaMath, NuminaMath), where\nGPT-4o serves as the teacher to generate critiques in the form of ([query;\nnoisy response], critique). Experiments on these datasets demonstrate that CFT\nconsistently outperforms SFT by 4-10% across six mathematical reasoning\nbenchmarks, and is effective across different base models including Qwen2.5,\nQwen2.5-Math, and DeepSeek-Math. Notably, our model Qwen2.5-Math-CFT only\nrequires 1 hour of training on 8 x H100 over the 50K examples, yet matches or\noutperforms strong competitors like Qwen2.5-Math-Instruct on most benchmarks,\nwhich use over 2M samples. Moreover, it matches the performance of SimpleRL,\nwhich is a DeepSeek-r1 replication trained with 140 x more compute. Experiments\non IF_Eval and MT-Bench further demonstrate that CFT can significantly enhance\nthe model's general generation and instruction-following capabilities,\noutperforming the Qwen2.5-Math-Instruct by a large margin. Ablation studies\nshow that CFT is robust to noisy response sources and teacher critique models.\nThese findings highlight that CFT offers a more effective alternative to\nadvance the reasoning of language models.",
+    "authors": [
+      "Yubo Wang",
+      "Xiang Yue",
+      "Wenhu Chen"
+    ],
+    "updated": "2025-03-29T15:21:55Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2412.12865",
+    "title": "Preference-Oriented Supervised Fine-Tuning: Favoring Target Model Over\n  Aligned Large Language Models",
+    "link": "http://arxiv.org/abs/2412.12865v1",
+    "pdf": "http://arxiv.org/pdf/2412.12865v1",
+    "summary": "Alignment, endowing a pre-trained Large language model (LLM) with the ability\nto follow instructions, is crucial for its real-world applications.\nConventional supervised fine-tuning (SFT) methods formalize it as causal\nlanguage modeling typically with a cross-entropy objective, requiring a large\namount of high-quality instruction-response pairs. However, the quality of\nwidely used SFT datasets can not be guaranteed due to the high cost and\nintensive labor for the creation and maintenance in practice. To overcome the\nlimitations associated with the quality of SFT datasets, we introduce a novel\n\\textbf{p}reference-\\textbf{o}riented supervised \\textbf{f}ine-\\textbf{t}uning\napproach, namely PoFT. The intuition is to boost SFT by imposing a particular\npreference: \\textit{favoring the target model over aligned LLMs on the same SFT\ndata.} This preference encourages the target model to predict a higher\nlikelihood than that predicted by the aligned LLMs, incorporating assessment\ninformation on data quality (i.e., predicted likelihood by the aligned LLMs)\ninto the training process. Extensive experiments are conducted, and the results\nvalidate the effectiveness of the proposed method. PoFT achieves stable and\nconsistent improvements over the SFT baselines across different training\ndatasets and base models. Moreover, we prove that PoFT can be integrated with\nexisting SFT data filtering methods to achieve better performance, and further\nimproved by following preference optimization procedures, such as DPO.",
+    "authors": [
+      "Yuchen Fan",
+      "Yuzhong Hong",
+      "Qiushi Wang",
+      "Junwei Bao",
+      "Hongfei Jiang",
+      "Yang Song"
+    ],
+    "updated": "2024-12-17T12:49:14Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2503.11197",
+    "title": "Reinforcement Learning Outperforms Supervised Fine-Tuning: A Case Study\n  on Audio Question Answering",
+    "link": "http://arxiv.org/abs/2503.11197v4",
+    "pdf": "http://arxiv.org/pdf/2503.11197v4",
+    "summary": "Recently, reinforcement learning (RL) has been shown to greatly enhance the\nreasoning capabilities of large language models (LLMs), and RL-based approaches\nhave been progressively applied to visual multimodal tasks. However, the audio\nmodality has largely been overlooked in these developments. Thus, we conduct a\nseries of RL explorations in audio understanding and reasoning, specifically\nfocusing on the audio question answering (AQA) task. We leverage the group\nrelative policy optimization (GRPO) algorithm to Qwen2-Audio-7B-Instruct, and\nour experiments demonstrated state-of-the-art performance on the MMAU Test-mini\nbenchmark, achieving an accuracy rate of 64.5%. The main findings in this\ntechnical report are as follows: 1) The GRPO algorithm can be effectively\napplied to large audio language models (LALMs), even when the model has only\n8.2B parameters; 2) With only 38k post-training samples, RL significantly\noutperforms supervised fine-tuning (SFT), indicating that RL-based approaches\ncan be effective without large datasets; 3) The explicit reasoning process has\nnot shown significant benefits for AQA tasks, and how to efficiently utilize\ndeep thinking remains an open question for further research; 4) LALMs still lag\nfar behind humans auditory-language reasoning, suggesting that the RL-based\napproaches warrant further exploration. Our project is available at\nhttps://github.com/xiaomi-research/r1-aqa and\nhttps://huggingface.co/mispeech/r1-aqa.",
+    "authors": [
+      "Gang Li",
+      "Jizhong Liu",
+      "Heinrich Dinkel",
+      "Yadong Niu",
+      "Junbo Zhang",
+      "Jian Luan"
+    ],
+    "updated": "2025-05-14T02:12:43Z",
+    "categories": [
+      "cs.SD",
+      "cs.AI",
+      "cs.CL",
+      "eess.AS"
+    ]
+  },
+  {
     "id": "2501.11463",
     "title": "Curiosity-Driven Reinforcement Learning from Human Feedback",
     "link": "http://arxiv.org/abs/2501.11463v2",
@@ -326,6 +394,23 @@
     ],
     "updated": "2025-05-31T16:08:55Z",
     "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2401.13586",
+    "title": "Instruction Fine-Tuning: Does Prompt Loss Matter?",
+    "link": "http://arxiv.org/abs/2401.13586v4",
+    "pdf": "http://arxiv.org/pdf/2401.13586v4",
+    "summary": "We present a novel study analyzing the effects of various prompt loss token\nweights (PLW) for supervised instruction fine-tuning (SIFT). While\nprompt-masking (PLW = 0) is common for SIFT, some fine-tuning APIs support\nfractional PLWs and suggest that using a small non-zero PLW can help stabilize\nlearning when fine-tuning on short-completion data. However, there has never\nbeen a study confirming this claim, and OpenAI, a major cloud-based SIFT\nprovider, recently removed this parameter from their fine-tuning API. We found\nthat performance of models fine-tuned on short-completion data had a\nstatistically-significant negative quadratic relationship with PLW. Using small\nvalues (0.01 - 0.5) of PLW produced better results on multiple-choice and\nshort-generation benchmarks (outperforming models fine-tuned on long-completion\ndata) while large values (~ 1.0) of PLW produced better results on\nlong-generation benchmarks. We explained this effect and verified its\nimportance through additional experiments. This research serves as a warning to\nAPI providers about the importance of providing a PLW parameter for SIFT.",
+    "authors": [
+      "Mathew Huerta-Enochian",
+      "Seung Yong Ko"
+    ],
+    "updated": "2024-10-14T01:16:38Z",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
       "cs.CL"
     ]
   },
@@ -358,64 +443,24 @@
     ]
   },
   {
-    "id": "2410.18252",
-    "title": "Asynchronous RLHF: Faster and More Efficient Off-Policy RL for Language\n  Models",
-    "link": "http://arxiv.org/abs/2410.18252v3",
-    "pdf": "http://arxiv.org/pdf/2410.18252v3",
-    "summary": "The dominant paradigm for RLHF is online and on-policy RL: synchronously\ngenerating from the large language model (LLM) policy, labelling with a reward\nmodel, and learning using feedback on the LLM's own outputs. While performant,\nthis paradigm is computationally inefficient. Inspired by classical deep RL\nliterature, we propose separating generation and learning in RLHF. This enables\nasynchronous generation of new samples while simultaneously training on old\nsamples, leading to faster training and more compute-optimal scaling. However,\nasynchronous training relies on an underexplored regime, online but off-policy\nRLHF: learning on samples from previous iterations of our model which give a\nworse training signal. We tackle the fundamental challenge in this regime: how\nmuch off-policyness can we tolerate for asynchronous training to speed up\nlearning but maintain performance? Among several RLHF algorithms we test,\nonline DPO is found to be most robust to off-policy data, and robustness\nincreases with the scale of the policy model. We study further compute\noptimizations for asynchronous RLHF but find that they come at a performance\ncost, giving rise to a trade-off. We verify the scalability of asynchronous\nRLHF by training a general-purpose chatbot from LLaMA 3.1 8B on an\ninstruction-following task ~40% faster than a synchronous run while matching\nfinal performance. Finally, we extend our results to math and reasoning to\ndemonstrate asynchronous RL can finetune Rho 1B on GSM8k ~70% faster while\nmatching synchronous accuracy.",
+    "id": "2509.11106",
+    "title": "Fluid Language Model Benchmarking",
+    "link": "http://arxiv.org/abs/2509.11106v1",
+    "pdf": "http://arxiv.org/pdf/2509.11106v1",
+    "summary": "Language model (LM) benchmarking faces several challenges: comprehensive\nevaluations are costly, benchmarks often fail to measure the intended\ncapabilities, and evaluation quality can degrade due to labeling errors and\nbenchmark saturation. Although various strategies have been proposed to\nmitigate these issues, they tend to address individual aspects in isolation,\nneglecting broader questions about overall evaluation quality. Here, we\nintroduce Fluid Benchmarking, a new evaluation approach that advances LM\nbenchmarking across multiple dimensions. Inspired by psychometrics, Fluid\nBenchmarking is based on the insight that the relative value of benchmark items\ndepends on an LM's capability level, suggesting that evaluation should adapt to\neach LM. Methodologically, Fluid Benchmarking estimates an item response model\nbased on existing LM evaluation results and uses the inferred quantities to\nselect evaluation items dynamically, similar to computerized adaptive testing\nin education. In our experiments, we compare Fluid Benchmarking against the\ncommon practice of random item sampling as well as more sophisticated\nbaselines, including alternative methods grounded in item response theory. We\nexamine four dimensions -- efficiency, validity, variance, and saturation --\nand find that Fluid Benchmarking achieves superior performance in all of them\n(e.g., higher validity and less variance on MMLU with fifty times fewer items).\nOur analysis shows that the two components of Fluid Benchmarking have distinct\neffects: item response theory, used to map performance into a latent ability\nspace, increases validity, while dynamic item selection reduces variance.\nOverall, our results suggest that LM benchmarking can be substantially improved\nby moving beyond static evaluation.",
     "authors": [
-      "Michael Noukhovitch",
-      "Shengyi Huang",
-      "Sophie Xhonneux",
-      "Arian Hosseini",
-      "Rishabh Agarwal",
-      "Aaron Courville"
+      "Valentin Hofmann",
+      "David Heineman",
+      "Ian Magnusson",
+      "Kyle Lo",
+      "Jesse Dodge",
+      "Maarten Sap",
+      "Pang Wei Koh",
+      "Chun Wang",
+      "Hannaneh Hajishirzi",
+      "Noah A. Smith"
     ],
-    "updated": "2025-04-26T08:33:32Z",
-    "categories": [
-      "cs.LG",
-      "cs.AI",
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2310.06452",
-    "title": "Understanding the Effects of RLHF on LLM Generalisation and Diversity",
-    "link": "http://arxiv.org/abs/2310.06452v3",
-    "pdf": "http://arxiv.org/pdf/2310.06452v3",
-    "summary": "Large language models (LLMs) fine-tuned with reinforcement learning from\nhuman feedback (RLHF) have been used in some of the most widely deployed AI\nmodels to date, such as OpenAI's ChatGPT or Anthropic's Claude. While there has\nbeen significant work developing these methods, our understanding of the\nbenefits and downsides of each stage in RLHF is still limited. To fill this\ngap, we present an extensive analysis of how each stage of the process (i.e.\nsupervised fine-tuning (SFT), reward modelling, and RLHF) affects two key\nproperties: out-of-distribution (OOD) generalisation and output diversity. OOD\ngeneralisation is crucial given the wide range of real-world scenarios in which\nthese models are being used, while output diversity refers to the model's\nability to generate varied outputs and is important for a variety of use cases.\nWe perform our analysis across two base models on both summarisation and\ninstruction following tasks, the latter being highly relevant for current LLM\nuse cases. We find that RLHF generalises better than SFT to new inputs,\nparticularly as the distribution shift between train and test becomes larger.\nHowever, RLHF significantly reduces output diversity compared to SFT across a\nvariety of measures, implying a tradeoff in current LLM fine-tuning methods\nbetween generalisation and diversity. Our results provide guidance on which\nfine-tuning method should be used depending on the application, and show that\nmore research is needed to improve the tradeoff between generalisation and\ndiversity.",
-    "authors": [
-      "Robert Kirk",
-      "Ishita Mediratta",
-      "Christoforos Nalmpantis",
-      "Jelena Luketina",
-      "Eric Hambro",
-      "Edward Grefenstette",
-      "Roberta Raileanu"
-    ],
-    "updated": "2024-02-19T14:39:07Z",
-    "categories": [
-      "cs.LG",
-      "cs.AI",
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2406.13542",
-    "title": "Self-play with Execution Feedback: Improving Instruction-following\n  Capabilities of Large Language Models",
-    "link": "http://arxiv.org/abs/2406.13542v3",
-    "pdf": "http://arxiv.org/pdf/2406.13542v3",
-    "summary": "One core capability of large language models (LLMs) is to follow natural\nlanguage instructions. However, the issue of automatically constructing\nhigh-quality training data to enhance the complex instruction-following\nabilities of LLMs without manual annotation remains unresolved. In this paper,\nwe introduce AutoIF, the first scalable and reliable method for automatically\ngenerating instruction-following training data. AutoIF transforms the\nvalidation of instruction-following data quality into code verification,\nrequiring LLMs to generate instructions, the corresponding code to check the\ncorrectness of the instruction responses, and unit test samples to verify the\ncode's correctness. Then, execution feedback-based rejection sampling can\ngenerate data for Supervised Fine-Tuning (SFT) and Reinforcement Learning from\nHuman Feedback (RLHF) training. AutoIF achieves significant improvements across\nthree training algorithms, SFT, Offline DPO, and Online DPO, when applied to\nthe top open-source LLMs, Qwen2 and LLaMA3, in self-alignment and\nstrong-to-weak distillation settings. Our code is publicly available at\nhttps://github.com/QwenLM/AutoIF.",
-    "authors": [
-      "Guanting Dong",
-      "Keming Lu",
-      "Chengpeng Li",
-      "Tingyu Xia",
-      "Bowen Yu",
-      "Chang Zhou",
-      "Jingren Zhou"
-    ],
-    "updated": "2024-07-18T09:00:23Z",
+    "updated": "2025-09-14T05:49:42Z",
     "categories": [
       "cs.CL",
       "cs.AI",
@@ -423,150 +468,113 @@
     ]
   },
   {
-    "id": "2403.08694",
-    "title": "TeaMs-RL: Teaching LLMs to Generate Better Instruction Datasets via\n  Reinforcement Learning",
-    "link": "http://arxiv.org/abs/2403.08694v4",
-    "pdf": "http://arxiv.org/pdf/2403.08694v4",
-    "summary": "The development of Large Language Models (LLMs) often confronts challenges\nstemming from the heavy reliance on human annotators in the reinforcement\nlearning with human feedback (RLHF) framework, or the frequent and costly\nexternal queries tied to the self-instruct paradigm. In this work, we pivot to\nReinforcement Learning (RL) -- but with a twist. Diverging from the typical\nRLHF, which refines LLMs following instruction data training, we use RL to\ndirectly generate the foundational instruction dataset that alone suffices for\nfine-tuning. Our method, TeaMs-RL, uses a suite of textual operations and\nrules, prioritizing the diversification of training datasets. It facilitates\nthe generation of high-quality data without excessive reliance on external\nadvanced models, paving the way for a single fine-tuning step and negating the\nneed for subsequent RLHF stages. Our findings highlight key advantages of our\napproach: reduced need for human involvement and fewer model queries (only\n5.73% of the strong baseline's total), along with enhanced capabilities of LLMs\nin crafting and comprehending complex instructions compared to strong\nbaselines, and substantially improved model privacy protection. Code is\navailable at the link: https://github.com/SafeRL-Lab/TeaMs-RL",
+    "id": "2112.01894",
+    "title": "The Catalan Language CLUB",
+    "link": "http://arxiv.org/abs/2112.01894v1",
+    "pdf": "http://arxiv.org/pdf/2112.01894v1",
+    "summary": "The Catalan Language Understanding Benchmark (CLUB) encompasses various\ndatasets representative of different NLU tasks that enable accurate evaluations\nof language models, following the General Language Understanding Evaluation\n(GLUE) example. It is part of AINA and PlanTL, two public funding initiatives\nto empower the Catalan language in the Artificial Intelligence era.",
     "authors": [
-      "Shangding Gu",
-      "Alois Knoll",
-      "Ming Jin"
+      "Carlos Rodriguez-Penagos",
+      "Carme Armentano-Oller",
+      "Marta Villegas",
+      "Maite Melero",
+      "Aitor Gonzalez",
+      "Ona de Gibert Bonet",
+      "Casimiro Carrino Pio"
     ],
-    "updated": "2025-03-01T19:25:49Z",
+    "updated": "2021-12-03T13:15:17Z",
     "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2501.06480",
-    "title": "Flash Window Attention: speedup the attention computation for Swin\n  Transformer",
-    "link": "http://arxiv.org/abs/2501.06480v2",
-    "pdf": "http://arxiv.org/pdf/2501.06480v2",
-    "summary": "To address the high resolution of image pixels, the Swin Transformer\nintroduces window attention. This mechanism divides an image into\nnon-overlapping windows and restricts attention computation to within each\nwindow, significantly enhancing computational efficiency. To further optimize\nthis process, one might consider replacing standard attention with flash\nattention, which has proven to be more efficient in language models. However, a\ndirect substitution is ineffective. Flash attention is designed for long\nsequences, whereas window attention deals with shorter sequences but must\nhandle numerous of them in parallel. In this report, we present an optimized\nsolution called Flash Window Attention, tailored specifically for window\nattention. Flash Window Attention improves attention computation efficiency by\nup to 300% and enhances end-to-end runtime efficiency by up to 30%. Our code is\navailable online.",
-    "authors": [
-      "Zhendong Zhang"
-    ],
-    "updated": "2025-01-14T04:16:54Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "2503.14376",
-    "title": "Tiled Flash Linear Attention: More Efficient Linear RNN and xLSTM\n  Kernels",
-    "link": "http://arxiv.org/abs/2503.14376v2",
-    "pdf": "http://arxiv.org/pdf/2503.14376v2",
-    "summary": "Linear RNNs with gating recently demonstrated competitive performance\ncompared to Transformers in language modeling. Although their linear compute\nscaling in sequence length offers theoretical runtime advantages over\nTransformers, realizing these benefits in practice requires optimized custom\nkernels, as Transformers rely on the highly efficient Flash Attention kernels\n(Dao, 2024). Leveraging the chunkwise-parallel formulation of linear RNNs,\nFlash Linear Attention (FLA) (Yang & Zhang, 2024) shows that linear RNN kernels\nare faster than Flash Attention, by parallelizing over chunks of the input\nsequence. However, since the chunk size of FLA is limited, many intermediate\nstates must be materialized in GPU memory. This leads to low arithmetic\nintensity and causes high memory consumption and IO cost, especially for\nlong-context pre-training. In this work, we present Tiled Flash Linear\nAttention (TFLA), a novel kernel algorithm for linear RNNs, that enables\narbitrary large chunk sizes and high arithmetic intensity by introducing an\nadditional level of sequence parallelization within each chunk. First, we apply\nTFLA to the xLSTM with matrix memory, the mLSTM (Beck et al., 2024). Second, we\npropose an mLSTM variant with sigmoid input gate and reduced computation for\neven faster kernel runtimes at equal language modeling performance. In our\nspeed benchmarks, we show that our new mLSTM kernels based on TFLA outperform\nhighly optimized Flash Attention, Linear Attention and Mamba kernels, setting a\nnew state of the art for efficient long-context sequence modeling primitives.",
-    "authors": [
-      "Maximilian Beck",
-      "Korbinian Pöppel",
-      "Phillip Lippe",
-      "Sepp Hochreiter"
-    ],
-    "updated": "2025-05-10T08:07:13Z",
-    "categories": [
-      "cs.LG",
-      "cs.AI"
-    ]
-  },
-  {
-    "id": "2409.15097",
-    "title": "Efficiently Dispatching Flash Attention For Partially Filled Attention\n  Masks",
-    "link": "http://arxiv.org/abs/2409.15097v2",
-    "pdf": "http://arxiv.org/pdf/2409.15097v2",
-    "summary": "Transformers are widely used across various applications, many of which yield\nsparse or partially filled attention matrices. Examples include attention masks\ndesigned to reduce the quadratic complexity of attention, sequence packing\ntechniques, and recent innovations like tree masking for fast validation in\nMEDUSA. Despite the inherent sparsity in these matrices, the state-of-the-art\nalgorithm Flash Attention still processes them with quadratic complexity as\nthough they were dense. In this paper, we introduce Binary Block Masking, a\nhighly efficient modification that enhances Flash Attention by making it\nmask-aware. We further propose two optimizations: one tailored for masks with\ncontiguous non-zero patterns and another for extremely sparse masks. Our\nexperiments on attention masks derived from real-world scenarios demonstrate up\nto a 9x runtime improvement. The implementation will be publicly released to\nfoster further research and application.",
-    "authors": [
-      "Agniv Sharma",
-      "Jonas Geiping"
-    ],
-    "updated": "2024-09-24T12:56:13Z",
-    "categories": [
-      "cs.LG",
+      "cs.CL",
       "cs.AI",
-      "cs.CL"
+      "91F20",
+      "I.2.7"
     ]
   },
   {
-    "id": "2409.10489",
-    "title": "Flash STU: Fast Spectral Transform Units",
-    "link": "http://arxiv.org/abs/2409.10489v5",
-    "pdf": "http://arxiv.org/pdf/2409.10489v5",
-    "summary": "Recent advances in state-space model architectures have shown great promise\nfor efficient sequence modeling, but challenges remain in balancing\ncomputational efficiency with model expressiveness. We propose the Flash STU\narchitecture, a hybrid model that interleaves spectral state space model layers\nwith sliding window attention, enabling scalability to billions of parameters\nfor language modeling while maintaining a near-linear time complexity. We\nevaluate the Flash STU and its variants on diverse sequence prediction tasks,\nincluding linear dynamical systems, robotics control, and language modeling. We\nfind that, given a fixed parameter budget, the Flash STU architecture\nconsistently outperforms the Transformer and other leading state-space models\nsuch as S4 and Mamba-2.",
+    "id": "2308.11696",
+    "title": "Efficient Benchmarking of Language Models",
+    "link": "http://arxiv.org/abs/2308.11696v5",
+    "pdf": "http://arxiv.org/pdf/2308.11696v5",
+    "summary": "The increasing versatility of language models (LMs) has given rise to a new\nclass of benchmarks that comprehensively assess a broad range of capabilities.\nSuch benchmarks are associated with massive computational costs, extending to\nthousands of GPU hours per model. However, the efficiency aspect of these\nevaluation efforts had raised little discussion in the literature. In this\nwork, we present the problem of Efficient Benchmarking, namely, intelligently\nreducing the computation costs of LM evaluation without compromising\nreliability. Using the HELM benchmark as a test case, we investigate how\ndifferent benchmark design choices affect the computation-reliability\ntrade-off. We propose to evaluate the reliability of such decisions, by using a\nnew measure -- Decision Impact on Reliability, DIoR for short. We find, for\nexample, that a benchmark leader may change by merely removing a low-ranked\nmodel from the benchmark, and observe that a correct benchmark ranking can be\nobtained by considering only a fraction of the evaluation examples. Based on\nour findings, we outline a set of concrete recommendations for efficient\nbenchmark design and utilization practices. To take a step further, we use our\nfindings to propose an evaluation algorithm, that, when applied to the HELM\nbenchmark, leads to dramatic cost savings with minimal loss of benchmark\nreliability, often reducing computation by x100 or more.",
     "authors": [
-      "Y. Isabel Liu",
-      "Windsor Nguyen",
-      "Yagiz Devre",
-      "Evan Dogariu",
-      "Anirudha Majumdar",
-      "Elad Hazan"
+      "Yotam Perlitz",
+      "Elron Bandel",
+      "Ariel Gera",
+      "Ofir Arviv",
+      "Liat Ein-Dor",
+      "Eyal Shnarch",
+      "Noam Slonim",
+      "Michal Shmueli-Scheuer",
+      "Leshem Choshen"
     ],
-    "updated": "2025-09-06T14:21:01Z",
+    "updated": "2024-04-01T17:34:34Z",
     "categories": [
-      "cs.LG",
-      "cs.AI"
+      "cs.CL",
+      "cs.AI",
+      "cs.CV",
+      "cs.LG"
     ]
   },
   {
-    "id": "2503.06671",
-    "title": "Emulating Self-attention with Convolution for Efficient Image\n  Super-Resolution",
-    "link": "http://arxiv.org/abs/2503.06671v2",
-    "pdf": "http://arxiv.org/pdf/2503.06671v2",
-    "summary": "In this paper, we tackle the high computational overhead of Transformers for\nefficient image super-resolution~(SR). Motivated by the observations of\nself-attention's inter-layer repetition, we introduce a convolutionized\nself-attention module named Convolutional Attention~(ConvAttn) that emulates\nself-attention's long-range modeling capability and instance-dependent\nweighting with a single shared large kernel and dynamic kernels. By utilizing\nthe ConvAttn module, we significantly reduce the reliance on self-attention and\nits involved memory-bound operations while maintaining the representational\ncapability of Transformers. Furthermore, we overcome the challenge of\nintegrating flash attention into the lightweight SR regime, effectively\nmitigating self-attention's inherent memory bottleneck. We scale up the window\nsize to 32$\\times$32 with flash attention rather than proposing an intricate\nself-attention module, significantly improving PSNR by 0.31dB on\nUrban100$\\times$2 while reducing latency and memory usage by 16$\\times$ and\n12.2$\\times$. Building on these approaches, our proposed network, termed\nEmulating Self-attention with Convolution~(ESC), notably improves PSNR by 0.27\ndB on Urban100$\\times$4 compared to HiT-SRF, reducing the latency and memory\nusage by 3.7$\\times$ and 6.2$\\times$, respectively. Extensive experiments\ndemonstrate that our ESC maintains the ability for long-range modeling, data\nscalability, and the representational power of Transformers despite most\nself-attention being replaced by the ConvAttn module.",
+    "id": "2506.20249",
+    "title": "Language Modeling by Language Models",
+    "link": "http://arxiv.org/abs/2506.20249v1",
+    "pdf": "http://arxiv.org/pdf/2506.20249v1",
+    "summary": "Can we leverage LLMs to model the process of discovering novel language model\n(LM) architectures? Inspired by real research, we propose a multi-agent LLM\napproach that simulates the conventional stages of research, from ideation and\nliterature search (proposal stage) to design implementation (code generation),\ngenerative pre-training, and downstream evaluation (verification). Using ideas\nfrom scaling laws, our system, Genesys, employs a Ladder of Scales approach;\nnew designs are proposed, adversarially reviewed, implemented, and selectively\nverified at increasingly larger model scales (14M$\\sim$350M parameters) with a\nnarrowing budget (the number of models we can train at each scale). To help\nmake discovery efficient and factorizable, Genesys uses a novel genetic\nprogramming backbone, which we show has empirical advantages over commonly used\ndirect prompt generation workflows (e.g., $\\sim$86\\% percentage point\nimprovement in successful design generation, a key bottleneck). We report\nexperiments involving 1,162 newly discovered designs (1,062 fully verified\nthrough pre-training) and find the best designs to be highly competitive with\nknown architectures (e.g., outperform GPT2, Mamba2, etc., on 6/9 common\nbenchmarks). We couple these results with comprehensive system-level ablations\nand formal results, which give broader insights into the design of effective\nautonomous discovery systems.",
     "authors": [
-      "Dongheon Lee",
-      "Seokju Yun",
-      "Youngmin Ro"
+      "Junyan Cheng",
+      "Peter Clark",
+      "Kyle Richardson"
     ],
-    "updated": "2025-06-30T07:49:21Z",
+    "updated": "2025-06-25T08:46:10Z",
     "categories": [
+      "cs.AI",
+      "cs.CL",
+      "cs.MA"
+    ]
+  },
+  {
+    "id": "2406.08702",
+    "title": "VLind-Bench: Measuring Language Priors in Large Vision-Language Models",
+    "link": "http://arxiv.org/abs/2406.08702v4",
+    "pdf": "http://arxiv.org/pdf/2406.08702v4",
+    "summary": "Large Vision-Language Models (LVLMs) have demonstrated outstanding\nperformance across various multimodal tasks. However, they suffer from a\nproblem known as language prior, where responses are generated based solely on\ntextual patterns while disregarding image information. Addressing the issue of\nlanguage prior is crucial, as it can lead to undesirable biases or\nhallucinations when dealing with images that are out of training distribution.\nDespite its importance, current methods for accurately measuring language\npriors in LVLMs are poorly studied. Although existing benchmarks based on\ncounterfactual or out-of-distribution images can partially be used to measure\nlanguage priors, they fail to disentangle language priors from other\nconfounding factors. To this end, we propose a new benchmark called\nVLind-Bench, which is the first benchmark specifically designed to measure the\nlanguage priors, or blindness, of LVLMs. It not only includes tests on\ncounterfactual images to assess language priors but also involves a series of\ntests to evaluate more basic capabilities such as commonsense knowledge, visual\nperception, and commonsense biases. For each instance in our benchmark, we\nensure that all these basic tests are passed before evaluating the language\npriors, thereby minimizing the influence of other factors on the assessment.\nThe evaluation and analysis of recent LVLMs in our benchmark reveal that almost\nall models exhibit a significant reliance on language priors, presenting a\nstrong challenge in the field.",
+    "authors": [
+      "Kang-il Lee",
+      "Minbeom Kim",
+      "Seunghyun Yoon",
+      "Minsung Kim",
+      "Dongryeol Lee",
+      "Hyukhun Koh",
+      "Kyomin Jung"
+    ],
+    "updated": "2025-02-08T23:14:12Z",
+    "categories": [
+      "cs.AI",
+      "cs.CL",
       "cs.CV"
     ]
   },
   {
-    "id": "2507.16676",
-    "title": "Custom Algorithm-based Fault Tolerance for Attention Layers in\n  Transformers",
-    "link": "http://arxiv.org/abs/2507.16676v1",
-    "pdf": "http://arxiv.org/pdf/2507.16676v1",
-    "summary": "Transformers and large language models (LLMs), powered by the attention\nmechanism, have transformed numerous AI applications, driving the need for\nspecialized hardware accelerators. A major challenge in these accelerators is\nefficiently detecting errors caused by random hardware faults. Traditional\nalgorithm-based fault tolerance (ABFT) techniques verify individual matrix\nmultiplications but fall short in handling the full attention mechanism,\nparticularly due to intermediate softmax normalization. This work proposes\nFlash-ABFT, a novel method that computes an online checksum across the entire\nthree-matrix product of query, key and value matrices, of an attention layer,\nincluding the softmax operation, with a single check. This approach\nsignificantly reduces overhead by eliminating redundant checks while\nmaintaining high fault-detection accuracy. Experimental results demonstrate\nthat Flash-ABFT incurs only 5.3% hardware area overhead and less than 1.9%\nenergy overhead, making it a cost-effective and robust solution for error\ndetection in attention accelerators.",
+    "id": "2109.15254",
+    "title": "SlovakBERT: Slovak Masked Language Model",
+    "link": "http://arxiv.org/abs/2109.15254v2",
+    "pdf": "http://arxiv.org/pdf/2109.15254v2",
+    "summary": "We introduce a new Slovak masked language model called SlovakBERT. This is to\nour best knowledge the first paper discussing Slovak transformers-based\nlanguage models. We evaluate our model on several NLP tasks and achieve\nstate-of-the-art results. This evaluation is likewise the first attempt to\nestablish a benchmark for Slovak language models. We publish the masked\nlanguage model, as well as the fine-tuned models for part-of-speech tagging,\nsentiment analysis and semantic textual similarity.",
     "authors": [
-      "Vasileios Titopoulos",
-      "Kosmas Alexandridis",
-      "Giorgos Dimitrakopoulos"
+      "Matúš Pikuliak",
+      "Štefan Grivalský",
+      "Martin Konôpka",
+      "Miroslav Blšták",
+      "Martin Tamajka",
+      "Viktor Bachratý",
+      "Marián Šimko",
+      "Pavol Balážik",
+      "Michal Trnka",
+      "Filip Uhlárik"
     ],
-    "updated": "2025-07-22T15:11:13Z",
+    "updated": "2022-10-29T19:41:06Z",
     "categories": [
-      "cs.LG",
-      "cs.AR"
-    ]
-  },
-  {
-    "id": "2412.02344",
-    "title": "UniForm: A Reuse Attention Mechanism Optimized for Efficient Vision\n  Transformers on Edge Devices",
-    "link": "http://arxiv.org/abs/2412.02344v1",
-    "pdf": "http://arxiv.org/pdf/2412.02344v1",
-    "summary": "Transformer-based architectures have demonstrated remarkable success across\nvarious domains, but their deployment on edge devices remains challenging due\nto high memory and computational demands. In this paper, we introduce a novel\nReuse Attention mechanism, tailored for efficient memory access and\ncomputational optimization, enabling seamless operation on resource-constrained\nplatforms without compromising performance. Unlike traditional multi-head\nattention (MHA), which redundantly computes separate attention matrices for\neach head, Reuse Attention consolidates these computations into a shared\nattention matrix, significantly reducing memory overhead and computational\ncomplexity. Comprehensive experiments on ImageNet-1K and downstream tasks show\nthat the proposed UniForm models leveraging Reuse Attention achieve\nstate-of-the-art imagenet classification accuracy while outperforming existing\nattention mechanisms, such as Linear Attention and Flash Attention, in\ninference speed and memory scalability. Notably, UniForm-l achieves a 76.7%\nTop-1 accuracy on ImageNet-1K with 21.8ms inference time on edge devices like\nthe Jetson AGX Orin, representing up to a 5x speedup over competing benchmark\nmethods. These results demonstrate the versatility of Reuse Attention across\nhigh-performance GPUs and edge platforms, paving the way for broader real-time\napplications",
-    "authors": [
-      "Seul-Ki Yeom",
-      "Tae-Ho Kim"
-    ],
-    "updated": "2024-12-03T10:04:15Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "2403.18276",
-    "title": "RankMamba: Benchmarking Mamba's Document Ranking Performance in the Era\n  of Transformers",
-    "link": "http://arxiv.org/abs/2403.18276v2",
-    "pdf": "http://arxiv.org/pdf/2403.18276v2",
-    "summary": "Transformer structure has achieved great success in multiple applied machine\nlearning communities, such as natural language processing (NLP), computer\nvision (CV) and information retrieval (IR). Transformer architecture's core\nmechanism -- attention requires $O(n^2)$ time complexity in training and $O(n)$\ntime complexity in inference. Many works have been proposed to improve the\nattention mechanism's scalability, such as Flash Attention and Multi-query\nAttention. A different line of work aims to design new mechanisms to replace\nattention. Recently, a notable model structure -- Mamba, which is based on\nstate space models, has achieved transformer-equivalent performance in multiple\nsequence modeling tasks.\n  In this work, we examine \\mamba's efficacy through the lens of a classical IR\ntask -- document ranking. A reranker model takes a query and a document as\ninput, and predicts a scalar relevance score. This task demands the language\nmodel's ability to comprehend lengthy contextual inputs and to capture the\ninteraction between query and document tokens. We find that (1) Mamba models\nachieve competitive performance compared to transformer-based models with the\nsame training recipe; (2) but also have a lower training throughput in\ncomparison to efficient transformer implementations such as flash attention. We\nhope this study can serve as a starting point to explore Mamba models in other\nclassical IR tasks. Our code implementation and trained checkpoints are made\npublic to facilitate reproducibility\n(https://github.com/zhichaoxu-shufe/RankMamba).",
-    "authors": [
-      "Zhichao Xu"
-    ],
-    "updated": "2024-04-07T06:44:28Z",
-    "categories": [
-      "cs.IR",
       "cs.CL"
     ]
   },
@@ -588,145 +596,120 @@
     ]
   },
   {
-    "id": "2504.09979",
-    "title": "Resampling Benchmark for Efficient Comprehensive Evaluation of Large\n  Vision-Language Models",
-    "link": "http://arxiv.org/abs/2504.09979v1",
-    "pdf": "http://arxiv.org/pdf/2504.09979v1",
-    "summary": "We propose an efficient evaluation protocol for large vision-language models\n(VLMs). Given their broad knowledge and reasoning capabilities, multiple\nbenchmarks are needed for comprehensive assessment, making evaluation\ncomputationally expensive. To improve efficiency, we construct a subset that\nyields results comparable to full benchmark evaluations. Our benchmark\nclassification experiments reveal that no single benchmark fully covers all\nchallenges. We then introduce a subset construction method using farthest point\nsampling (FPS). Our experiments show that FPS-based benchmarks maintain a\nstrong correlation (> 0.96) with full evaluations while using only ~1\\% of the\ndata. Additionally, applying FPS to an existing benchmark improves correlation\nwith overall evaluation results, suggesting its potential to reduce unintended\ndataset biases.",
+    "id": "2410.08928",
+    "title": "Towards Multilingual LLM Evaluation for European Languages",
+    "link": "http://arxiv.org/abs/2410.08928v2",
+    "pdf": "http://arxiv.org/pdf/2410.08928v2",
+    "summary": "The rise of Large Language Models (LLMs) has revolutionized natural language\nprocessing across numerous languages and tasks. However, evaluating LLM\nperformance in a consistent and meaningful way across multiple European\nlanguages remains challenging, especially due to the scarcity of\nlanguage-parallel multilingual benchmarks. We introduce a multilingual\nevaluation approach tailored for European languages. We employ translated\nversions of five widely-used benchmarks to assess the capabilities of 40 LLMs\nacross 21 European languages. Our contributions include examining the\neffectiveness of translated benchmarks, assessing the impact of different\ntranslation services, and offering a multilingual evaluation framework for LLMs\nthat includes newly created datasets: EU20-MMLU, EU20-HellaSwag, EU20-ARC,\nEU20-TruthfulQA, and EU20-GSM8K. The benchmarks and results are made publicly\navailable to encourage further research in multilingual LLM evaluation.",
     "authors": [
-      "Teppei Suzuki",
-      "Keisuke Ozawa"
+      "Klaudia Thellmann",
+      "Bernhard Stadler",
+      "Michael Fromm",
+      "Jasper Schulze Buschhoff",
+      "Alex Jude",
+      "Fabio Barth",
+      "Johannes Leveling",
+      "Nicolas Flores-Herr",
+      "Joachim Köhler",
+      "René Jäkel",
+      "Mehdi Ali"
     ],
-    "updated": "2025-04-14T08:43:00Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "2309.08448",
-    "title": "Advancing the Evaluation of Traditional Chinese Language Models: Towards\n  a Comprehensive Benchmark Suite",
-    "link": "http://arxiv.org/abs/2309.08448v2",
-    "pdf": "http://arxiv.org/pdf/2309.08448v2",
-    "summary": "The evaluation of large language models is an essential task in the field of\nlanguage understanding and generation. As language models continue to advance,\nthe need for effective benchmarks to assess their performance has become\nimperative. In the context of Traditional Chinese, there is a scarcity of\ncomprehensive and diverse benchmarks to evaluate the capabilities of language\nmodels, despite the existence of certain benchmarks such as DRCD, TTQA, CMDQA,\nand FGC dataset. To address this gap, we propose a novel set of benchmarks that\nleverage existing English datasets and are tailored to evaluate language models\nin Traditional Chinese. These benchmarks encompass a wide range of tasks,\nincluding contextual question-answering, summarization, classification, and\ntable understanding. The proposed benchmarks offer a comprehensive evaluation\nframework, enabling the assessment of language models' capabilities across\ndifferent tasks. In this paper, we evaluate the performance of GPT-3.5,\nTaiwan-LLaMa-v1.0, and Model 7-C, our proprietary model, on these benchmarks.\nThe evaluation results highlight that our model, Model 7-C, achieves\nperformance comparable to GPT-3.5 with respect to a part of the evaluated\ncapabilities. In an effort to advance the evaluation of language models in\nTraditional Chinese and stimulate further research in this field, we have\nopen-sourced our benchmark and opened the model for trial.",
-    "authors": [
-      "Chan-Jan Hsu",
-      "Chang-Le Liu",
-      "Feng-Ting Liao",
-      "Po-Chun Hsu",
-      "Yi-Chang Chen",
-      "Da-shan Shiu"
-    ],
-    "updated": "2023-10-02T15:22:42Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2411.19244",
-    "title": "Consolidating and Developing Benchmarking Datasets for the Nepali\n  Natural Language Understanding Tasks",
-    "link": "http://arxiv.org/abs/2411.19244v2",
-    "pdf": "http://arxiv.org/pdf/2411.19244v2",
-    "summary": "The Nepali language has distinct linguistic features, especially its complex\nscript (Devanagari script), morphology, and various dialects,which pose a\nunique challenge for Natural Language Understanding (NLU) tasks. While the\nNepali Language Understanding Evaluation (Nep-gLUE) benchmark provides a\nfoundation for evaluating models, it remains limited in scope, covering four\ntasks. This restricts their utility for comprehensive assessments of Natural\nLanguage Processing (NLP) models. To address this limitation, we introduce\ntwelve new datasets, creating a new benchmark, the Nepali /Language\nUnderstanding Evaluation (NLUE) benchmark for evaluating the performance of\nmodels across a diverse set of Natural Language Understanding (NLU) tasks. The\nadded tasks include Single-Sentence Classification, Similarity and Paraphrase\nTasks, Natural Language Inference (NLI), and General Masked Evaluation Task\n(GMET). Through extensive experiments, we demonstrate that existing top models\nstruggle with the added complexity of these tasks. We also find that the best\nmultilingual model outperforms the best monolingual models across most tasks,\nhighlighting the need for more robust solutions tailored to the Nepali\nlanguage. This expanded benchmark sets a new standard for evaluating,\ncomparing, and advancing models, contributing significantly to the broader goal\nof advancing NLP research for low-resource languages.",
-    "authors": [
-      "Jinu Nyachhyon",
-      "Mridul Sharma",
-      "Prajwal Thapa",
-      "Bal Krishna Bal"
-    ],
-    "updated": "2025-08-19T10:54:02Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2208.08227",
-    "title": "MultiPL-E: A Scalable and Extensible Approach to Benchmarking Neural\n  Code Generation",
-    "link": "http://arxiv.org/abs/2208.08227v4",
-    "pdf": "http://arxiv.org/pdf/2208.08227v4",
-    "summary": "Large language models have demonstrated the ability to generate both natural\nlanguage and programming language text. Such models open up the possibility of\nmulti-language code generation: could code generation models generalize\nknowledge from one language to another? Although contemporary code generation\nmodels can generate semantically correct Python code, little is known about\ntheir abilities with other languages. We propose MultiPL-E, a system for\ntranslating unit test-driven code generation benchmarks to new languages. We\ncreate the first massively multilingual code generation benchmark by using\nMultiPL-E to translate two popular Python code generation benchmarks to 18\nadditional programming languages.\n  We use MultiPL-E to extend the HumanEval benchmark and MBPP benchmark to 18\nlanguages that encompass a range of programming paradigms and popularity. Using\nthese new parallel benchmarks, we evaluate the multi-language performance of\nthree state-of-the-art code generation models: Codex, CodeGen, and InCoder. We\nfind that Codex matches or even exceeds its performance on Python for several\nother languages. The range of programming languages represented in MultiPL-E\nallow us to explore the impact of language frequency and language features on\nmodel performance. Finally, the MultiPL-E approach of compiling code generation\nbenchmarks to new programming languages is both scalable and extensible, making\nit straightforward to evaluate new models, benchmarks, and languages.",
-    "authors": [
-      "Federico Cassano",
-      "John Gouwar",
-      "Daniel Nguyen",
-      "Sydney Nguyen",
-      "Luna Phipps-Costin",
-      "Donald Pinckney",
-      "Ming-Ho Yee",
-      "Yangtian Zi",
-      "Carolyn Jane Anderson",
-      "Molly Q Feldman",
-      "Arjun Guha",
-      "Michael Greenberg",
-      "Abhinav Jangda"
-    ],
-    "updated": "2022-12-19T10:30:12Z",
-    "categories": [
-      "cs.LG",
-      "cs.PL"
-    ]
-  },
-  {
-    "id": "2404.05337",
-    "title": "Towards Objectively Benchmarking Social Intelligence for Language Agents\n  at Action Level",
-    "link": "http://arxiv.org/abs/2404.05337v1",
-    "pdf": "http://arxiv.org/pdf/2404.05337v1",
-    "summary": "Prominent large language models have exhibited human-level performance in\nmany domains, even enabling the derived agents to simulate human and social\ninteractions. While practical works have substantiated the practicability of\ngrounding language agents in sandbox simulation or embodied simulators, current\nsocial intelligence benchmarks either stay at the language level or use\nsubjective metrics. In pursuit of a more realistic and objective evaluation, we\nintroduce the Social Tasks in Sandbox Simulation (STSS) benchmark, which\nassesses language agents \\textbf{objectively} at the \\textbf{action level} by\nscrutinizing the goal achievements within the multi-agent simulation.\nAdditionally, we sample conversation scenarios to build a language-level\nbenchmark to provide an economically prudent preliminary evaluation and align\nwith prevailing benchmarks. To gauge the significance of agent architecture, we\nimplement a target-driven planning (TDP) module as an adjunct to the existing\nagent. Our evaluative findings highlight that the STSS benchmark is challenging\nfor state-of-the-art language agents. Furthermore, it effectively discriminates\nbetween distinct language agents, suggesting its usefulness as a benchmark for\nevaluating both language models and agent architectures.",
-    "authors": [
-      "Chenxu Wang",
-      "Bin Dai",
-      "Huaping Liu",
-      "Baoyuan Wang"
-    ],
-    "updated": "2024-04-08T09:25:32Z",
+    "updated": "2024-10-17T17:58:53Z",
     "categories": [
       "cs.CL",
-      "cs.AI"
+      "cs.AI",
+      "cs.LG"
     ]
   },
   {
-    "id": "2506.12148",
-    "title": "Hatevolution: What Static Benchmarks Don't Tell Us",
-    "link": "http://arxiv.org/abs/2506.12148v1",
-    "pdf": "http://arxiv.org/pdf/2506.12148v1",
-    "summary": "Language changes over time, including in the hate speech domain, which\nevolves quickly following social dynamics and cultural shifts. While NLP\nresearch has investigated the impact of language evolution on model training\nand has proposed several solutions for it, its impact on model benchmarking\nremains under-explored. Yet, hate speech benchmarks play a crucial role to\nensure model safety. In this paper, we empirically evaluate the robustness of\n20 language models across two evolving hate speech experiments, and we show the\ntemporal misalignment between static and time-sensitive evaluations. Our\nfindings call for time-sensitive linguistic benchmarks in order to correctly\nand reliably evaluate language models in the hate speech domain.",
+    "id": "1810.03444",
+    "title": "Phrase-Based Attentions",
+    "link": "http://arxiv.org/abs/1810.03444v1",
+    "pdf": "http://arxiv.org/pdf/1810.03444v1",
+    "summary": "Most state-of-the-art neural machine translation systems, despite being\ndifferent in architectural skeletons (e.g. recurrence, convolutional), share an\nindispensable feature: the Attention. However, most existing attention methods\nare token-based and ignore the importance of phrasal alignments, the key\ningredient for the success of phrase-based statistical machine translation. In\nthis paper, we propose novel phrase-based attention methods to model n-grams of\ntokens as attention entities. We incorporate our phrase-based attentions into\nthe recently proposed Transformer network, and demonstrate that our approach\nyields improvements of 1.3 BLEU for English-to-German and 0.5 BLEU for\nGerman-to-English translation tasks on WMT newstest2014 using WMT'16 training\ndata.",
     "authors": [
-      "Chiara Di Bonaventura",
-      "Barbara McGillivray",
-      "Yulan He",
-      "Albert Meroño-Peñuela"
+      "Phi Xuan Nguyen",
+      "Shafiq Joty"
     ],
-    "updated": "2025-06-13T18:08:19Z",
+    "updated": "2018-09-30T16:28:40Z",
     "categories": [
       "cs.CL"
     ]
   },
   {
-    "id": "2410.16186",
-    "title": "Contamination Report for Multilingual Benchmarks",
-    "link": "http://arxiv.org/abs/2410.16186v1",
-    "pdf": "http://arxiv.org/pdf/2410.16186v1",
-    "summary": "Benchmark contamination refers to the presence of test datasets in Large\nLanguage Model (LLM) pre-training or post-training data. Contamination can lead\nto inflated scores on benchmarks, compromising evaluation results and making it\ndifficult to determine the capabilities of models. In this work, we study the\ncontamination of popular multilingual benchmarks in LLMs that support multiple\nlanguages. We use the Black Box test to determine whether $7$ frequently used\nmultilingual benchmarks are contaminated in $7$ popular open and closed LLMs\nand find that almost all models show signs of being contaminated with almost\nall the benchmarks we test. Our findings can help the community determine the\nbest set of benchmarks to use for multilingual evaluation.",
+    "id": "2507.07694",
+    "title": "SAS: Simulated Attention Score",
+    "link": "http://arxiv.org/abs/2507.07694v1",
+    "pdf": "http://arxiv.org/pdf/2507.07694v1",
+    "summary": "The attention mechanism is a core component of the Transformer architecture.\nVarious methods have been developed to compute attention scores, including\nmulti-head attention (MHA), multi-query attention, group-query attention and so\non. We further analyze the MHA and observe that its performance improves as the\nnumber of attention heads increases, provided the hidden size per head remains\nsufficiently large. Therefore, increasing both the head count and hidden size\nper head with minimal parameter overhead can lead to significant performance\ngains at a low cost. Motivated by this insight, we introduce Simulated\nAttention Score (SAS), which maintains a compact model size while simulating a\nlarger number of attention heads and hidden feature dimension per head. This is\nachieved by projecting a low-dimensional head representation into a\nhigher-dimensional space, effectively increasing attention capacity without\nincreasing parameter count. Beyond the head representations, we further extend\nthe simulation approach to feature dimension of the key and query embeddings,\nenhancing expressiveness by mimicking the behavior of a larger model while\npreserving the original model size. To control the parameter cost, we also\npropose Parameter-Efficient Attention Aggregation (PEAA). Comprehensive\nexperiments on a variety of datasets and tasks demonstrate the effectiveness of\nthe proposed SAS method, achieving significant improvements over different\nattention variants.",
     "authors": [
-      "Sanchit Ahuja",
-      "Varun Gumma",
-      "Sunayana Sitaram"
+      "Chuanyang Zheng",
+      "Jiankai Sun",
+      "Yihang Gao",
+      "Yuehao Wang",
+      "Peihao Wang",
+      "Jing Xiong",
+      "Liliang Ren",
+      "Hao Cheng",
+      "Janardhan Kulkarni",
+      "Yelong Shen",
+      "Atlas Wang",
+      "Mac Schwager",
+      "Anderson Schneider",
+      "Xiaodong Liu",
+      "Jianfeng Gao"
     ],
-    "updated": "2024-10-21T16:49:35Z",
+    "updated": "2025-07-10T12:16:16Z",
     "categories": [
       "cs.CL"
     ]
   },
   {
-    "id": "1606.02012",
-    "title": "Can neural machine translation do simultaneous translation?",
-    "link": "http://arxiv.org/abs/1606.02012v1",
-    "pdf": "http://arxiv.org/pdf/1606.02012v1",
-    "summary": "We investigate the potential of attention-based neural machine translation in\nsimultaneous translation. We introduce a novel decoding algorithm, called\nsimultaneous greedy decoding, that allows an existing neural machine\ntranslation model to begin translating before a full source sentence is\nreceived. This approach is unique from previous works on simultaneous\ntranslation in that segmentation and translation are done jointly to maximize\nthe translation quality and that translating each segment is strongly\nconditioned on all the previous segments. This paper presents a first step\ntoward building a full simultaneous translation system based on neural machine\ntranslation.",
+    "id": "1909.12406",
+    "title": "Monotonic Multihead Attention",
+    "link": "http://arxiv.org/abs/1909.12406v1",
+    "pdf": "http://arxiv.org/pdf/1909.12406v1",
+    "summary": "Simultaneous machine translation models start generating a target sequence\nbefore they have encoded or read the source sequence. Recent approaches for\nthis task either apply a fixed policy on a state-of-the art Transformer model,\nor a learnable monotonic attention on a weaker recurrent neural network-based\nstructure. In this paper, we propose a new attention mechanism, Monotonic\nMultihead Attention (MMA), which extends the monotonic attention mechanism to\nmultihead attention. We also introduce two novel and interpretable approaches\nfor latency control that are specifically designed for multiple attentions\nheads. We apply MMA to the simultaneous machine translation task and\ndemonstrate better latency-quality tradeoffs compared to MILk, the previous\nstate-of-the-art approach. We also analyze how the latency controls affect the\nattention span and we motivate the introduction of our model by analyzing the\neffect of the number of decoder layers and heads on quality and latency.",
     "authors": [
-      "Kyunghyun Cho",
-      "Masha Esipova"
+      "Xutai Ma",
+      "Juan Pino",
+      "James Cross",
+      "Liezl Puzon",
+      "Jiatao Gu"
     ],
-    "updated": "2016-06-07T03:38:46Z",
+    "updated": "2019-09-26T21:32:50Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "1906.03731",
+    "title": "Is Attention Interpretable?",
+    "link": "http://arxiv.org/abs/1906.03731v1",
+    "pdf": "http://arxiv.org/pdf/1906.03731v1",
+    "summary": "Attention mechanisms have recently boosted performance on a range of NLP\ntasks. Because attention layers explicitly weight input components'\nrepresentations, it is also often assumed that attention can be used to\nidentify information that models found important (e.g., specific contextualized\nword tokens). We test whether that assumption holds by manipulating attention\nweights in already-trained text classification models and analyzing the\nresulting differences in their predictions. While we observe some ways in which\nhigher attention weights correlate with greater impact on model predictions, we\nalso find many ways in which this does not hold, i.e., where gradient-based\nrankings of attention weights better predict their effects than their\nmagnitudes. We conclude that while attention noisily predicts input components'\noverall importance to a model, it is by no means a fail-safe indicator.",
+    "authors": [
+      "Sofia Serrano",
+      "Noah A. Smith"
+    ],
+    "updated": "2019-06-09T22:46:12Z",
+    "categories": [
+      "cs.CL"
+    ]
+  },
+  {
+    "id": "2504.00927",
+    "title": "Multi-Token Attention",
+    "link": "http://arxiv.org/abs/2504.00927v2",
+    "pdf": "http://arxiv.org/pdf/2504.00927v2",
+    "summary": "Soft attention is a critical mechanism powering LLMs to locate relevant parts\nwithin a given context. However, individual attention weights are determined by\nthe similarity of only a single query and key token vector. This \"single token\nattention\" bottlenecks the amount of information used in distinguishing a\nrelevant part from the rest of the context. To address this issue, we propose a\nnew attention method, Multi-Token Attention (MTA), which allows LLMs to\ncondition their attention weights on multiple query and key vectors\nsimultaneously. This is achieved by applying convolution operations over\nqueries, keys and heads, allowing nearby queries and keys to affect each\nother's attention weights for more precise attention. As a result, our method\ncan locate relevant context using richer, more nuanced information that can\nexceed a single vector's capacity. Through extensive evaluations, we\ndemonstrate that MTA achieves enhanced performance on a range of popular\nbenchmarks. Notably, it outperforms Transformer baseline models on standard\nlanguage modeling tasks, and on tasks that require searching for information\nwithin long contexts, where our method's ability to leverage richer information\nproves particularly beneficial.",
+    "authors": [
+      "Olga Golovneva",
+      "Tianlu Wang",
+      "Jason Weston",
+      "Sainbayar Sukhbaatar"
+    ],
+    "updated": "2025-07-11T15:49:30Z",
     "categories": [
       "cs.CL"
     ]
@@ -747,97 +730,34 @@
     ]
   },
   {
-    "id": "1702.03525",
-    "title": "Learning to Parse and Translate Improves Neural Machine Translation",
-    "link": "http://arxiv.org/abs/1702.03525v2",
-    "pdf": "http://arxiv.org/pdf/1702.03525v2",
-    "summary": "There has been relatively little attention to incorporating linguistic prior\nto neural machine translation. Much of the previous work was further\nconstrained to considering linguistic prior on the source side. In this paper,\nwe propose a hybrid model, called NMT+RNNG, that learns to parse and translate\nby combining the recurrent neural network grammar into the attention-based\nneural machine translation. Our approach encourages the neural machine\ntranslation model to incorporate linguistic prior during training, and lets it\ntranslate on its own afterward. Extensive experiments with four language pairs\nshow the effectiveness of the proposed NMT+RNNG.",
+    "id": "1710.03348",
+    "title": "What does Attention in Neural Machine Translation Pay Attention to?",
+    "link": "http://arxiv.org/abs/1710.03348v1",
+    "pdf": "http://arxiv.org/pdf/1710.03348v1",
+    "summary": "Attention in neural machine translation provides the possibility to encode\nrelevant parts of the source sentence at each translation step. As a result,\nattention is considered to be an alignment model as well. However, there is no\nwork that specifically studies attention and provides analysis of what is being\nlearned by attention models. Thus, the question still remains that how\nattention is similar or different from the traditional alignment. In this\npaper, we provide detailed analysis of attention and compare it to traditional\nalignment. We answer the question of whether attention is only capable of\nmodelling translational equivalent or it captures more information. We show\nthat attention is different from alignment in some cases and is capturing\nuseful information other than alignments.",
     "authors": [
-      "Akiko Eriguchi",
-      "Yoshimasa Tsuruoka",
-      "Kyunghyun Cho"
+      "Hamidreza Ghader",
+      "Christof Monz"
     ],
-    "updated": "2017-04-23T16:52:03Z",
+    "updated": "2017-10-09T23:21:34Z",
     "categories": [
       "cs.CL"
     ]
   },
   {
-    "id": "2110.00435",
-    "title": "Attention based Sequence to Sequence Learning for Machine Translation of\n  Low Resourced Indic Languages -- A case of Sanskrit to Hindi",
-    "link": "http://arxiv.org/abs/2110.00435v1",
-    "pdf": "http://arxiv.org/pdf/2110.00435v1",
-    "summary": "Deep Learning techniques are powerful in mimicking humans in a particular set\nof problems. They have achieved a remarkable performance in complex learning\ntasks. Deep learning inspired Neural Machine Translation (NMT) is a proficient\ntechnique that outperforms traditional machine translation. Performing\nmachine-aided translation on Indic languages has always been a challenging task\nconsidering their rich and diverse grammar. The neural machine translation has\nshown quality results compared to the traditional machine translation\napproaches. The fully automatic machine translation becomes problematic when it\ncomes to low-resourced languages, especially with Sanskrit. This paper presents\nattention mechanism based neural machine translation by selectively focusing on\na particular part of language sentences during translation. The work shows the\nconstruction of Sanskrit to Hindi bilingual parallel corpus with nearly 10K\nsamples and having 178,000 tokens. The neural translation model equipped with\nan attention mechanism has been trained on Sanskrit to Hindi parallel corpus.\nThe approach has shown the significance of attention mechanisms to overcome\nlong-term dependencies, primarily associated with low resources Indic\nlanguages. The paper shows the attention plots on testing data to demonstrate\nthe alignment between source and translated words. For the evaluation of the\ntranslated sentences, manual score based human evaluation and automatic\nevaluation metric based techniques have been adopted. The attention mechanism\nbased neural translation has achieved 88% accuracy in human evaluation and a\nBLEU score of 0.92 on Sanskrit to Hindi translation.",
+    "id": "1810.13320",
+    "title": "Convolutional Self-Attention Network",
+    "link": "http://arxiv.org/abs/1810.13320v2",
+    "pdf": "http://arxiv.org/pdf/1810.13320v2",
+    "summary": "Self-attention network (SAN) has recently attracted increasing interest due\nto its fully parallelized computation and flexibility in modeling dependencies.\nIt can be further enhanced with multi-headed attention mechanism by allowing\nthe model to jointly attend to information from different representation\nsubspaces at different positions (Vaswani et al., 2017). In this work, we\npropose a novel convolutional self-attention network (CSAN), which offers SAN\nthe abilities to 1) capture neighboring dependencies, and 2) model the\ninteraction between multiple attention heads. Experimental results on WMT14\nEnglish-to-German translation task demonstrate that the proposed approach\noutperforms both the strong Transformer baseline and other existing works on\nenhancing the locality of SAN. Comparing with previous work, our model does not\nintroduce any new parameters.",
     "authors": [
-      "Vishvajit Bakarola",
-      "Jitendra Nasriwala"
+      "Baosong Yang",
+      "Longyue Wang",
+      "Derek F. Wong",
+      "Lidia S. Chao",
+      "Zhaopeng Tu"
     ],
-    "updated": "2021-09-07T04:55:48Z",
-    "categories": [
-      "cs.CL",
-      "cs.AI"
-    ]
-  },
-  {
-    "id": "1709.07809",
-    "title": "Neural Machine Translation",
-    "link": "http://arxiv.org/abs/1709.07809v1",
-    "pdf": "http://arxiv.org/pdf/1709.07809v1",
-    "summary": "Draft of textbook chapter on neural machine translation. a comprehensive\ntreatment of the topic, ranging from introduction to neural networks,\ncomputation graphs, description of the currently dominant attentional\nsequence-to-sequence model, recent refinements, alternative architectures and\nchallenges. Written as chapter for the textbook Statistical Machine\nTranslation. Used in the JHU Fall 2017 class on machine translation.",
-    "authors": [
-      "Philipp Koehn"
-    ],
-    "updated": "2017-09-22T15:28:24Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "1610.05011",
-    "title": "Interactive Attention for Neural Machine Translation",
-    "link": "http://arxiv.org/abs/1610.05011v1",
-    "pdf": "http://arxiv.org/pdf/1610.05011v1",
-    "summary": "Conventional attention-based Neural Machine Translation (NMT) conducts\ndynamic alignment in generating the target sentence. By repeatedly reading the\nrepresentation of source sentence, which keeps fixed after generated by the\nencoder (Bahdanau et al., 2015), the attention mechanism has greatly enhanced\nstate-of-the-art NMT. In this paper, we propose a new attention mechanism,\ncalled INTERACTIVE ATTENTION, which models the interaction between the decoder\nand the representation of source sentence during translation by both reading\nand writing operations. INTERACTIVE ATTENTION can keep track of the interaction\nhistory and therefore improve the translation performance. Experiments on NIST\nChinese-English translation task show that INTERACTIVE ATTENTION can achieve\nsignificant improvements over both the previous attention-based NMT baseline\nand some state-of-the-art variants of attention-based NMT (i.e., coverage\nmodels (Tu et al., 2016)). And neural machine translator with our INTERACTIVE\nATTENTION can outperform the open source attention-based NMT system Groundhog\nby 4.22 BLEU points and the open source phrase-based system Moses by 3.94 BLEU\npoints averagely on multiple test sets.",
-    "authors": [
-      "Fandong Meng",
-      "Zhengdong Lu",
-      "Hang Li",
-      "Qun Liu"
-    ],
-    "updated": "2016-10-17T08:33:20Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "1606.04164",
-    "title": "Zero-Resource Translation with Multi-Lingual Neural Machine Translation",
-    "link": "http://arxiv.org/abs/1606.04164v1",
-    "pdf": "http://arxiv.org/pdf/1606.04164v1",
-    "summary": "In this paper, we propose a novel finetuning algorithm for the recently\nintroduced multi-way, mulitlingual neural machine translate that enables\nzero-resource machine translation. When used together with novel many-to-one\ntranslation strategies, we empirically show that this finetuning algorithm\nallows the multi-way, multilingual model to translate a zero-resource language\npair (1) as well as a single-pair neural translation model trained with up to\n1M direct parallel sentences of the same language pair and (2) better than\npivot-based translation strategy, while keeping only one additional copy of\nattention-related parameters.",
-    "authors": [
-      "Orhan Firat",
-      "Baskaran Sankaran",
-      "Yaser Al-Onaizan",
-      "Fatos T. Yarman Vural",
-      "Kyunghyun Cho"
-    ],
-    "updated": "2016-06-13T22:40:33Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "1708.05943",
-    "title": "Neural Machine Translation with Extended Context",
-    "link": "http://arxiv.org/abs/1708.05943v1",
-    "pdf": "http://arxiv.org/pdf/1708.05943v1",
-    "summary": "We investigate the use of extended context in attention-based neural machine\ntranslation. We base our experiments on translated movie subtitles and discuss\nthe effect of increasing the segments beyond single translation units. We study\nthe use of extended source language context as well as bilingual context\nextensions. The models learn to distinguish between information from different\nsegments and are surprisingly robust with respect to translation quality. In\nthis pilot study, we observe interesting cross-sentential attention patterns\nthat improve textual coherence in translation at least in some selected cases.",
-    "authors": [
-      "Jörg Tiedemann",
-      "Yves Scherrer"
-    ],
-    "updated": "2017-08-20T09:31:49Z",
+    "updated": "2019-04-08T09:15:30Z",
     "categories": [
       "cs.CL"
     ]
@@ -974,149 +894,6 @@
     "categories": [
       "cs.CL",
       "cs.AI"
-    ]
-  },
-  {
-    "id": "2111.01673",
-    "title": "Relational Self-Attention: What's Missing in Attention for Video\n  Understanding",
-    "link": "http://arxiv.org/abs/2111.01673v1",
-    "pdf": "http://arxiv.org/pdf/2111.01673v1",
-    "summary": "Convolution has been arguably the most important feature transform for modern\nneural networks, leading to the advance of deep learning. Recent emergence of\nTransformer networks, which replace convolution layers with self-attention\nblocks, has revealed the limitation of stationary convolution kernels and\nopened the door to the era of dynamic feature transforms. The existing dynamic\ntransforms, including self-attention, however, are all limited for video\nunderstanding where correspondence relations in space and time, i.e., motion\ninformation, are crucial for effective representation. In this work, we\nintroduce a relational feature transform, dubbed the relational self-attention\n(RSA), that leverages rich structures of spatio-temporal relations in videos by\ndynamically generating relational kernels and aggregating relational contexts.\nOur experiments and ablation studies show that the RSA network substantially\noutperforms convolution and self-attention counterparts, achieving the state of\nthe art on the standard motion-centric benchmarks for video action recognition,\nsuch as Something-Something-V1 & V2, Diving48, and FineGym.",
-    "authors": [
-      "Manjin Kim",
-      "Heeseung Kwon",
-      "Chunyu Wang",
-      "Suha Kwak",
-      "Minsu Cho"
-    ],
-    "updated": "2021-11-02T15:36:11Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "2502.10927",
-    "title": "The underlying structures of self-attention: symmetry, directionality,\n  and emergent dynamics in Transformer training",
-    "link": "http://arxiv.org/abs/2502.10927v2",
-    "pdf": "http://arxiv.org/pdf/2502.10927v2",
-    "summary": "Self-attention is essential to Transformer architectures, yet how information\nis embedded in the self-attention matrices and how different objective\nfunctions impact this process remains unclear. We present a mathematical\nframework to analyze self-attention matrices by deriving the structures\ngoverning their weight updates. Using this framework, we demonstrate that\nbidirectional training induces symmetry in the weight matrices, while\nautoregressive training results in directionality and column dominance. Our\ntheoretical findings are validated across multiple Transformer models -\nincluding ModernBERT, GPT, LLaMA3, and Mistral - and input modalities like\ntext, vision, and audio. Finally, we apply these insights by showing that\nsymmetric initialization improves the performance of encoder-only models on\nlanguage tasks. This mathematical analysis offers a novel theoretical\nperspective on how information is embedded through self-attention, thereby\nimproving the interpretability of Transformer models.",
-    "authors": [
-      "Matteo Saponati",
-      "Pascal Sager",
-      "Pau Vilimelis Aceituno",
-      "Thilo Stadelmann",
-      "Benjamin Grewe"
-    ],
-    "updated": "2025-06-03T10:08:01Z",
-    "categories": [
-      "cs.LG"
-    ]
-  },
-  {
-    "id": "2501.18322",
-    "title": "A Unified Perspective on the Dynamics of Deep Transformers",
-    "link": "http://arxiv.org/abs/2501.18322v1",
-    "pdf": "http://arxiv.org/pdf/2501.18322v1",
-    "summary": "Transformers, which are state-of-the-art in most machine learning tasks,\nrepresent the data as sequences of vectors called tokens. This representation\nis then exploited by the attention function, which learns dependencies between\ntokens and is key to the success of Transformers. However, the iterative\napplication of attention across layers induces complex dynamics that remain to\nbe fully understood. To analyze these dynamics, we identify each input sequence\nwith a probability measure and model its evolution as a Vlasov equation called\nTransformer PDE, whose velocity field is non-linear in the probability measure.\nOur first set of contributions focuses on compactly supported initial data. We\nshow the Transformer PDE is well-posed and is the mean-field limit of an\ninteracting particle system, thus generalizing and extending previous analysis\nto several variants of self-attention: multi-head attention, L2 attention,\nSinkhorn attention, Sigmoid attention, and masked attention--leveraging a\nconditional Wasserstein framework. In a second set of contributions, we are the\nfirst to study non-compactly supported initial conditions, by focusing on\nGaussian initial data. Again for different types of attention, we show that the\nTransformer PDE preserves the space of Gaussian measures, which allows us to\nanalyze the Gaussian case theoretically and numerically to identify typical\nbehaviors. This Gaussian analysis captures the evolution of data anisotropy\nthrough a deep Transformer. In particular, we highlight a clustering phenomenon\nthat parallels previous results in the non-normalized discrete case.",
-    "authors": [
-      "Valérie Castin",
-      "Pierre Ablin",
-      "José Antonio Carrillo",
-      "Gabriel Peyré"
-    ],
-    "updated": "2025-01-30T13:04:54Z",
-    "categories": [
-      "cs.LG",
-      "math.AP",
-      "35Q68 (Primary) 68T07, 35B40 (Secondary)"
-    ]
-  },
-  {
-    "id": "1905.09418",
-    "title": "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy\n  Lifting, the Rest Can Be Pruned",
-    "link": "http://arxiv.org/abs/1905.09418v2",
-    "pdf": "http://arxiv.org/pdf/1905.09418v2",
-    "summary": "Multi-head self-attention is a key component of the Transformer, a\nstate-of-the-art architecture for neural machine translation. In this work we\nevaluate the contribution made by individual attention heads in the encoder to\nthe overall performance of the model and analyze the roles played by them. We\nfind that the most important and confident heads play consistent and often\nlinguistically-interpretable roles. When pruning heads using a method based on\nstochastic gates and a differentiable relaxation of the L0 penalty, we observe\nthat specialized heads are last to be pruned. Our novel pruning method removes\nthe vast majority of heads without seriously affecting performance. For\nexample, on the English-Russian WMT dataset, pruning 38 out of 48 encoder heads\nresults in a drop of only 0.15 BLEU.",
-    "authors": [
-      "Elena Voita",
-      "David Talbot",
-      "Fedor Moiseev",
-      "Rico Sennrich",
-      "Ivan Titov"
-    ],
-    "updated": "2019-06-07T14:00:58Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2106.05505",
-    "title": "Convolutions and Self-Attention: Re-interpreting Relative Positions in\n  Pre-trained Language Models",
-    "link": "http://arxiv.org/abs/2106.05505v1",
-    "pdf": "http://arxiv.org/pdf/2106.05505v1",
-    "summary": "In this paper, we detail the relationship between convolutions and\nself-attention in natural language tasks. We show that relative position\nembeddings in self-attention layers are equivalent to recently-proposed dynamic\nlightweight convolutions, and we consider multiple new ways of integrating\nconvolutions into Transformer self-attention. Specifically, we propose\ncomposite attention, which unites previous relative position embedding methods\nunder a convolutional framework. We conduct experiments by training BERT with\ncomposite attention, finding that convolutions consistently improve performance\non multiple downstream tasks, replacing absolute position embeddings. To inform\nfuture work, we present results comparing lightweight convolutions, dynamic\nconvolutions, and depthwise-separable convolutions in language model\npre-training, considering multiple injection points for convolutions in\nself-attention layers.",
-    "authors": [
-      "Tyler A. Chang",
-      "Yifan Xu",
-      "Weijian Xu",
-      "Zhuowen Tu"
-    ],
-    "updated": "2021-06-10T05:11:35Z",
-    "categories": [
-      "cs.CL"
-    ]
-  },
-  {
-    "id": "2410.05762",
-    "title": "Guided Self-attention: Find the Generalized Necessarily Distinct Vectors\n  for Grain Size Grading",
-    "link": "http://arxiv.org/abs/2410.05762v1",
-    "pdf": "http://arxiv.org/pdf/2410.05762v1",
-    "summary": "With the development of steel materials, metallographic analysis has become\nincreasingly important. Unfortunately, grain size analysis is a manual process\nthat requires experts to evaluate metallographic photographs, which is\nunreliable and time-consuming. To resolve this problem, we propose a novel\nclassifi-cation method based on deep learning, namely GSNets, a family of\nhybrid models which can effectively introduce guided self-attention for\nclassifying grain size. Concretely, we build our models from three insights:(1)\nIntroducing our novel guided self-attention module can assist the model in\nfinding the generalized necessarily distinct vectors capable of retaining\nintricate rela-tional connections and rich local feature information; (2) By\nimproving the pixel-wise linear independence of the feature map, the highly\ncondensed semantic representation will be captured by the model; (3) Our novel\ntriple-stream merging module can significantly improve the generalization\ncapability and efficiency of the model. Experiments show that our GSNet yields\na classifi-cation accuracy of 90.1%, surpassing the state-of-the-art Swin\nTransformer V2 by 1.9% on the steel grain size dataset, which comprises 3,599\nimages with 14 grain size levels. Furthermore, we intuitively believe our\napproach is applicable to broader ap-plications like object detection and\nsemantic segmentation.",
-    "authors": [
-      "Fang Gao",
-      "Xuetao Li",
-      "Jiabao Wang",
-      "Shengheng Ma",
-      "Jun Yu"
-    ],
-    "updated": "2024-10-08T07:40:31Z",
-    "categories": [
-      "cs.CV"
-    ]
-  },
-  {
-    "id": "2503.00687",
-    "title": "Transformer Meets Twicing: Harnessing Unattended Residual Information",
-    "link": "http://arxiv.org/abs/2503.00687v3",
-    "pdf": "http://arxiv.org/pdf/2503.00687v3",
-    "summary": "Transformer-based deep learning models have achieved state-of-the-art\nperformance across numerous language and vision tasks. While the self-attention\nmechanism, a core component of transformers, has proven capable of handling\ncomplex data patterns, it has been observed that the representational capacity\nof the attention matrix degrades significantly across transformer layers,\nthereby hurting its overall performance. In this work, we leverage the\nconnection between self-attention computations and low-pass non-local means\n(NLM) smoothing filters and propose the Twicing Attention, a novel attention\nmechanism that uses kernel twicing procedure in nonparametric regression to\nalleviate the low-pass behavior of associated NLM smoothing with compelling\ntheoretical guarantees and enhanced adversarial robustness. This approach\nenables the extraction and reuse of meaningful information retained in the\nresiduals following the imperfect smoothing operation at each layer. Our\nproposed method offers two key advantages over standard self-attention: 1) a\nprovably slower decay of representational capacity and 2) improved robustness\nand accuracy across various data modalities and tasks. We empirically\ndemonstrate the performance gains of our model over baseline transformers on\nmultiple tasks and benchmarks, including image classification and language\nmodeling, on both clean and corrupted data.",
-    "authors": [
-      "Laziz Abdullaev",
-      "Tan M. Nguyen"
-    ],
-    "updated": "2025-08-04T12:28:30Z",
-    "categories": [
-      "cs.LG"
-    ]
-  },
-  {
-    "id": "2509.15448",
-    "title": "Hierarchical Self-Attention: Generalizing Neural Attention Mechanics to\n  Multi-Scale Problems",
-    "link": "http://arxiv.org/abs/2509.15448v1",
-    "pdf": "http://arxiv.org/pdf/2509.15448v1",
-    "summary": "Transformers and their attention mechanism have been revolutionary in the\nfield of Machine Learning. While originally proposed for the language data,\nthey quickly found their way to the image, video, graph, etc. data modalities\nwith various signal geometries. Despite this versatility, generalizing the\nattention mechanism to scenarios where data is presented at different scales\nfrom potentially different modalities is not straightforward. The attempts to\nincorporate hierarchy and multi-modality within transformers are largely based\non ad hoc heuristics, which are not seamlessly generalizable to similar\nproblems with potentially different structures. To address this problem, in\nthis paper, we take a fundamentally different approach: we first propose a\nmathematical construct to represent multi-modal, multi-scale data. We then\nmathematically derive the neural attention mechanics for the proposed construct\nfrom the first principle of entropy minimization. We show that the derived\nformulation is optimal in the sense of being the closest to the standard\nSoftmax attention while incorporating the inductive biases originating from the\nhierarchical/geometric information of the problem. We further propose an\nefficient algorithm based on dynamic programming to compute our derived\nattention mechanism. By incorporating it within transformers, we show that the\nproposed hierarchical attention mechanism not only can be employed to train\ntransformer models in hierarchical/multi-modal settings from scratch, but it\ncan also be used to inject hierarchical information into classical, pre-trained\ntransformer models post training, resulting in more efficient models in\nzero-shot manner.",
-    "authors": [
-      "Saeed Amizadeh",
-      "Sara Abdali",
-      "Yinheng Li",
-      "Kazuhito Koishida"
-    ],
-    "updated": "2025-09-18T21:44:07Z",
-    "categories": [
-      "cs.LG",
-      "cs.AI",
-      "cs.NE",
-      "stat.ML"
     ]
   }
 ]

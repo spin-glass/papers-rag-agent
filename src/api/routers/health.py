@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from api.deps import get_index_holder
-from api.schema import HealthResponse
+from src.api.deps import get_index_holder
+from src.api.schema import HealthResponse
 
 router = APIRouter()
 
