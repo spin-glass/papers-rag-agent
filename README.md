@@ -50,24 +50,27 @@ HyDEを使った自己補正RAGシステム：
 
 ### 前提条件
 
-- Python 3.13+
-- [uv](https://docs.astral.sh/uv/) パッケージマネージャー
-- OpenAI API Key
+* Python 3.13+
+* [uv](https://docs.astral.sh/uv/) パッケージマネージャー
+* OpenAI API Key
 
 ### セットアップ
 
 1. **依存関係のインストール**
+
    ```bash
    task setup
    ```
 
 2. **環境変数の設定**
+
    ```bash
    cp env.example .env
    # .envファイルを編集してOPENAI_API_KEYを設定
    ```
 
 3. **キャッシュの構築（初回のみ）**
+
    ```bash
    task build:cache
    ```
@@ -75,6 +78,7 @@ HyDEを使った自己補正RAGシステム：
 ### 実行方法
 
 #### 方法1: Docker Compose（推奨）
+
 ```bash
 # 両方のサービスを起動
 docker compose up -d
@@ -85,6 +89,7 @@ docker compose up -d
 ```
 
 #### 方法2: ローカル実行
+
 ```bash
 # ターミナル1: FastAPIサーバー
 task api
