@@ -25,9 +25,9 @@ class DigestItem(BaseModel):
 def _date_range_for_last_days(days: int) -> str:
     now = datetime.now(timezone.utc)
     start = now - timedelta(days=max(1, days))
-    fr = start.strftime("%Y%m%d0000")
-    to = now.strftime("%Y%m%d2359")
-    return f"{fr}+TO+{to}"
+    fr = start.strftime("%Y%m%d")
+    to = now.strftime("%Y%m%d")
+    return f"{fr} TO {to}"
 
 
 @router.get("/digest", response_model=List[DigestItem])
