@@ -11,8 +11,13 @@
   // 対象拡張子（任意：既定のままで良ければ省略可）
   "globs": [
     "**/*.{md,mkd,mdwn,mdown,markdown,markdn,mdtxt,mdtext,workbook}"
-  ]
+  ],
 
   // デバッグしたいときは一時的に:
-  // "showFound": true
+  // "showFound": true,
+
+  // ルール設定
+  "config": {
+    "MD001": false
+  }
 }
