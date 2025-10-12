@@ -6,7 +6,7 @@
 
 <!-- CLOUDRUN_URL_END -->
 
-English | 日本語版: [README-ja.md](README-ja.md)
+English | 日本語版: [docs/ja/README.md](docs/ja/README.md)
 
 Papers RAG Agent is a workflow-driven chatbot for learning from academic
 papers. It combines Retrieval Augmented Generation (RAG) with LangGraph
