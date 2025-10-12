@@ -19,15 +19,15 @@ class TestGraphCompilation:
             print("✅ Corrective RAG graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, (
-                f"Checkpointer error occurred: {error_msg}"
-            )
-            assert "thread_id" not in error_msg, (
-                f"Thread ID error occurred: {error_msg}"
-            )
-            assert "checkpoint_ns" not in error_msg, (
-                f"Checkpoint namespace error occurred: {error_msg}"
-            )
+            assert (
+                "Checkpointer" not in error_msg
+            ), f"Checkpointer error occurred: {error_msg}"
+            assert (
+                "thread_id" not in error_msg
+            ), f"Thread ID error occurred: {error_msg}"
+            assert (
+                "checkpoint_ns" not in error_msg
+            ), f"Checkpoint namespace error occurred: {error_msg}"
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_message_routing_graph_compilation(self):
@@ -38,15 +38,15 @@ class TestGraphCompilation:
             print("✅ Message routing graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, (
-                f"Checkpointer error occurred: {error_msg}"
-            )
-            assert "thread_id" not in error_msg, (
-                f"Thread ID error occurred: {error_msg}"
-            )
-            assert "checkpoint_ns" not in error_msg, (
-                f"Checkpoint namespace error occurred: {error_msg}"
-            )
+            assert (
+                "Checkpointer" not in error_msg
+            ), f"Checkpointer error occurred: {error_msg}"
+            assert (
+                "thread_id" not in error_msg
+            ), f"Thread ID error occurred: {error_msg}"
+            assert (
+                "checkpoint_ns" not in error_msg
+            ), f"Checkpoint namespace error occurred: {error_msg}"
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_content_enhancement_graph_compilation(self):
@@ -57,15 +57,15 @@ class TestGraphCompilation:
             print("✅ Content enhancement graph compiled successfully")
         except Exception as e:
             error_msg = str(e)
-            assert "Checkpointer" not in error_msg, (
-                f"Checkpointer error occurred: {error_msg}"
-            )
-            assert "thread_id" not in error_msg, (
-                f"Thread ID error occurred: {error_msg}"
-            )
-            assert "checkpoint_ns" not in error_msg, (
-                f"Checkpoint namespace error occurred: {error_msg}"
-            )
+            assert (
+                "Checkpointer" not in error_msg
+            ), f"Checkpointer error occurred: {error_msg}"
+            assert (
+                "thread_id" not in error_msg
+            ), f"Thread ID error occurred: {error_msg}"
+            assert (
+                "checkpoint_ns" not in error_msg
+            ), f"Checkpoint namespace error occurred: {error_msg}"
             pytest.fail(f"Graph compilation failed: {error_msg}")
 
     def test_recursion_limit_configuration(self):
