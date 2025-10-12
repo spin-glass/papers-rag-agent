@@ -124,6 +124,16 @@ async def on_chat_start():
                 "何について知りたいですか？"
             )
         ).send()
+        await cl.Message(
+            content="ワンクリックで日次ダイジェストを取得できます。",
+            actions=[
+                cl.Action(
+                    name="daily_digest",
+                    value=json.dumps({"cat": "cs.LG", "days": 2, "limit": 10}),
+                    label="📰 デイリーダイジェスト（cs.LG, 直近2日）",
+                )
+            ],
+        ).send()
     except Exception as e:
         await cl.Message(
             content=(
@@ -136,6 +146,54 @@ async def on_chat_start():
                 "- `arxiv: <query>`: 論文検索（API Key不要）\n\n"
                 "管理者にお問い合わせください。"
             )
+        ).send()
+
+
+@cl.action_callback("daily_digest")
+async def on_daily_digest(action: cl.Action):
+    try:
+        cfg = {}
+        try:
+            if isinstance(action.value, str):
+                cfg = json.loads(action.value)
+        except Exception:
+            cfg = {}
+        cat = cfg.get("cat", "cs.LG")
+        days = int(cfg.get("days", 2))
+        limit = int(cfg.get("limit", 10))
+
+        items = await call_digest(cat=cat, days=days, limit=limit)
+        if not items:
+            await cl.Message(
+                content="該当するダイジェスト項目がありませんでした。"
+            ).send()
+            return
+
+        lines = [f"### デイリーダイジェスト（{cat}, 過去{days}日・最大{limit}件）"]
+        for it in items:
+            title = (it.get("title") or "").strip() or "（無題）"
+            url = it.get("url") or it.get("link") or ""
+            pdf = it.get("pdf") or ""
+            summary = it.get("summary_short") or it.get("summary") or ""
+            bullet = f"- {title}"
+            if url:
+                bullet = f"- [{title}]({url})"
+            if pdf:
+                bullet += f"（[PDF]({pdf})）"
+            lines.append(bullet)
+            if summary:
+                s = summary.strip()
+                if len(s) > 280:
+                    s = s[:280] + "..."
+                lines.append(f"  \n  {s}")
+        await cl.Message(content="\n".join(lines)).send()
+    except httpx.HTTPStatusError as he:
+        await cl.Message(
+            content=f"❌ /digest エラー {he.response.status_code}: {he.response.text}"
+        ).send()
+    except Exception as e:
+        await cl.Message(
+            content=f"❌ デイリーダイジェスト取得に失敗しました: `{e}`"
         ).send()
 
 
@@ -159,12 +217,14 @@ async def on_message(msg: cl.Message):
 
             items = await call_digest(cat=cat, days=days, limit=limit)
             if not items:
-                await cl.Message(content="_No digest items._").send()
+                await cl.Message(
+                    content="該当するダイジェスト項目がありませんでした。"
+                ).send()
                 return
 
-            lines = ["### Daily Digest"]
+            lines = ["### デイリーダイジェスト"]
             for it in items:
-                title = (it.get("title") or "").strip() or "(no title)"
+                title = (it.get("title") or "").strip() or "（無題）"
                 url = it.get("url") or it.get("link") or ""
                 pdf = it.get("pdf") or ""
                 summary = it.get("summary_short") or it.get("summary") or ""
@@ -172,7 +232,7 @@ async def on_message(msg: cl.Message):
                 if url:
                     bullet = f"- **[{title}]({url})**"
                 if pdf:
-                    bullet += f" ([PDF]({pdf}))"
+                    bullet += f" （[PDF]({pdf})）"
                 lines.append(bullet)
                 if summary:
                     s = summary.strip()
@@ -194,11 +254,11 @@ async def on_message(msg: cl.Message):
         try:
             items = await call_arxiv_search(query, max_results=10)
             if not items:
-                await cl.Message(content="_No results._").send()
+                await cl.Message(content="該当結果がありませんでした。").send()
                 return
             lines = []
             for it in items:
-                title = it.get("title", "").strip() or "(no title)"
+                title = it.get("title", "").strip() or "（無題）"
                 url = it.get("url") or ""
                 summary = it.get("summary") or ""
                 if url:
