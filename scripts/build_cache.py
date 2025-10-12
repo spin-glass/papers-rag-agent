@@ -111,7 +111,9 @@ def build_embeddings_cache(papers):
             text = f"{p.title}\n\n{p.summary}"
             emb = _make_local_embedding(text)
             index.papers_with_embeddings.append((p, emb))
-        print(f"✅ Built embeddings for {len(index.papers_with_embeddings)} papers (local)")
+        print(
+            f"✅ Built embeddings for {len(index.papers_with_embeddings)} papers (local)"
+        )
         return index
 
     index.build(papers)
