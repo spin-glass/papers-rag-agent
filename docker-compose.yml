@@ -6,29 +6,29 @@ services:
       context: .
       dockerfile: docker/fastapi/Dockerfile
     ports:
-      - "9000:8000"
+    - "9000:8000"
     environment:
-      - PYTHONPATH=/app/src
+    - PYTHONPATH=/app/src
     volumes:
-      - ./src:/app/src
+    - ./src:/app/src
     networks:
-      - papers-network
+    - papers-network
 
   chainlit:
     build:
       context: .
       dockerfile: docker/chainlit/Dockerfile
     ports:
-      - "8000:8000"
+    - "8000:8000"
     environment:
-      - PAPERS_API_BASE=http://fastapi:8000
-      - PYTHONPATH=/app/src
+    - PAPERS_API_BASE=http://fastapi:8000
+    - PYTHONPATH=/app/src
     volumes:
-      - ./src:/app/src
+    - ./src:/app/src
     depends_on:
-      - fastapi
+    - fastapi
     networks:
-      - papers-network
+    - papers-network
 
 networks:
   papers-network:

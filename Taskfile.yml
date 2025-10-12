@@ -8,100 +8,100 @@ tasks:
   default:
     desc: Show available tasks
     cmds:
-      - task --list
+    - task --list
 
   # === 基本セットアップ ===
   install:
     desc: Install dependencies
     cmds:
-      - uv sync
-      - uv add --group test pytest pytest-asyncio pytest-mock
+    - uv sync
+    - uv add --group test pytest pytest-asyncio pytest-mock
 
   install:dev:
     desc: Install development dependencies
     cmds:
-      - uv add --group dev ruff
+    - uv add --group dev ruff
     status:
-      - uv run ruff --version
+    - uv run ruff --version
 
   install:coverage:
     desc: Install coverage dependencies
     cmds:
-      - uv add --group test pytest-cov
+    - uv add --group test pytest-cov
     status:
-      - uv run pytest --version | grep cov
+    - uv run pytest --version | grep cov
 
   setup:
     desc: Complete project setup (install all dependencies)
     cmds:
-      - task: install
-      - task: install:dev
-      - task: install:coverage
+    - task: install
+    - task: install:dev
+    - task: install:coverage
 
   # === テスト ===
   test:
     desc: Run all tests
     cmds:
-      - uv run pytest {{.TEST_DIRS}} -v
+    - uv run pytest {{.TEST_DIRS}} -v
 
   test:unit:
     desc: Run unit tests only
     cmds:
-      - uv run pytest tests/test_retrieval/ -v
+    - uv run pytest tests/test_retrieval/ -v
 
   test:integration:
     desc: Run integration tests only
     cmds:
-      - uv run pytest tests/test_ui/ -v
+    - uv run pytest tests/test_ui/ -v
 
   test:coverage:
     desc: Run tests with coverage report
     deps: [install:coverage]
     cmds:
-      - uv run pytest {{.TEST_DIRS}} --cov=src --cov-report=html --cov-report=term
+    - uv run pytest {{.TEST_DIRS}} --cov=src --cov-report=html --cov-report=term
 
   test:graphs:
     desc: Run LangGraph workflow tests
     cmds:
-      - uv run pytest tests/test_graphs/ -v
+    - uv run pytest tests/test_graphs/ -v
 
   test:real:
     desc: Run tests with real ArXiv API
     cmds:
-      - uv run pytest tests/test_retrieval/test_arxiv_searcher_integration.py -v -m integration
+    - uv run pytest tests/test_retrieval/test_arxiv_searcher_integration.py -v -m integration
 
   # === コード品質 ===
   lint:
     desc: Run linting with ruff
     deps: [install:dev]
     cmds:
-      - uv run ruff check {{.PYTHON_DIRS}}
+    - uv run ruff check {{.PYTHON_DIRS}}
 
   lint:fix:
     desc: Run linting with automatic fixes
     deps: [install:dev]
     cmds:
-      - uv run ruff check --fix {{.PYTHON_DIRS}}
+    - uv run ruff check --fix {{.PYTHON_DIRS}}
 
   format:
     desc: Format code with ruff
     deps: [install:dev]
     cmds:
-      - uv run ruff format {{.PYTHON_DIRS}}
+    - uv run ruff format {{.PYTHON_DIRS}}
 
   format:check:
     desc: Check code formatting without making changes
     deps: [install:dev]
     cmds:
-      - uv run ruff format --check {{.PYTHON_DIRS}}
+    - uv run ruff format --check {{.PYTHON_DIRS}}
 
   clean:
     desc: Clean up temporary files and caches
     cmds:
-      - find . -type f -name "*.pyc" -delete
-      - find . -type d -name "__pycache__" -delete
-      - find . -type d -name "*.egg-info" -exec rm -rf {} + || true
-      - rm -rf .coverage htmlcov/ .pytest_cache/ .ruff_cache/
+    - find . -type f -name "*.pyc" -delete
+    - find . -type d -name "__pycache__" -delete
+    - find . -type d -name "*.egg-info" -exec rm -rf {} + || true
+    - rm -rf .coverage htmlcov/ .pytest_cache/ .ruff_cache/
 
   check:
     desc: Run all checks (linting, formatting, tests)
@@ -110,149 +110,149 @@ tasks:
   ci:
     desc: Run CI pipeline (install, check, test with coverage)
     cmds:
-      - task: install
-      - task: lint
-      - task: format:check
-      - task: test:coverage
+    - task: install
+    - task: lint
+    - task: format:check
+    - task: test:coverage
 
   # === アプリケーション実行 ===
   run:
     desc: Run both FastAPI and Chainlit servers with LangSmith tracing
     cmds:
-      - pkill -9 -f "chainlit\|uvicorn\|python.*src" || true
-      - lsof -ti:8000,9000 | xargs kill -9 || true
-      - sleep 3
-      - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload &
-      - |
-        echo "Waiting for FastAPI server to start..."
-        until curl -s http://localhost:9000/health > /dev/null; do
-          sleep 1
-        done
-        echo "FastAPI server is ready!"
-      - LANGCHAIN_TRACING_V2=true LANGCHAIN_PROJECT=papers-rag-agent LANGSMITH_TRACING=true LANGSMITH_PROJECT=papers-rag-agent USE_LANGGRAPH=true ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
+    - pkill -9 -f "chainlit\|uvicorn\|python.*src" || true
+    - lsof -ti:8000,9000 | xargs kill -9 || true
+    - sleep 3
+    - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload &
+    - |
+      echo "Waiting for FastAPI server to start..."
+      until curl -s http://localhost:9000/health > /dev/null; do
+        sleep 1
+      done
+      echo "FastAPI server is ready!"
+    - LANGCHAIN_TRACING_V2=true LANGCHAIN_PROJECT=papers-rag-agent LANGSMITH_TRACING=true LANGSMITH_PROJECT=papers-rag-agent USE_LANGGRAPH=true ENGINEIO_MAX_HTTP_BUFFER_SIZE=100000000 ENGINEIO_PACKET_TIMEOUT=300 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
 
   run:ja:
     desc: Run the application in Japanese
     cmds:
-      - |
-        sed -i '' 's/default_locale = ".*"/default_locale = "ja"/' .chainlit/config.toml
-        echo "Switched to Japanese locale"
-      - task: run
+    - |
+      sed -i '' 's/default_locale = ".*"/default_locale = "ja"/' .chainlit/config.toml
+      echo "Switched to Japanese locale"
+    - task: run
 
   run:en:
     desc: Run the application in English
     cmds:
-      - |
-        sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
-        echo "Switched to English locale"
-      - task: run
+    - |
+      sed -i '' 's/default_locale = ".*"/default_locale = "en-US"/' .chainlit/config.toml
+      echo "Switched to English locale"
+    - task: run
 
   run:debug:
     desc: Run the application with debug settings
     cmds:
-      - task: clean
-      - uv run chainlit run src/ui/app.py -w --debug --no-cache
+    - task: clean
+    - uv run chainlit run src/ui/app.py -w --debug --no-cache
 
   dev:
     desc: Run development server
     cmds:
-      - uv run chainlit run src/ui/app.py -w --host 127.0.0.1 --port 8000
+    - uv run chainlit run src/ui/app.py -w --host 127.0.0.1 --port 8000
 
   # === ローカル開発環境 ===
   api:
     desc: Run FastAPI server locally
     cmds:
-      - pkill -f "uvicorn src.api.main" || true
-      - sleep 1
-      - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload
+    - pkill -f "uvicorn src.api.main" || true
+    - sleep 1
+    - uv run uvicorn src.api.main:app --host 127.0.0.1 --port 9000 --reload
 
   ui:
     desc: Run Chainlit UI locally (requires API server)
     cmds:
-      - pkill -f "chainlit run" || true
-      - sleep 1
-      - PAPERS_API_BASE=http://localhost:9000 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
+    - pkill -f "chainlit run" || true
+    - sleep 1
+    - PAPERS_API_BASE=http://localhost:9000 uv run chainlit run src/ui/app.py -w --port 8000 --host 127.0.0.1
 
   dev:local:
     desc: Run both API and UI locally (requires two terminals)
     cmds:
-      - echo "Starting local development environment..."
-      - echo "Terminal 1 - task api"
-      - echo "Terminal 2 - task ui"
+    - echo "Starting local development environment..."
+    - echo "Terminal 1 - task api"
+    - echo "Terminal 2 - task ui"
 
   # === キャッシュ管理 ===
   build:cache:
     desc: Build precomputed cache for fast startup
     cmds:
-      - uv run python scripts/build_cache.py
+    - uv run python scripts/build_cache.py
 
   cache:info:
     desc: Show cache information
     cmds:
-      - |
-        if [ -f "src/data/precomputed_papers.json" ]; then
-          echo "✅ Papers cache exists ($(wc -l < src/data/precomputed_papers.json) lines)"
-          echo "   File: src/data/precomputed_papers.json"
-          echo "   Size: $(du -h src/data/precomputed_papers.json | cut -f1)"
-        else
-          echo "❌ Papers cache not found"
-        fi
-        if [ -f "src/data/precomputed_embeddings.pkl" ]; then
-          echo "✅ Embeddings cache exists"
-          echo "   File: src/data/precomputed_embeddings.pkl"
-          echo "   Size: $(du -h src/data/precomputed_embeddings.pkl | cut -f1)"
-        else
-          echo "❌ Embeddings cache not found"
-        fi
+    - |
+      if [ -f "src/data/precomputed_papers.json" ]; then
+        echo "✅ Papers cache exists ($(wc -l < src/data/precomputed_papers.json) lines)"
+        echo "   File: src/data/precomputed_papers.json"
+        echo "   Size: $(du -h src/data/precomputed_papers.json | cut -f1)"
+      else
+        echo "❌ Papers cache not found"
+      fi
+      if [ -f "src/data/precomputed_embeddings.pkl" ]; then
+        echo "✅ Embeddings cache exists"
+        echo "   File: src/data/precomputed_embeddings.pkl"
+        echo "   Size: $(du -h src/data/precomputed_embeddings.pkl | cut -f1)"
+      else
+        echo "❌ Embeddings cache not found"
+      fi
 
   cache:clean:
     desc: Clean precomputed cache files
     cmds:
-      - rm -f src/data/precomputed_papers.json
-      - rm -f src/data/precomputed_embeddings.pkl
-      - echo "🗑️  Cache files removed"
+    - rm -f src/data/precomputed_papers.json
+    - rm -f src/data/precomputed_embeddings.pkl
+    - echo "🗑️  Cache files removed"
 
   # === デモ・検証 ===
   arxiv:demo:
     desc: Run a quick ArXiv search demo
     cmds:
-      - |
-        echo "Testing ArXiv search functionality..."
-        cd src && uv run python -c "
-        from retrieval.arxiv_searcher import run_arxiv_search
-        results = run_arxiv_search('transformer attention', max_results=2)
-        print(f'Found {len(results)} papers:')
-        for i, paper in enumerate(results, 1):
-            print(f'{i}. {paper[\"title\"]}')
-            print(f'   ID: {paper[\"id\"]}')
-            print(f'   Link: {paper[\"link\"]}')
-            if paper['pdf']:
-                print(f'   PDF: {paper[\"pdf\"]}')
-            print()
-        "
+    - |
+      echo "Testing ArXiv search functionality..."
+      cd src && uv run python -c "
+      from retrieval.arxiv_searcher import run_arxiv_search
+      results = run_arxiv_search('transformer attention', max_results=2)
+      print(f'Found {len(results)} papers:')
+      for i, paper in enumerate(results, 1):
+          print(f'{i}. {paper[\"title\"]}')
+          print(f'   ID: {paper[\"id\"]}')
+          print(f'   Link: {paper[\"link\"]}')
+          if paper['pdf']:
+              print(f'   PDF: {paper[\"pdf\"]}')
+          print()
+      "
 
   # === プロジェクト情報 ===
   info:
     desc: Display project information
     cmds:
-      - echo "Papers RAG Agent - ArXiv Search Integration"
-      - echo "Python version:" && uv run python --version
-      - echo "UV version:" && uv --version
-      - echo "Task version:" && task --version
-      - echo ""
-      - echo "Main commands:"
-      - echo "  task setup     - Complete project setup"
-      - echo "  task test      - Run all tests"
-      - echo "  task run       - Start the application"
-      - echo "  task dev       - Start development server"
-      - echo "  task check     - Run all quality checks"
-      - echo "  task cache:info - Show cache information"
+    - echo "Papers RAG Agent - ArXiv Search Integration"
+    - echo "Python version:" && uv run python --version
+    - echo "UV version:" && uv --version
+    - echo "Task version:" && task --version
+    - echo ""
+    - echo "Main commands:"
+    - echo "  task setup     - Complete project setup"
+    - echo "  task test      - Run all tests"
+    - echo "  task run       - Start the application"
+    - echo "  task dev       - Start development server"
+    - echo "  task check     - Run all quality checks"
+    - echo "  task cache:info - Show cache information"
   precommit:install:
     desc: Install pre-commit hooks
     cmds:
-      - uv run pre-commit install
+    - uv run pre-commit install
 
   precommit:all:
     desc: Run all pre-commit hooks
     cmds:
-      - uv run pre-commit run --all-files
+    - uv run pre-commit run --all-files

@@ -18,112 +18,112 @@ jobs:
     name: Deploy FastAPI Service
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Google Auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+    - name: Google Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-      - name: Configure Docker auth for Artifact Registry
-        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
+    - name: Configure Docker auth for Artifact Registry
+      run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
 
-      - name: Sanitize PROJECT_ID
-        id: sanitize
-        shell: bash
-        run: |
-          CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
-          echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
+    - name: Sanitize PROJECT_ID
+      id: sanitize
+      shell: bash
+      run: |
+        CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
+        echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
 
-      - name: Build & Push FastAPI Image
-        uses: docker/build-push-action@v6
-        with:
-          context: .                       # ルート（src/ を拾う構成）
-          file: docker/fastapi/Dockerfile
-          push: true
-          tags: |
-            asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
+    - name: Build & Push FastAPI Image
+      uses: docker/build-push-action@v6
+      with:
+        context: .                         # ルート（src/ を拾う構成）
+        file: docker/fastapi/Dockerfile
+        push: true
+        tags: |
+          asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }}
 
-      - name: Deploy FastAPI to Cloud Run
-        run: |
-          gcloud run deploy "$FASTAPI_SERVICE" \
-            --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }} \
-            --platform managed \
-            --region "$REGION" \
-            --allow-unauthenticated \
-            --port 8000 \
-            --memory 2Gi \
-            --cpu 1 \
-            --min-instances 0 \
-            --max-instances 10 \
-            --set-env-vars "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+    - name: Deploy FastAPI to Cloud Run
+      run: |
+        gcloud run deploy "$FASTAPI_SERVICE" \
+          --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.FASTAPI_SERVICE }}:${{ github.sha }} \
+          --platform managed \
+          --region "$REGION" \
+          --allow-unauthenticated \
+          --port 8000 \
+          --memory 2Gi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --set-env-vars "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
 
   deploy-chainlit:
     name: Deploy Chainlit Service
     runs-on: ubuntu-latest
     needs: deploy-fastapi
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Google Auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+    - name: Google Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-      - name: Configure Docker auth for Artifact Registry
-        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
+    - name: Configure Docker auth for Artifact Registry
+      run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
 
-      - name: Sanitize PROJECT_ID
-        id: sanitize
-        shell: bash
-        run: |
-          CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
-          echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
+    - name: Sanitize PROJECT_ID
+      id: sanitize
+      shell: bash
+      run: |
+        CLEANED="$(printf "%s" "${{ env.PROJECT_ID }}" | tr -d ' \t\r\n')"
+        echo "pid=$CLEANED" >> "$GITHUB_OUTPUT"
 
-      - name: Get FastAPI URL
-        id: get-fastapi-url
-        run: |
-          FASTAPI_URL=$(gcloud run services describe "$FASTAPI_SERVICE" --region="$REGION" --format="value(status.url)")
-          echo "fastapi_url=$FASTAPI_URL" >> "$GITHUB_OUTPUT"
+    - name: Get FastAPI URL
+      id: get-fastapi-url
+      run: |
+        FASTAPI_URL=$(gcloud run services describe "$FASTAPI_SERVICE" --region="$REGION" --format="value(status.url)")
+        echo "fastapi_url=$FASTAPI_URL" >> "$GITHUB_OUTPUT"
 
-      - name: Build & Push Chainlit Image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/chainlit/Dockerfile
-          push: true
-          tags: |
-            asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
+    - name: Build & Push Chainlit Image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: docker/chainlit/Dockerfile
+        push: true
+        tags: |
+          asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }}
 
-      - name: Deploy Chainlit to Cloud Run
-        run: |
-          gcloud run deploy "$CHAINLIT_SERVICE" \
-            --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }} \
-            --platform managed \
-            --region "$REGION" \
-            --allow-unauthenticated \
-            --port 8000 \
-            --memory 2Gi \
-            --cpu 1 \
-            --min-instances 0 \
-            --max-instances 10 \
-            --set-env-vars "PAPERS_API_BASE=${{ steps.get-fastapi-url.outputs.fastapi_url }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+    - name: Deploy Chainlit to Cloud Run
+      run: |
+        gcloud run deploy "$CHAINLIT_SERVICE" \
+          --image asia-northeast1-docker.pkg.dev/${{ steps.sanitize.outputs.pid }}/${{ env.REPO_NAME }}/${{ env.CHAINLIT_SERVICE }}:${{ github.sha }} \
+          --platform managed \
+          --region "$REGION" \
+          --allow-unauthenticated \
+          --port 8000 \
+          --memory 2Gi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --set-env-vars "PAPERS_API_BASE=${{ steps.get-fastapi-url.outputs.fastapi_url }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
 
-      - name: Output URLs
-        run: |
-          echo "FastAPI URL: ${{ steps.get-fastapi-url.outputs.fastapi_url }}"
-          echo "Chainlit URL: $(gcloud run services describe "$CHAINLIT_SERVICE" --region="$REGION" --format="value(status.url)")"
+    - name: Output URLs
+      run: |
+        echo "FastAPI URL: ${{ steps.get-fastapi-url.outputs.fastapi_url }}"
+        echo "Chainlit URL: $(gcloud run services describe "$CHAINLIT_SERVICE" --region="$REGION" --format="value(status.url)")"

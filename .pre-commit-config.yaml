@@ -1,47 +1,47 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: mixed-line-ending
-      - id: check-yaml
-      - id: check-json
-      - id: check-toml
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: mixed-line-ending
+  - id: check-yaml
+  - id: check-json
+  - id: check-toml
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.6.9
+  hooks:
+  - id: ruff
+    args: [--fix]
+  - id: ruff-format
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
-    hooks:
-      - id: mypy
-        name: mypy (changed files)
-        files: ^src/.*\.py$
-        args:
-          - --show-column-numbers
-          - --pretty
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.11.2
+  hooks:
+  - id: mypy
+    name: mypy (changed files)
+    files: ^src/.*\.py$
+    args:
+    - --show-column-numbers
+    - --pretty
 
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
-    hooks:
-      - id: mdformat
-        additional_dependencies:
-          - mdformat-gfm==0.3.5
+- repo: https://github.com/executablebooks/mdformat
+  rev: 0.7.17
+  hooks:
+  - id: mdformat
+    additional_dependencies:
+    - mdformat-gfm==0.3.5
 
-  - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.14.0
-    hooks:
-      - id: markdownlint-cli2
-        files: \.(md|markdown)$
+- repo: https://github.com/DavidAnson/markdownlint-cli2
+  rev: v0.14.0
+  hooks:
+  - id: markdownlint-cli2
+    files: \.(md|markdown)$
 
-  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.13.0
-    hooks:
-      - id: pretty-format-yaml
-        args: [--autofix, --indent, "2", --preserve-quotes]
-        files: \.(yaml|yml)$
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.13.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix, --indent, "2", --preserve-quotes]
+    files: \.(yaml|yml)$

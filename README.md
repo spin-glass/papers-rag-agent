@@ -1,7 +1,9 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
+
 🚀 Live Demo (Chainlit UI): [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
+
 <!-- CLOUDRUN_URL_END -->
 
 English | 日本語版: [README-ja.md](README-ja.md)
@@ -28,8 +30,8 @@ Classifies user input and routes it to ArXiv search or the RAG question workflow
 Self-correcting RAG using HyDE:
 
 1. Run baseline retrieval and evaluate support
-2. If below threshold, rewrite query via HyDE and retry
-3. Transparent workflow via LangGraph
+1. If below threshold, rewrite query via HyDE and retry
+1. Transparent workflow via LangGraph
 
 ### Content Enhancement
 
@@ -64,14 +66,14 @@ This makes the RAG process transparent to users.
    task setup
    ```
 
-2. Configure environment variables
+1. Configure environment variables
 
    ```bash
    cp env.example .env
    # edit .env and set OPENAI_API_KEY
    ```
 
-3. Build cache (first run only)
+1. Build cache (first run only)
 
    ```bash
    task build:cache
@@ -158,13 +160,13 @@ task check
    export OPENAI_API_KEY="your_api_key_here"
    ```
 
-2. Install dependencies
+1. Install dependencies
 
    ```bash
    uv sync
    ```
 
-3. Launch Chainlit
+1. Launch Chainlit
 
    ```bash
    uv run chainlit run src/ui/app.py -w

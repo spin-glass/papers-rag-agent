@@ -2,37 +2,37 @@ name: PR Tests
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
     types: [opened, synchronize, reopened]
 
 jobs:
   quick-test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install uv
       uses: astral-sh/setup-uv@v3
       with:
         version: "latest"
-    
+
     - name: Set up Python 3.13
       run: uv python install 3.13
-    
+
     - name: Install dependencies
       run: |
         uv sync --dev --group test
-    
+
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
         echo "OPENAI_API_KEY=test_key_for_ci" >> $GITHUB_ENV
-    
+
     - name: Run core tests (excluding UI tests)
       run: |
         uv run pytest tests/test_graphs/ tests/test_retrieval/ -v --tb=short
-    
+
     - name: Check arXiv search functionality
       run: |
         uv run python -c "
@@ -42,7 +42,7 @@ jobs:
         assert len(results) > 0, 'arXiv検索で結果が見つからない'
         print('✅ arXiv検索機能は正常に動作しています')
         "
-    
+
     - name: Check LangGraph functionality
       run: |
         uv run python -c "
@@ -55,22 +55,22 @@ jobs:
 
   lint-check:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install uv
       uses: astral-sh/setup-uv@v3
       with:
         version: "latest"
-    
+
     - name: Set up Python 3.13
       run: uv python install 3.13
-    
+
     - name: Install dependencies
       run: |
         uv sync --dev --group test
-    
+
     - name: Run pre-commit (diff only)
       run: |
         uvx pre-commit run --from-ref origin/main --to-ref HEAD || true

@@ -6,7 +6,7 @@ development. A Japanese translation is included in the second half of the file.
 ## Prerequisites
 
 1. **OpenAI API key** – required for embeddings and text generation.
-2. **Python environment** – install dependencies with
+1. **Python environment** – install dependencies with
    [uv](https://github.com/astral-sh/uv) (recommended) or `pip`.
 
 ### Configure environment variables
@@ -77,7 +77,7 @@ uv run chainlit run src/ui/app.py -w
 For LangGraph-specific instructions, see [`langgraph.md`](langgraph.md).
 Deployment details live in [`deployment.md`](deployment.md).
 
----
+______________________________________________________________________
 
 ## セットアップガイド（日本語）
 
@@ -86,7 +86,7 @@ Papers RAG Agent をローカルで開発・実行するための設定手順で
 ### 必須要件
 
 1. **OpenAI API Key** – 埋め込みとテキスト生成に必須です。
-2. **Python 実行環境** – [uv](https://github.com/astral-sh/uv)（推奨）または `pip` で依存関係をインストールします。
+1. **Python 実行環境** – [uv](https://github.com/astral-sh/uv)（推奨）または `pip` で依存関係をインストールします。
 
 ### 環境変数の設定
 
