@@ -2,6 +2,7 @@ import os
 import re
 from typing import List
 from src.models import Paper
+from src.llm.generator import generate_answer
 
 
 def _csv_env(name: str) -> List[str]:
@@ -62,15 +63,43 @@ def get_keywords():
     return [s.lower() for s in inc], [s.lower() for s in exc]
 
 
+def translate_to_japanese(text: str, max_chars: int = 300) -> str:
+    """英語のテキストを日本語に翻訳する"""
+    if not text or not text.strip():
+        return ""
+
+    try:
+        prompt = f"""以下の英語のテキストを日本語に翻訳してください。技術的な内容は正確に保ち、自然な日本語で表現してください。
+
+{text}
+
+翻訳:"""
+
+        translated = generate_answer(prompt)
+
+        # 翻訳結果が長すぎる場合は切り詰め
+        if len(translated) > max_chars:
+            translated = translated[:max_chars] + "..."
+
+        return translated
+    except Exception:
+        # 翻訳に失敗した場合は元のテキストを返す
+        return text[:max_chars] + ("..." if len(text) > max_chars else "")
+
+
 def make_short_summary(text: str, max_chars: int = 300) -> str:
     t = (text or "").strip()
     if not t:
         return ""
+
+    # まず元のテキストを短縮
     parts = re.split(r"(?<=[.!?])\s+", t)
     s = " ".join(parts[:2]) if parts else t
     if len(s) > max_chars:
         s = s[:max_chars] + "..."
-    return s
+
+    # 日本語に翻訳
+    return translate_to_japanese(s, max_chars)
 
 
 def filter_papers(papers: List[Paper]) -> List[Paper]:

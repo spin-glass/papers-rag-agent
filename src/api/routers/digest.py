@@ -1,6 +1,7 @@
 from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
+import asyncio
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
 
@@ -9,6 +10,7 @@ from src.api.utils.persona import (
     filter_papers,
     exclude_only,
     make_short_summary,
+    translate_to_japanese,
     get_min_results_threshold,
 )
 from src.models import Paper
@@ -62,17 +64,29 @@ async def get_digest(
 
     top = filtered[:limit]
 
-    items: List[DigestItem] = []
-    for p in top:
-        items.append(
-            DigestItem(
-                id=p.id,
-                title=p.title,
-                url=p.link,
-                pdf=p.pdf,
-                summary_short=make_short_summary(p.summary or ""),
-                categories=p.categories,
-                authors=p.authors,
-            )
+    # 並列で翻訳処理を実行
+    async def translate_paper(p):
+        title_task = asyncio.create_task(
+            asyncio.to_thread(translate_to_japanese, p.title, 200)
         )
+        summary_task = asyncio.create_task(
+            asyncio.to_thread(make_short_summary, p.summary or "")
+        )
+
+        translated_title, translated_summary = await asyncio.gather(
+            title_task, summary_task
+        )
+
+        return DigestItem(
+            id=p.id,
+            title=translated_title,
+            url=p.link,
+            pdf=p.pdf,
+            summary_short=translated_summary,
+            categories=p.categories,
+            authors=p.authors,
+        )
+
+    # 全ての論文を並列で翻訳
+    items = await asyncio.gather(*[translate_paper(p) for p in top])
     return items

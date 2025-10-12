@@ -129,7 +129,7 @@ async def on_chat_start():
             actions=[
                 cl.Action(
                     name="daily_digest",
-                    value=json.dumps({"cat": "cs.LG", "days": 2, "limit": 10}),
+                    payload={"cat": "cs.LG", "days": 2, "limit": 10},
                     label="📰 デイリーダイジェスト（cs.LG, 直近2日）",
                 )
             ],
@@ -154,8 +154,10 @@ async def on_daily_digest(action: cl.Action):
     try:
         cfg = {}
         try:
-            if isinstance(action.value, str):
-                cfg = json.loads(action.value)
+            if isinstance(action.payload, dict):
+                cfg = action.payload
+            elif isinstance(action.payload, str):
+                cfg = json.loads(action.payload)
         except Exception:
             cfg = {}
         cat = cfg.get("cat", "cs.LG")
