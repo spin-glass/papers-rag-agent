@@ -38,6 +38,10 @@ jobs:
         git fetch --no-tags --prune --depth=1 origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
         uvx pre-commit run --from-ref "origin/${BASE_REF}" --to-ref HEAD
 
+    - name: Build caches (precomputed data)
+      run: |
+        uv run task build:cache
+
     - name: Run tests
       run: |
         uv run pytest tests/ -v --tb=short
@@ -70,6 +74,10 @@ jobs:
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
         echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
+
+    - name: Build caches (precomputed data)
+      run: |
+        uv run task build:cache
 
     - name: Run tests with coverage
       run: |

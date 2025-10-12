@@ -29,6 +29,10 @@ jobs:
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
         echo "OPENAI_API_KEY=test_key_for_ci" >> $GITHUB_ENV
 
+    - name: Build caches (precomputed data)
+      run: |
+        uv run task build:cache
+
     - name: Run core tests (excluding UI tests)
       run: |
         uv run pytest tests/test_graphs/ tests/test_retrieval/ -v --tb=short
