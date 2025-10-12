@@ -1,0 +1,40 @@
+# DSPy Documentation Reference
+
+## Overview
+
+When working with DSPy in this project, always reference the official documentation at <https://dspy.ai/> for:
+
+- Latest API documentation and best practices
+- Optimization techniques (MIPROv2, BootstrapFinetune, etc.)
+- Module definitions and usage patterns
+- Signature and ChainOfThought implementations
+
+## Project Context
+
+This is a papers RAG agent project with:
+
+- Linear Issue SPI-29: Paper structure extraction with DSPy evaluation
+- Experiments directory with DSPy notebooks
+- Content enhancement and corrective RAG implementations
+
+## Web Search Instructions
+
+- Use web search to get the latest DSPy documentation when needed
+- Reference specific DSPy features from <https://dspy.ai/>
+- Include links to relevant DSPy documentation sections in responses
+- Focus on DSPy optimization and evaluation techniques
+
+## Code Style
+
+- Follow the existing project structure
+- Use proper DSPy patterns and signatures
+- Include comprehensive error handling
+- Add detailed comments for DSPy-specific implementations
+
+## DSPy Best Practices
+
+- Use `dspy.Signature` for input/output definitions
+- Implement `dspy.Module` for custom functionality
+- Apply `dspy.ChainOfThought` for reasoning tasks
+- Use optimizers like `dspy.MIPROv2` for prompt optimization
+- Follow the DSPy programming paradigm over traditional prompting
