@@ -41,18 +41,25 @@ async def get_digest(
     days: int = Query(default=2, ge=1, le=7),
     limit: int = Query(default=10, ge=1, le=50),
 ):
-    date_range = _date_range_for_last_days(days)
-    fetch_n = min(200, max(limit * 4, limit))
-    papers: List[Paper] = search_arxiv_papers(
-        query=f"cat:{cat}", max_results=fetch_n, date_range=date_range
-    )
-
-    filtered = filter_papers(papers)
+    cur_days = days
+    filtered: List[Paper] = []
     min_n = get_min_results_threshold()
-    if len(filtered) == 0:
-        filtered = exclude_only(papers)
-    elif len(filtered) < min_n:
-        filtered = exclude_only(papers)
+
+    while True:
+        date_range = _date_range_for_last_days(cur_days)
+        fetch_n = min(200, max(limit * 4, limit))
+        papers: List[Paper] = search_arxiv_papers(
+            query=f"cat:{cat}", max_results=fetch_n, date_range=date_range
+        )
+
+        filtered = filter_papers(papers)
+        if len(filtered) == 0 or len(filtered) < min_n:
+            filtered = exclude_only(papers)
+
+        if filtered or cur_days >= 7:
+            break
+        cur_days += 1
+
     top = filtered[:limit]
 
     items: List[DigestItem] = []
