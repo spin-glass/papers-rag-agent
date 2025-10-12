@@ -12,8 +12,8 @@
 ### デプロイメントフロー
 
 1. FastAPIサービスをデプロイ
-2. FastAPIのURLを取得
-3. Chainlitサービスをデプロイ（FastAPIのURLを環境変数として設定）
+1. FastAPIのURLを取得
+1. Chainlitサービスをデプロイ（FastAPIのURLを環境変数として設定）
 
 ## 必要な設定
 
@@ -79,14 +79,17 @@ gcloud run deploy papers-rag-ui --image gcr.io/$PROJECT_ID/papers-rag-ui \
 ### よくある問題
 
 1. **ChainlitがFastAPIに接続できない**
+
    - `PAPERS_API_BASE`環境変数が正しく設定されているか確認
    - FastAPIサービスが起動しているか確認
 
-2. **デプロイが失敗する**
+1. **デプロイが失敗する**
+
    - GitHub Actionsのログを確認
    - サービスアカウントの権限を確認
 
-3. **メモリ不足エラー**
+1. **メモリ不足エラー**
+
    - Cloud Runのメモリ設定を増やす（現在2Gi）
 
 ### ログの確認

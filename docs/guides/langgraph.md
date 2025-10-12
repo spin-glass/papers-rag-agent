@@ -9,9 +9,9 @@ LangGraph workflows power three major features:
 
 1. **Content Enhancement** – adds Cornell Notes and quizzes in parallel to
    each answer.
-2. **Corrective RAG (CRAG)** – retries low-support answers using
+1. **Corrective RAG (CRAG)** – retries low-support answers using
    HyDE-based query rewriting.
-3. **Message Routing** – classifies user intent and dispatches to the
+1. **Message Routing** – classifies user intent and dispatches to the
    appropriate pipeline.
 
 ## Setup
@@ -97,7 +97,7 @@ uv run pytest tests/test_graphs/ -v -m integration
 
 1. **`ImportError: LangGraph not available`** – run `uv sync` to install
    dependencies.
-2. **Workflow not triggered** – confirm `USE_LANGGRAPH=true` and restart the
+1. **Workflow not triggered** – confirm `USE_LANGGRAPH=true` and restart the
    application.
-3. **Rate limit errors** – reduce concurrency or adjust quiz/note generation
+1. **Rate limit errors** – reduce concurrency or adjust quiz/note generation
    settings in the environment variables.
