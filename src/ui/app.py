@@ -33,6 +33,27 @@ async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> lis
         return r.json()
 
 
+async def call_digest_details(paper_id: str) -> dict:
+    """論文の詳細情報を取得"""
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            r = await client.get(f"{API_BASE}/digest/{paper_id}/details")
+            r.raise_for_status()
+            return r.json()
+    except httpx.HTTPStatusError as e:
+        error_msg = f"HTTP {e.response.status_code}: {e.response.text}"
+        print(f"❌ API Error: {error_msg}")
+        raise Exception(f"API Error: {error_msg}")
+    except httpx.TimeoutException:
+        error_msg = "Request timeout (30s)"
+        print(f"❌ Timeout: {error_msg}")
+        raise Exception(f"Timeout: {error_msg}")
+    except Exception as e:
+        error_msg = f"Request failed: {str(e)}"
+        print(f"❌ Request failed: {error_msg}")
+        raise Exception(error_msg)
+
+
 async def sse_rag_stream(query: str):
     try:
         async with httpx.AsyncClient(timeout=None) as client:
@@ -171,24 +192,51 @@ async def on_daily_digest(action: cl.Action):
             ).send()
             return
 
-        lines = [f"### デイリーダイジェスト（{cat}, 過去{days}日・最大{limit}件）"]
-        for it in items:
+        # ヘッダーメッセージを送信
+        await cl.Message(
+            content=f"# 📰 デイリーダイジェスト\n\n**カテゴリ:** {cat} | **期間:** 過去{days}日 | **件数:** {limit}件"
+        ).send()
+
+        # 各論文を個別のメッセージとして表示（ボタンを近くに配置）
+        for i, it in enumerate(items, 1):
             title = (it.get("title") or "").strip() or "（無題）"
             url = it.get("url") or it.get("link") or ""
             pdf = it.get("pdf") or ""
             summary = it.get("summary_short") or it.get("summary") or ""
-            bullet = f"- {title}"
+            paper_id = it.get("id", "")
+
+            # 論文情報を構築
+            paper_content = f"## {i}. {title}\n"
+
+            # リンク情報
+            links = []
             if url:
-                bullet = f"- [{title}]({url})"
+                links.append(f"[arXiv]({url})")
             if pdf:
-                bullet += f"（[PDF]({pdf})）"
-            lines.append(bullet)
+                links.append(f"[PDF]({pdf})")
+            if links:
+                paper_content += f"🔗 {' | '.join(links)}\n"
+
+            # 要約
             if summary:
                 s = summary.strip()
-                if len(s) > 280:
-                    s = s[:280] + "..."
-                lines.append(f"  \n  {s}")
-        await cl.Message(content="\n".join(lines)).send()
+                if len(s) > 200:
+                    s = s[:200] + "..."
+                paper_content += f"📝 {s}"
+
+            # 詳細表示ボタンを準備
+            actions = []
+            if paper_id:
+                actions.append(
+                    cl.Action(
+                        name="show_digest_details",
+                        payload={"paper_id": paper_id, "paper_title": title},
+                        label="📖 詳細を見る",
+                    )
+                )
+
+            # 各論文を個別のメッセージとして送信
+            await cl.Message(content=paper_content, actions=actions).send()
     except httpx.HTTPStatusError as he:
         await cl.Message(
             content=f"❌ /digest エラー {he.response.status_code}: {he.response.text}"
@@ -197,6 +245,219 @@ async def on_daily_digest(action: cl.Action):
         await cl.Message(
             content=f"❌ デイリーダイジェスト取得に失敗しました: `{e}`"
         ).send()
+
+
+@cl.action_callback("show_digest_details")
+async def on_show_digest_details(action: cl.Action):
+    """論文の詳細情報を表示"""
+    try:
+        paper_id = action.payload.get("paper_id")
+        paper_title = action.payload.get("paper_title", "論文")
+
+        if not paper_id:
+            await cl.Message(content="❌ 論文IDが指定されていません").send()
+            return
+
+        # ローディング表示
+        loading_msg = await cl.Message(
+            content=f"📖 {paper_title} の詳細情報を取得中..."
+        ).send()
+
+        try:
+            details = await call_digest_details(paper_id)
+
+            # 論文の章立てに基づく構造化された詳細情報を構築
+            content_parts = [f"# 📄 {details['title']}"]
+
+            # 論文メタデータ
+            content_parts.append("## 📋 論文情報")
+
+            if details.get("authors"):
+                authors_str = ", ".join(details["authors"][:3])  # 最初の3名のみ表示
+                if len(details["authors"]) > 3:
+                    authors_str += f" 他{len(details['authors']) - 3}名"
+                content_parts.append(f"**👥 著者:** {authors_str}")
+
+            if details.get("categories"):
+                content_parts.append(
+                    f"**🏷️ カテゴリ:** {', '.join(details['categories'])}"
+                )
+
+            # リンク情報
+            links = []
+            if details.get("url"):
+                links.append(f"[arXiv]({details['url']})")
+            if details.get("pdf"):
+                links.append(f"[PDF]({details['pdf']})")
+            if links:
+                content_parts.append(f"**🔗 リンク:** {' | '.join(links)}")
+
+            # 論文の概要
+            if details.get("full_summary"):
+                content_parts.append("\n## 📝 論文概要")
+                content_parts.append(f"{details['full_summary']}")
+
+            # 論文構造の表示
+            if details.get("paper_structure"):
+                structure = details["paper_structure"]
+                content_parts.append("\n## 📖 論文構造")
+
+                # 章立ての表示
+                if structure.get("sections"):
+                    content_parts.append("**📋 章立て:**")
+                    for i, section in enumerate(structure["sections"], 1):
+                        content_parts.append(f"{i}. {section}")
+
+                # 分析品質の表示
+                quality = structure.get("content_quality", "unknown")
+                completeness = structure.get("analysis_completeness", "unknown")
+
+                if quality == "high" and completeness == "complete":
+                    content_parts.append(
+                        "\n✅ **分析品質:** 高品質な詳細分析が完了しています"
+                    )
+                elif quality == "low" or completeness == "incomplete":
+                    content_parts.append(
+                        "\n⚠️ **分析品質:** 分析が不完全です。より詳細な情報を取得中..."
+                    )
+
+                # RAG結果に基づく詳細分析
+                if (
+                    details.get("cornell_note")
+                    or details.get("quiz_items")
+                    or details.get("citations")
+                ):
+                    content_parts.append("\n## 🔬 研究詳細")
+
+                    # Cornell Note（研究ノート）から実際の内容を抽出
+                    if details.get("cornell_note"):
+                        cornell = details["cornell_note"]
+                        content_parts.append("\n### 📚 研究ノート")
+                        content_parts.append(
+                            f"**💡 キーポイント:** {cornell.get('cue', '')}"
+                        )
+                        content_parts.append(
+                            f"**📝 詳細分析:**\n{cornell.get('notes', '')}"
+                        )
+                        content_parts.append(
+                            f"**📋 研究要約:** {cornell.get('summary', '')}"
+                        )
+
+                    # 関連研究
+                    if details.get("citations"):
+                        content_parts.append("\n### 📚 関連研究")
+                        for i, cite in enumerate(details["citations"], 1):
+                            content_parts.append(
+                                f"{i}. [{cite.get('title', '')}]({cite.get('url', '')})"
+                            )
+
+                    # 理解度チェック
+                    if details.get("quiz_items"):
+                        content_parts.append("\n### 🧠 理解度チェック")
+                        for i, quiz in enumerate(details["quiz_items"], 1):
+                            content_parts.append(
+                                f"\n**問題 {i}:** {quiz.get('question', '')}"
+                            )
+                            for option in quiz.get("options", []):
+                                marker = (
+                                    "✅ "
+                                    if option.get("id") == quiz.get("correct_answer")
+                                    else "⚪ "
+                                )
+                                content_parts.append(
+                                    f"  {marker}{option.get('id', '').upper()}: {option.get('text', '')}"
+                                )
+                            content_parts.append("")
+            else:
+                # 論文構造が取得できない場合
+                content_parts.append("\n## 📖 論文内容")
+                content_parts.append(
+                    "⚠️ 論文構造の分析中です。RAG処理により詳細な研究内容を取得しています..."
+                )
+
+                # 基本的なRAG結果がある場合は表示
+                if (
+                    details.get("cornell_note")
+                    or details.get("quiz_items")
+                    or details.get("citations")
+                ):
+                    content_parts.append("\n## 🔬 研究詳細")
+
+                    if details.get("cornell_note"):
+                        cornell = details["cornell_note"]
+                        content_parts.append("\n### 📚 研究ノート")
+                        content_parts.append(
+                            f"**💡 キーポイント:** {cornell.get('cue', '')}"
+                        )
+                        content_parts.append(
+                            f"**📝 詳細分析:**\n{cornell.get('notes', '')}"
+                        )
+                        content_parts.append(
+                            f"**📋 研究要約:** {cornell.get('summary', '')}"
+                        )
+
+                    if details.get("citations"):
+                        content_parts.append("\n### 📚 関連研究")
+                        for i, cite in enumerate(details["citations"], 1):
+                            content_parts.append(
+                                f"{i}. [{cite.get('title', '')}]({cite.get('url', '')})"
+                            )
+
+                    if details.get("quiz_items"):
+                        content_parts.append("\n### 🧠 理解度チェック")
+                        for i, quiz in enumerate(details["quiz_items"], 1):
+                            content_parts.append(
+                                f"\n**問題 {i}:** {quiz.get('question', '')}"
+                            )
+                            for option in quiz.get("options", []):
+                                marker = (
+                                    "✅ "
+                                    if option.get("id") == quiz.get("correct_answer")
+                                    else "⚪ "
+                                )
+                                content_parts.append(
+                                    f"  {marker}{option.get('id', '').upper()}: {option.get('text', '')}"
+                                )
+                            content_parts.append("")
+
+            # 研究の意義
+            content_parts.append("\n## 🎯 研究の意義")
+            if details.get("categories"):
+                categories = details["categories"]
+                if "cs.LG" in categories:
+                    content_parts.append("- **機械学習分野**での新たなアプローチを提案")
+                if "cs.AI" in categories:
+                    content_parts.append("- **人工知能**の発展に寄与する重要な知見")
+                if "cs.RO" in categories:
+                    content_parts.append("- **ロボティクス**分野での実用的な応用可能性")
+                if "cs.CV" in categories:
+                    content_parts.append(
+                        "- **コンピュータビジョン**における革新的な手法"
+                    )
+                if "cs.CL" in categories:
+                    content_parts.append("- **自然言語処理**における新たな手法")
+                if "cs.RO" in categories:
+                    content_parts.append("- **ロボティクス**分野での実用的な応用可能性")
+
+            # ローディングメッセージを更新
+            loading_msg.content = "\n".join(content_parts)
+            await loading_msg.update()
+
+        except httpx.HTTPStatusError as he:
+            error_content = (
+                f"❌ 詳細取得エラー {he.response.status_code}: {he.response.text}"
+            )
+            print(f"❌ HTTP Error: {error_content}")
+            loading_msg.content = error_content
+            await loading_msg.update()
+        except Exception as e:
+            error_content = f"❌ 詳細取得失敗: {str(e)}"
+            print(f"❌ General Error: {error_content}")
+            loading_msg.content = error_content
+            await loading_msg.update()
+
+    except Exception as e:
+        await cl.Message(content=f"❌ 詳細表示エラー: `{e}`").send()
 
 
 @cl.on_message
@@ -224,24 +485,49 @@ async def on_message(msg: cl.Message):
                 ).send()
                 return
 
-            lines = ["### デイリーダイジェスト"]
-            for it in items:
+            # ヘッダーメッセージを送信
+            await cl.Message(content="# 📰 デイリーダイジェスト").send()
+
+            # 各論文を個別のメッセージとして表示（ボタンを近くに配置）
+            for i, it in enumerate(items, 1):
                 title = (it.get("title") or "").strip() or "（無題）"
                 url = it.get("url") or it.get("link") or ""
                 pdf = it.get("pdf") or ""
                 summary = it.get("summary_short") or it.get("summary") or ""
-                bullet = f"- **{title}**"
+                paper_id = it.get("id", "")
+
+                # 論文情報を構築
+                paper_content = f"## {i}. {title}\n"
+
+                # リンク情報
+                links = []
                 if url:
-                    bullet = f"- **[{title}]({url})**"
+                    links.append(f"[arXiv]({url})")
                 if pdf:
-                    bullet += f" （[PDF]({pdf})）"
-                lines.append(bullet)
+                    links.append(f"[PDF]({pdf})")
+                if links:
+                    paper_content += f"🔗 {' | '.join(links)}\n"
+
+                # 要約
                 if summary:
                     s = summary.strip()
-                    if len(s) > 280:
-                        s = s[:280] + "..."
-                    lines.append(f"  \n  {s}")
-            await cl.Message(content="\n".join(lines)).send()
+                    if len(s) > 200:
+                        s = s[:200] + "..."
+                    paper_content += f"📝 {s}"
+
+                # 詳細表示ボタンを準備
+                actions = []
+                if paper_id:
+                    actions.append(
+                        cl.Action(
+                            name="show_digest_details",
+                            payload={"paper_id": paper_id, "paper_title": title},
+                            label="📖 詳細を見る",
+                        )
+                    )
+
+                # 各論文を個別のメッセージとして送信
+                await cl.Message(content=paper_content, actions=actions).send()
         except httpx.HTTPStatusError as he:
             await cl.Message(
                 content=f"❌ /digest {he.response.status_code}: {he.response.text}"

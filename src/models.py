@@ -20,11 +20,11 @@ class Citation(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    id: str
     title: str
-    authors: List[str]
-    year: int
     url: Optional[str] = None
+    id: Optional[str] = None
+    authors: Optional[List[str]] = None
+    year: Optional[int] = None
 
 
 class QuizOption(BaseModel):

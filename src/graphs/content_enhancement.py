@@ -28,6 +28,7 @@ class ContentEnhancementState(BaseModel):
     attempts: List[dict]
     cornell_note: Optional[CornellNote] = None
     quiz_items: Optional[List[QuizItem]] = None
+    enhanced_result: Optional[EnhancedAnswerResult] = None
     error: Optional[str] = None  # Remove Annotated to avoid concurrent updates
 
     def __getitem__(self, key):
@@ -97,30 +98,30 @@ Example:
 CUE: [your cue here]
 
 NOTES: [
-  {
+  {{
             "title": "[Title 1](URL)",
     "points": [
       "sentence 1",
       "sentence 2",
       "sentence 3"
     ]
-  },
-  {
+  }},
+  {{
             "title": "[Title 2](URL)",
     "points": [
       "sentence 1",
       "sentence 2",
       "sentence 3"
     ]
-  },
-  {
+  }},
+  {{
             "title": "[Title 3](URL)",
     "points": [
       "sentence 1",
       "sentence 2",
       "sentence 3"
     ]
-  }
+  }}
 ]
 
 SUMMARY: [your summary here]
