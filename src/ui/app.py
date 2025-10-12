@@ -146,7 +146,7 @@ async def on_message(msg: cl.Message):
         try:
             parts = text.split()
             cat = "cs.LG"
-            days = 1
+            days = 2
             limit = 10
             for token in parts[1:]:
                 t = token.strip()

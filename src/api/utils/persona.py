@@ -94,3 +94,11 @@ def exclude_only(papers: List[Paper]) -> List[Paper]:
             continue
         out.append(p)
     return out
+
+
+def get_min_results_threshold(default: int = 3) -> int:
+    try:
+        v = int(os.getenv("DIGEST_MIN_RESULTS", str(default)))
+        return max(1, min(10, v))
+    except Exception:
+        return default
