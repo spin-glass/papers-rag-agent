@@ -66,8 +66,8 @@ def load_precomputed_cache() -> Optional[InMemoryIndex]:
                     print("  ⚠️  Embeddings file is empty!")
                     papers_with_embeddings = []
                 else:
-                    with open(embeddings_file, "rb") as f:
-                        papers_with_embeddings = pickle.load(f)
+                    data_bytes = embeddings_file.read_bytes()
+                    papers_with_embeddings = pickle.loads(data_bytes)
                     print(f"  ✅ Loaded {len(papers_with_embeddings)} embeddings")
             else:
                 print("  ❌ Embeddings file does not exist!")

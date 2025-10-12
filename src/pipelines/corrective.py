@@ -4,10 +4,11 @@ from src.models import AnswerResult
 from src.pipelines.baseline import baseline_answer
 from src.llm.hyde import hyde_rewrite
 from src.config import get_support_threshold
+from typing import Optional, Any, List
 
 
 def answer_with_correction(
-    question: str, theta: float = None, index=None
+    question: str, theta: Optional[float] = None, index: Any = None
 ) -> AnswerResult:
     """
     Generate answer using corrective RAG with HyDE fallback.
@@ -62,7 +63,7 @@ def answer_with_correction(
     return no_answer(question, attempts=all_attempts)
 
 
-def no_answer(question: str, attempts: list = None) -> AnswerResult:
+def no_answer(question: str, attempts: Optional[List[Any]] = None) -> AnswerResult:
     """
     Generate no-answer response with missing information hints.
 

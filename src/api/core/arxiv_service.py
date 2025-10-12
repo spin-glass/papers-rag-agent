@@ -20,7 +20,7 @@ async def search(query: str, max_results: int = 10) -> List[Dict[str, Any]]:
         results = run_arxiv_search(query, max_results=max_results)
 
         # Convert to expected format
-        formatted_results = []
+        formatted_results: List[Dict[str, Any]] = []
         for paper in results:
             formatted_results.append(
                 {

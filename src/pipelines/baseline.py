@@ -1,7 +1,7 @@
 """Baseline RAG pipeline implementation."""
 
 import numpy as np
-from typing import List
+from typing import List, Optional
 from src.models import AnswerResult, RetrievedContext
 from src.llm.generator import generate_answer
 from src.llm.embeddings import get_embed
@@ -19,7 +19,9 @@ def set_global_index(index: InMemoryIndex) -> None:
     _global_index = index
 
 
-def baseline_answer(question: str, index: InMemoryIndex = None) -> AnswerResult:
+def baseline_answer(
+    question: str, index: Optional[InMemoryIndex] = None
+) -> AnswerResult:
     """
     Generate answer using baseline RAG pipeline.
 
