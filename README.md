@@ -1,193 +1,179 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
-🚀 **Live Demo (Chainlit UI)**: [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
+🚀 Live Demo (Chainlit UI): [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
 <!-- CLOUDRUN_URL_END -->
 
-このプロジェクトは **論文学習に特化した RAG × LangGraphワークフロー型チャットボット** です。
-ユーザーが論文タイトルや質問を入力すると、以下の処理が行われます。
+English | 日本語版: [README-ja.md](README-ja.md)
 
-## 📋 現在実装済みの機能
+Papers RAG Agent is a workflow-driven chatbot for learning from academic papers. It combines Retrieval Augmented Generation (RAG) with LangGraph workflows to provide cited answers, Cornell Notes, and comprehension quizzes.
 
-### メッセージルーティング
+## 📋 Implemented Features
 
-ユーザー入力を自動分類し、ArXiv検索またはRAG質問処理に適切にルーティングします。
+### Message Routing
 
-### RAGパイプライン
+Classifies user input and routes it to ArXiv search or the RAG question workflow.
 
-* arXivから論文メタデータを取得し、タイトルとアブストラクトをベクトル化してインメモリ検索
-* HyDE（Hypothetical Document Embeddings）による検索クエリ拡張
-* Support値に基づく回答品質評価と自動再試行
+### RAG Pipeline
 
-### Corrective RAG（CRAG）
+- Fetches paper metadata from arXiv, embeds titles and abstracts, and searches in-memory
+- HyDE (Hypothetical Document Embeddings) for query rewriting
+- Support score evaluation with automatic retries
 
-HyDEを使った自己補正RAGシステム：
+### Corrective RAG (CRAG)
 
-1. ベースライン検索でSupport値を評価
-2. 閾値未満の場合、HyDEでクエリを拡張して再検索
-3. LangGraphワークフローによる透明性の高い処理フロー
+Self-correcting RAG using HyDE:
 
-### コンテンツ強化
+1. Run baseline retrieval and evaluate support
+2. If below threshold, rewrite query via HyDE and retry
+3. Transparent workflow via LangGraph
 
-検索結果をもとに以下を並列生成：
+### Content Enhancement
 
-* **Cornell Note形式（Cue / Notes / Summary）** による構造化要約
-* 理解度チェック用の **3問クイズ** （選択肢付き）
+Generates in parallel:
 
-## 🔄 リアルタイム処理表示
+- Structured summary in Cornell Note format (Cue / Notes / Summary)
+- Three multiple-choice quiz questions
 
-**NEW**: LangGraphワークフローの途中結果をリアルタイムで表示する機能を追加しました：
+## 🔄 Real-time Progress
 
-* **メッセージ分類**: 入力がRAG質問かArXiv検索かを自動判別
-* **ベースライン検索**: 初回検索結果とSupport値を表示
-* **HyDE拡張**: Support値が低い場合の拡張クエリ生成過程
-* **拡張検索**: HyDE後の改善されたSupport値と改善度
-* **回答生成**: 最終回答のストリーミング表示
+- Message classification: detect RAG question vs ArXiv search
+- Baseline retrieval: show results and support score
+- HyDE expansion: show rewritten query when support is low
+- Enhanced retrieval: show improved support and delta
+- Answer generation: stream the final answer
 
-これにより、ユーザーはRAGの処理過程を透明性高く確認できます。
+This makes the RAG process transparent to users.
 
-## 🛠️ ローカル開発環境
+## 🛠️ Local Development
 
-### 前提条件
+### Prerequisites
 
-* Python 3.13+
-* [uv](https://docs.astral.sh/uv/) パッケージマネージャー
-* OpenAI API Key
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) package manager
+- OpenAI API Key
 
-### セットアップ
+### Setup
 
-1. **依存関係のインストール**
+1. Install dependencies
 
    ```bash
    task setup
    ```
 
-2. **環境変数の設定**
+2. Configure environment variables
 
    ```bash
    cp env.example .env
-   # .envファイルを編集してOPENAI_API_KEYを設定
+   # edit .env and set OPENAI_API_KEY
    ```
 
-3. **キャッシュの構築（初回のみ）**
+3. Build cache (first run only)
 
    ```bash
    task build:cache
    ```
 
-### 実行方法
+### Run
 
-#### 方法1: Docker Compose（推奨）
+#### Option 1: Docker Compose (recommended)
 
 ```bash
-# 両方のサービスを起動
 docker compose up -d
 
-# アクセス
+# Access
 # - Chainlit UI: http://localhost:8000
-# - FastAPI: http://localhost:9000
+# - FastAPI:     http://localhost:9000
 ```
 
-#### 方法2: ローカル実行
+#### Option 2: Local processes
 
 ```bash
-# ターミナル1: FastAPIサーバー
+# Terminal 1: FastAPI server
 task api
 
-# ターミナル2: Chainlit UI
+# Terminal 2: Chainlit UI
 task ui
 
-# アクセス
+# Access
 # - Chainlit UI: http://localhost:8000
-# - FastAPI: http://localhost:9000
+# - FastAPI:     http://localhost:9000
 ```
 
-### 利用可能なタスク
+### Available Tasks
 
 ```bash
-# 開発用
-task api          # FastAPIサーバーのみ起動
-task ui           # Chainlit UIのみ起動
-task dev:local    # ローカル開発の説明表示
+# Development
+task api          # start FastAPI only
+task ui           # start Chainlit UI only
+task dev:local    # show local dev help
 
-# テスト
-task test         # 全テスト実行
-task test:unit    # ユニットテストのみ
-task test:integration  # 統合テストのみ
+# Tests
+task test
+task test:unit
+task test:integration
 
-# キャッシュ管理
-task build:cache  # キャッシュ構築
-task cache:info   # キャッシュ情報表示
-task cache:clean  # キャッシュ削除
+# Cache
+task build:cache
+task cache:info
+task cache:clean
 
-# 品質チェック
-task lint         # リンティング
-task format       # コードフォーマット
-task check        # 全チェック実行
+# Quality
+task lint
+task format
+task check
 ```
 
-## 🚀 将来実装予定の機能
+## 🚀 Roadmap
 
-### GraphRAG + ベクトルハイブリッド検索
+### GraphRAG + Vector Hybrid
 
-* PDFテキスト化とIMRaD構造チャンク化
-* 知識グラフによる概念間関係性探索
-* ベクトル検索とGraph検索の動的切り替え・統合
-* FAISSベクトルDBによる高速検索
+- PDF parsing and IMRaD-aware chunking
+- Knowledge graph for concept relationships
+- Dynamic switching/combination of vector and graph search
+- FAISS-based vector DB
 
-### Multi-Agent Cooperation（Aime / TreeQuest思想）
+### Multi-Agent Cooperation (Aime / TreeQuest-inspired)
 
-* 複数の専門エージェント（例: 領域専門／数理的厳密性／引用重視）による候補回答生成
-* **批判エージェント（Critic）**による各候補の評価
-* **統合エージェント（Integrator）**による最終回答決定
-* エージェント間の合議システムによる回答品質向上
+- Multiple expert agents propose answers
+- Critic agent evaluates candidates
+- Integrator agent selects final answer
+- Consensus to improve quality
 
-### 専用エージェント群
+### Specialized Agents
 
-* Query Planner: 高度なクエリ解析・拡張
-* Judge: 回答品質の詳細評価
-* Experts: 分野特化型専門エージェント
-* Critics & Integrator: 多角的評価・統合システム
+- Query Planner
+- Judge
+- Domain Experts
+- Critics & Integrator
 
-## 🚀 クイックスタート
+## 🚀 Quick Start
 
-### 必須要件
-
-1. **OpenAI API Key の設定**
+1. Set OpenAI API Key
 
    ```bash
    export OPENAI_API_KEY="your_api_key_here"
    ```
 
-2. **依存関係のインストール**
+2. Install dependencies
 
    ```bash
    uv sync
    ```
 
-3. **アプリケーションの起動**
+3. Launch Chainlit
 
    ```bash
    uv run chainlit run src/ui/app.py -w
    ```
 
-詳細なセットアップ手順は [`docs/guides/setup.md`](docs/guides/setup.md) をご確認ください。
+See detailed setup in [`docs/guides/setup.md`](docs/guides/setup.md).
 
-## 🔄 LangGraph ワークフロー図
+## 🔄 LangGraph Workflows
 
-<!-- TODO: Mermaid図の自動更新機能を実装
-     現在は手動でコピーしているが、以下の機能を実装予定：
-     1. scripts/update_readme_with_graphs.py - READMEマーカー方式での自動更新
-     2. Taskfile統合 - task docs:update コマンドでの更新
-     3. GitHub Actions - グラフ変更時の自動PR作成
-     関連: scripts/generate_mermaid_graphs.py (既存)
--->
+Papers RAG Agent is composed of several LangGraph workflows.
 
-Papers RAG Agentは複数のLangGraphワークフローで構成されています：
-
-### メッセージルーティングワークフロー
-
-ユーザーの入力を解析し、適切な処理パイプライン（ArXiv検索またはRAG処理）にルーティングします。
+### Message Routing
 
 ```mermaid
 graph TD;
@@ -210,9 +196,7 @@ classDef first fill-opacity:0
 classDef last fill:#bfb6fc
 ```
 
-### 補正RAGワークフロー
-
-HyDE（Hypothetical Document Embeddings）を使用した自己補正RAGシステムです。
+### Corrective RAG
 
 ```mermaid
 graph TD;
@@ -238,9 +222,7 @@ classDef first fill-opacity:0
 classDef last fill:#bfb6fc
 ```
 
-### コンテンツ強化ワークフロー
-
-RAG回答をCornell Note形式とクイズ問題で強化します。
+### Content Enhancement
 
 ```mermaid
 graph TD;
@@ -258,93 +240,75 @@ classDef first fill-opacity:0
 classDef last fill:#bfb6fc
 ```
 
-> 📊 詳細なワークフロー図は [`docs/graphs/`](docs/graphs/) ディレクトリで確認できます。
+See more diagrams in [`docs/graphs/`](docs/graphs/).
 
----
+## 📊 Feature Verification via UI
 
-## 📊 現在の機能確認
+- Cited answers to questions
+- Cornell Note output (Cue / Notes / Summary)
+- Three auto-generated MCQs
+- Corrective RAG support score with history
+- Transparent workflow progress
+- Auto routing between ArXiv search and RAG
 
-**Chainlit UI** を通じて以下を確認できます:
-
-### ✅ 実装済み機能
-
-* 質問に対する引用付き回答
-* Cornell Note形式の出力（Cue / Notes / Summary）
-* 自動生成された3問クイズ（選択肢付き）
-* **Corrective RAG（CRAG）**の実行履歴とSupport値表示
-* LangGraphワークフローの透明性の高い処理過程表示
-* ArXiv検索とRAG質問の自動ルーティング
-
-### 🔄 将来実装予定
-
-* 複数エージェントの候補・批評・合議結果
-* 検索モード（ベクトル／Graph）切替の可視化
-* 高度なJudgeシステムによる詳細な品質評価
-
-> 📈 評価システム（LangSmith EvalsやRAGAS）は次フェーズで導入予定
-
----
-
-## 📁 フォルダ構成
-
-### 現在の実装構造
+## 📁 Project Structure
 
 ```tree
 papers-rag-agent/
 ├── src/
-│   ├── graphs/                # ✅ LangGraph ワークフロー定義
-│   │   ├── message_routing.py    # メッセージルーティング
-│   │   ├── corrective_rag.py     # Corrective RAG (CRAG)
-│   │   └── content_enhancement.py # Cornell Note・Quiz生成
-│   ├── retrieval/             # ✅ 検索システム
-│   │   ├── arxiv_searcher.py     # arXiv検索API
-│   │   └── inmemory.py           # インメモリベクトル検索
-│   ├── llm/                   # ✅ LLM関連機能
-│   │   ├── embeddings.py         # OpenAI Embeddings
-│   │   ├── generator.py          # 回答生成
-│   │   └── hyde.py              # HyDE実装
-│   ├── pipelines/             # ✅ RAGパイプライン
-│   │   ├── baseline.py           # ベースラインRAG
-│   │   └── corrective.py         # 補正RAG
-│   ├── ui/                    # ✅ Chainlit UI
-│   │   ├── app.py               # メインアプリ
-│   │   ├── components.py        # UI コンポーネント
-│   │   └── send.py             # メッセージ送信
-│   ├── data/                  # ✅ データ・キャッシュ
-│   │   ├── cache_loader.py      # プリコンピュート済みキャッシュ
+│   ├── graphs/                   # LangGraph workflows
+│   │   ├── message_routing.py
+│   │   ├── corrective_rag.py
+│   │   └── content_enhancement.py
+│   ├── retrieval/                # Retrieval system
+│   │   ├── arxiv_searcher.py
+│   │   └── inmemory.py
+│   ├── llm/                      # LLM utilities
+│   │   ├── embeddings.py
+│   │   ├── generator.py
+│   │   └── hyde.py
+│   ├── pipelines/                # RAG pipelines
+│   │   ├── baseline.py
+│   │   └── corrective.py
+│   ├── ui/                       # Chainlit UI
+│   │   ├── app.py
+│   │   ├── components.py
+│   │   └── send.py
+│   ├── data/                     # Precomputed cache
+│   │   ├── cache_loader.py
 │   │   └── precomputed_embeddings.pkl
-│   ├── adapters/              # ✅ アダプター層
-│   │   └── mock_agent.py        # モック実装
-│   ├── utils/                 # ✅ ユーティリティ
-│   │   └── language_utils.py    # 言語処理
-│   ├── models.py              # ✅ 共通データモデル
-│   └── config.py              # ✅ 設定管理
-├── tests/                     # ✅ テストコード
-├── scripts/                   # ✅ 補助スクリプト
-│   ├── build_cache.py           # キャッシュ構築
-│   └── generate_mermaid_graphs.py # 図表生成
-├── docs/                      # ✅ ドキュメント
-│   ├── graphs/                  # ワークフロー図
-│   └── guides/                  # セットアップ・LangGraph・Chainlitなどのガイド
+│   ├── adapters/                 # Adapters
+│   │   └── mock_agent.py
+│   ├── utils/                    # Utilities
+│   │   └── language_utils.py
+│   ├── models.py                 # Shared data models
+│   └── config.py                 # Configuration
+├── tests/                        # Test suite
+├── scripts/                      # Helper scripts
+│   ├── build_cache.py
+│   └── generate_mermaid_graphs.py
+├── docs/                         # Documentation
+│   ├── graphs/
+│   └── guides/
 ├── README.md
 ├── pyproject.toml
 └── uv.lock
 ```
 
-### 🔄 将来の構成予定
+## 🔄 Planned Structure
 
 ```tree
 papers-rag-agent/
 ├── src/
-│   ├── agents/                # 🚧 専用エージェント群（実装予定）
-│   │   ├── query_planner.py     # クエリ解析・拡張
-│   │   ├── judge.py            # 回答品質評価
-│   │   ├── experts/            # 分野特化エージェント
-│   │   ├── critic.py           # 批判・評価エージェント
-│   │   └── integrator.py       # 統合・合議エージェント
-│   └── knowledge/             # 🚧 GraphRAG関連（実装予定）
-│       ├── graph_builder.py    # 知識グラフ構築
-│       └── graph_searcher.py   # グラフ検索
-├── data/                      # 🚧 サンプル論文PDF（実装予定）
+│   ├── agents/                   # Planned specialized agents
+│   │   ├── query_planner.py
+│   │   ├── judge.py
+│   │   ├── experts/
+│   │   ├── critic.py
+│   │   └── integrator.py
+│   └── knowledge/                # Planned GraphRAG
+│       ├── graph_builder.py
+│       └── graph_searcher.py
+├── data/                         # Planned sample PDFs
 │   └── sample_papers/
 ```
