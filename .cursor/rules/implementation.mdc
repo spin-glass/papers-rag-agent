@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+---
+
+# Implementation Rule
+
+## Principle
+
+When assigned a task, **always create a Linear issue before starting any implementation**.
+Pull Requests (PRs) must reference the corresponding Linear issue.
+
+## Workflow
+
+- Follow the sequence **Linear Issue → Branch → PR**.
+- PR titles must include the Linear issue key (e.g., `RAG-123`).
+- PR descriptions must include the Linear issue URL or reference (e.g., `Closes RAG-123`).
+- Do **not** open a PR without an existing Linear issue.
+
+## Examples
+
+- ✅ Correct: `RAG-123: Implement retry logic`
+- ❌ Incorrect: `Add retry logic` (missing issue key)
