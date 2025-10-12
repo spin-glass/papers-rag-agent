@@ -44,12 +44,13 @@ app.add_middleware(
 )
 
 # ルーター
-from .routers import health, admin, arxiv, rag  # noqa: E402
+from .routers import health, admin, arxiv, rag, digest  # noqa: E402
 
 app.include_router(health.router, tags=["Health"])
 app.include_router(admin.router, tags=["Admin"])
 app.include_router(arxiv.router, tags=["Arxiv"])
 app.include_router(rag.router, tags=["RAG"])
+app.include_router(digest.router, tags=["Digest"])
 
 
 if __name__ == "__main__":
