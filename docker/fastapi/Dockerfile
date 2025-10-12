@@ -1,7 +1,5 @@
 # FastAPI専用のDockerfile
-# ARM環境対応のため、プラットフォームを明示的に指定
-ARG BUILDPLATFORM
-FROM --platform=$BUILDPLATFORM python:3.13-slim
+FROM python:3.13-slim
 
 # 作業ディレクトリを設定
 WORKDIR /app

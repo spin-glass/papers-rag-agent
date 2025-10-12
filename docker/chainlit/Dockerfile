@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-ARG BUILDPLATFORM
-FROM --platform=$BUILDPLATFORM python:3.13-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
