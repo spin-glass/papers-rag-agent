@@ -105,7 +105,7 @@ tasks:
 
   check:
     desc: Run all checks (linting, formatting, tests)
-    deps: [lint, format:check, test]
+    deps: ['lint', 'format:check', 'test']
 
   ci:
     desc: Run CI pipeline (install, check, test with coverage)
