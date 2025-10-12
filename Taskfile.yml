@@ -247,3 +247,12 @@ tasks:
       - echo "  task dev       - Start development server"
       - echo "  task check     - Run all quality checks"
       - echo "  task cache:info - Show cache information"
+  precommit:install:
+    desc: Install pre-commit hooks
+    cmds:
+      - uv run pre-commit install
+
+  precommit:all:
+    desc: Run all pre-commit hooks
+    cmds:
+      - uv run pre-commit run --all-files

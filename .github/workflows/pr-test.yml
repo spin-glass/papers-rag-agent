@@ -71,12 +71,6 @@ jobs:
       run: |
         uv sync --dev --group test
     
-    - name: Run linting checks
+    - name: Run pre-commit (all files)
       run: |
-        # Check if ruff is available and run basic checks
-        if uv run which ruff > /dev/null 2>&1; then
-          echo "Running ruff checks..."
-          uv run ruff check src/ tests/ --extend-ignore=E501,F401 || echo "Linting issues found but continuing..."
-        else
-          echo "Ruff not available, skipping lint checks"
-        fi
+        uv run pre-commit run --all-files || true
