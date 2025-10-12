@@ -54,7 +54,7 @@ def cornell_note_generation_node(
             state["error"] = "Cornell Note generation skipped - API key not available"
             return state
 
-        citations = state.get("citations", [])
+        citations = state.get("citations") or []
         citation_list = "\n".join(
             f"- {c['title']} -> {c['link'].replace('http://', 'https://')}"
             for c in citations
@@ -208,7 +208,7 @@ Make sure the questions test key concepts from the answer and have clear correct
         lines = response.strip().split("\n")
 
         current_question = None
-        current_options = []
+        current_options: list[QuizOption] = []
         current_correct = None
 
         for line in lines:

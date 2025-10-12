@@ -1,6 +1,6 @@
 import urllib.parse
 import feedparser
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from src.models import Paper
 
@@ -72,7 +72,7 @@ def run_arxiv_search(query: str, max_results: int = 5) -> List[Dict[str, str]]:
 
 
 def search_arxiv_papers(
-    query: str, max_results: int = 5, date_range: str = None
+    query: str, max_results: int = 5, date_range: Optional[str] = None
 ) -> List[Paper]:
     """
     Search arXiv and return Paper objects with full metadata including summary.

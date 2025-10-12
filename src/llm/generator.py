@@ -3,11 +3,12 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from langsmith import traceable
+from typing import Optional
 from src.config import get_openai_api_key, get_llm_provider
 
 
 @traceable
-def generate_answer(prompt: str, question: str = None) -> str:
+def generate_answer(prompt: str, question: Optional[str] = None) -> str:
     """
     Generate answer using OpenAI GPT model with LangSmith tracing.
 
