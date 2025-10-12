@@ -1,6 +1,5 @@
 # FastAPI専用のDockerfile
-# ARM環境対応のため、プラットフォームを明示的に指定
-FROM --platform=linux/amd64 python:3.13-slim
+FROM python:3.13-slim
 
 # 作業ディレクトリを設定
 WORKDIR /app
@@ -22,10 +21,13 @@ RUN uv sync --frozen
 
 # uv仮想環境をアクティベートするための環境変数を設定
 ENV PATH="/app/.venv/bin:$PATH"
-ENV PYTHONPATH="/app/src:$PYTHONPATH"
+ENV PYTHONPATH=""
 
 # アプリケーションコードをコピー
 COPY src/ ./src/
+
+# Pythonパスを定義後に追加
+ENV PYTHONPATH="/app/src:$PYTHONPATH"
 
 # Cloud RunのPORT環境変数に対応（デフォルト8000）
 EXPOSE 8000
