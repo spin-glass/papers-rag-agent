@@ -56,7 +56,7 @@ tasks:
 
   test:coverage:
     desc: Run tests with coverage report
-    deps: [install:coverage]
+    deps: ['install:coverage']
     cmds:
     - uv run pytest {{.TEST_DIRS}} --cov=src --cov-report=html --cov-report=term
 
@@ -73,25 +73,25 @@ tasks:
   # === コード品質 ===
   lint:
     desc: Run linting with ruff
-    deps: [install:dev]
+    deps: ['install:dev']
     cmds:
     - uv run ruff check {{.PYTHON_DIRS}}
 
   lint:fix:
     desc: Run linting with automatic fixes
-    deps: [install:dev]
+    deps: ['install:dev']
     cmds:
     - uv run ruff check --fix {{.PYTHON_DIRS}}
 
   format:
     desc: Format code with ruff
-    deps: [install:dev]
+    deps: ['install:dev']
     cmds:
     - uv run ruff format {{.PYTHON_DIRS}}
 
   format:check:
     desc: Check code formatting without making changes
-    deps: [install:dev]
+    deps: ['install:dev']
     cmds:
     - uv run ruff format --check {{.PYTHON_DIRS}}
 
