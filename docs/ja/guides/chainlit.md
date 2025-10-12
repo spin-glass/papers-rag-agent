@@ -1,4 +1,4 @@
-# Papers RAG Agent
+# Chainlit ガイド
 
 ## 概要
 

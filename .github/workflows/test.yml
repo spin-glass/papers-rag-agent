@@ -29,7 +29,7 @@ jobs:
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
-        echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
     - name: Run pre-commit (diff only)
       run: |
@@ -37,6 +37,11 @@ jobs:
         BASE_REF="${{ github.base_ref || 'main' }}"
         git fetch --no-tags --prune --depth=1 origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
         uvx pre-commit run --from-ref "origin/${BASE_REF}" --to-ref HEAD
+
+    - name: Build caches (precomputed data)
+      run: |
+        export PYTHONPATH=$(pwd)
+        uv run python scripts/build_cache.py
 
     - name: Run tests
       run: |
@@ -69,7 +74,12 @@ jobs:
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
-        echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+
+    - name: Build caches (precomputed data)
+      run: |
+        export PYTHONPATH=$(pwd)
+        uv run python scripts/build_cache.py
 
     - name: Run tests with coverage
       run: |

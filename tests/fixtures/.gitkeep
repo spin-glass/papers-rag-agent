@@ -1,0 +1,24 @@
+<create_file path="/home/ubuntu/repos/papers-rag-agent/docs/en/guides/.gitkeep"/>
+<create_file path="/home/ubuntu/repos/papers-rag-agent/docs/ja/guides/.gitkeep"/>
+<insert path="/home/ubuntu/repos/papers-rag-agent/.gitignore" insert_line="1">
+# Generated caches
+src/data/precomputed_papers.json
+src/data/precomputed_embeddings.pkl
+
+</insert>
+<str_replace path="/home/ubuntu/repos/papers-rag-agent/docker-compose.yml">
+<old_str>services:</old_str>
+<new_str>services:</new_str>
+</str_replace>
+<insert path="/home/ubuntu/repos/papers-rag-agent/docker-compose.yml" insert_line="1">
+# Compose updated to reference Dockerfiles under infra/docker while keeping root context
+
+</insert>
+<str_replace path="/home/ubuntu/repos/papers-rag-agent/README.md">
+<old_str>日本語: README-ja.md</old_str>
+<new_str>日本語: docs/ja/README.md</new_str>
+</str_replace>
+<create_file path="/home/ubuntu/repos/papers-rag-agent/docs/ja/README.md">
+[English](../../README.md) | 日本語
+
+この日本語READMEはルートから docs/ja/ 配下へ移動しました。

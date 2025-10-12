@@ -4,7 +4,7 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: docker/fastapi/Dockerfile
+      dockerfile: infra/docker/fastapi/Dockerfile
     ports:
     - "9000:8000"
     environment:
@@ -17,7 +17,7 @@ services:
   chainlit:
     build:
       context: .
-      dockerfile: docker/chainlit/Dockerfile
+      dockerfile: infra/docker/chainlit/Dockerfile
     ports:
     - "8000:8000"
     environment:

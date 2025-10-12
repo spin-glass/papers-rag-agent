@@ -1,4 +1,4 @@
-# Papers RAG Agent
+# ABOUT
 
 ## 概要
 
