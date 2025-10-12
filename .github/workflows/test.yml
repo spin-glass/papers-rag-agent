@@ -29,7 +29,7 @@ jobs:
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
-        echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
     - name: Run pre-commit (diff only)
       run: |
@@ -74,7 +74,7 @@ jobs:
     - name: Set environment variables for testing
       run: |
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
-        echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
     - name: Build caches (precomputed data)
       run: |
