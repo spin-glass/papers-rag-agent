@@ -96,7 +96,7 @@ def search_arxiv_papers(
 
     url = (
         f"{ARXIV_API}?search_query={urllib.parse.quote(q)}"
-        f"&sortBy=relevance&sortOrder=descending&max_results={max_results}"
+        f"&sortBy=submittedDate&sortOrder=descending&max_results={max_results}"
     )
 
     feed = feedparser.parse(url)

@@ -23,6 +23,8 @@ async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
         r = await client.post(f"{API_BASE}/arxiv/search", json=payload)
         r.raise_for_status()
         return r.json().get("items", [])
+
+
 async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> list[dict]:
     params = {"cat": cat, "days": days, "limit": limit}
     async with httpx.AsyncClient(timeout=30.0) as client:

@@ -51,9 +51,9 @@ class TestCacheDiagnostics:
         # Test first paper structure
         first_paper = papers_data[0]
         required_fields = {"id", "title", "link", "summary"}
-        assert required_fields.issubset(
-            first_paper.keys()
-        ), "Missing required fields in paper data"
+        assert required_fields.issubset(first_paper.keys()), (
+            "Missing required fields in paper data"
+        )
 
         # Test Paper model creation
         paper = Paper(**first_paper)
@@ -83,9 +83,9 @@ class TestCacheDiagnostics:
         # Test embedding vector
         import numpy as np
 
-        assert isinstance(
-            embedding_vector, np.ndarray
-        ), "Embedding should be numpy array"
+        assert isinstance(embedding_vector, np.ndarray), (
+            "Embedding should be numpy array"
+        )
         assert embedding_vector.size > 0, "Embedding vector should not be empty"
 
         print(f"✅ Successfully loaded {len(embeddings_data)} embeddings from pickle")
@@ -95,9 +95,9 @@ class TestCacheDiagnostics:
         index = load_precomputed_cache()
 
         assert index is not None, "Cache loader should return an index"
-        assert hasattr(
-            index, "papers_with_embeddings"
-        ), "Index should have papers_with_embeddings"
+        assert hasattr(index, "papers_with_embeddings"), (
+            "Index should have papers_with_embeddings"
+        )
 
         embeddings_count = len(index.papers_with_embeddings)
         print(f"📊 Loaded index with {embeddings_count} papers with embeddings")
@@ -130,12 +130,12 @@ class TestCacheDiagnostics:
                     first_item = embeddings_data[0]
 
                     # Check tuple structure (Paper, numpy.ndarray)
-                    assert isinstance(
-                        first_item, tuple
-                    ), "Embedding item should be a tuple"
-                    assert (
-                        len(first_item) == 2
-                    ), "Embedding tuple should have 2 elements"
+                    assert isinstance(first_item, tuple), (
+                        "Embedding item should be a tuple"
+                    )
+                    assert len(first_item) == 2, (
+                        "Embedding tuple should have 2 elements"
+                    )
 
                     paper, embedding = first_item
                     assert hasattr(paper, "id"), "Paper should have id attribute"
@@ -143,13 +143,13 @@ class TestCacheDiagnostics:
                     # Check embedding vector
                     import numpy as np
 
-                    assert isinstance(
-                        embedding, np.ndarray
-                    ), "Embedding should be numpy array"
+                    assert isinstance(embedding, np.ndarray), (
+                        "Embedding should be numpy array"
+                    )
                     assert embedding.shape[0] > 0, "Embedding should have dimensions"
-                    assert not np.isnan(
-                        embedding
-                    ).any(), "Embedding should not contain NaN values"
+                    assert not np.isnan(embedding).any(), (
+                        "Embedding should not contain NaN values"
+                    )
 
                     print("✅ Embedding data integrity check passed")
                     print(f"📊 Embedding vector shape: {embedding.shape}")
