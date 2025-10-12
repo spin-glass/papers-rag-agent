@@ -1,9 +1,7 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
-
 🚀 **Live Demo (Chainlit UI)**: [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
-
 <!-- CLOUDRUN_URL_END -->
 
 English | 日本語版: [docs/ja/README.md](docs/ja/README.md)
