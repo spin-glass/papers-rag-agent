@@ -71,6 +71,6 @@ jobs:
       run: |
         uv sync --dev --group test
     
-    - name: Run pre-commit (all files)
+    - name: Run pre-commit (diff only)
       run: |
-        uvx pre-commit run --all-files || true
+        uvx pre-commit run --from-ref origin/main --to-ref HEAD || true

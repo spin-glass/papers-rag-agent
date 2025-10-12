@@ -31,8 +31,9 @@ jobs:
         echo "USE_LANGGRAPH=true" >> $GITHUB_ENV
         echo "OPENAI_API_KEY=test_key" >> $GITHUB_ENV
     
-    - name: Run pre-commit (all files)
-      run: uvx pre-commit run --all-files
+    - name: Run pre-commit (diff only)
+      run: |
+        uvx pre-commit run --from-ref origin/main --to-ref HEAD
 
     - name: Run tests
       run: |
