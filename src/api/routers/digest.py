@@ -2,7 +2,9 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 import asyncio
+import os
 from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
 from src.retrieval.arxiv_searcher import search_arxiv_papers
@@ -14,6 +16,14 @@ from src.api.utils.persona import (
     get_min_results_threshold,
 )
 from src.models import Paper, CornellNote, QuizItem, Citation
+from src.data.paper_cache import get_cached, set_cached
+from src.integrations.mcp_arxiv import (
+    MCPArxivError,
+    compute_hash,
+    mcp_download_paper,
+    mcp_read_paper,
+)
+from src.retrieval.sections import build_sections
 
 
 def _generate_paper_structure(title: str, summary: str, rag_results: list) -> dict:
@@ -123,6 +133,11 @@ class DigestDetails(BaseModel):
     quiz_items: Optional[List[QuizItem]] = None
     citations: Optional[List[Citation]] = None
     paper_structure: Optional[dict] = None
+    sections: Optional[List[dict]] = None
+    toc_flat: Optional[List[str]] = None
+    content_length: Optional[int] = None
+    content_hash: Optional[str] = None
+    has_full_text: bool = False
 
 
 def _date_range_for_last_days(days: int) -> str:
@@ -185,6 +200,40 @@ async def get_digest(
 
     # 全ての論文を並列で翻訳
     items = await asyncio.gather(*[translate_paper(p) for p in top])
+    
+    prefetch_k = int(os.getenv("ARXIV_PREFETCH_TOPK", "10"))
+    topk = min(prefetch_k, len(top))
+    
+    async def prefetch_paper(paper: Paper) -> None:
+        try:
+            cached = get_cached(paper.id)
+            if cached:
+                return
+            
+            success = await mcp_download_paper(paper.id)
+            if not success:
+                return
+            
+            content = await mcp_read_paper(paper.id, fmt="plain")
+            if not content:
+                return
+            
+            sections_data = build_sections(content)
+            payload = {
+                "content": content,
+                "content_hash": compute_hash(content),
+                "content_length": len(content),
+                "sections": sections_data["sections"],
+                "toc_flat": sections_data["toc_flat"],
+                "format": "plain",
+            }
+            set_cached(paper.id, payload)
+        except Exception:
+            pass
+    
+    for i in range(topk):
+        asyncio.create_task(prefetch_paper(top[i]))
+    
     return items
 
 
@@ -339,6 +388,40 @@ async def get_digest_details(paper_id: str):
 
         # 詳細情報を構築
         try:
+            sections = None
+            toc_flat = None
+            content_length = None
+            content_hash = None
+            has_full_text = False
+
+            try:
+                cached = get_cached(paper.id)
+                if not cached:
+                    success = await mcp_download_paper(paper.id)
+                    if success:
+                        content = await mcp_read_paper(paper.id, fmt="plain")
+                        if content:
+                            sections_data = build_sections(content)
+                            payload = {
+                                "content": content,
+                                "content_hash": compute_hash(content),
+                                "content_length": len(content),
+                                "sections": sections_data["sections"],
+                                "toc_flat": sections_data["toc_flat"],
+                                "format": "plain",
+                            }
+                            set_cached(paper.id, payload)
+                            cached = payload
+                
+                if cached:
+                    sections = cached.get("sections")
+                    toc_flat = cached.get("toc_flat")
+                    content_length = cached.get("content_length")
+                    content_hash = cached.get("content_hash")
+                    has_full_text = content_length and content_length > 0
+            except (MCPArxivError, Exception):
+                pass
+            
             details = DigestDetails(
                 paper_id=paper.id,
                 title=translated_title,
@@ -351,6 +434,11 @@ async def get_digest_details(paper_id: str):
                 quiz_items=quiz_items,
                 citations=citations,
                 paper_structure=paper_structure,
+                sections=sections,
+                toc_flat=toc_flat,
+                content_length=content_length,
+                content_hash=content_hash,
+                has_full_text=has_full_text,
             )
 
             return details
@@ -365,3 +453,59 @@ async def get_digest_details(paper_id: str):
         raise HTTPException(
             status_code=500, detail=f"Failed to get paper details: {str(e)}"
         )
+
+
+@router.get("/digest/{paper_id}/fulltext")
+async def get_fulltext(
+    paper_id: str,
+    format: str = Query(default="plain", regex="^(plain|md)$"),
+    max_bytes: int = Query(default=200000, ge=1000, le=10000000),
+) -> PlainTextResponse:
+    """論文の全文コンテンツを取得"""
+    try:
+        cached = get_cached(paper_id)
+        content = None
+        
+        if cached and cached.get("format") == format and "content" in cached:
+            content = cached["content"]
+        
+        if content is None:
+            success = await mcp_download_paper(paper_id)
+            if not success:
+                raise HTTPException(
+                    status_code=404, detail=f"Could not download paper {paper_id}"
+                )
+            
+            content = await mcp_read_paper(paper_id, fmt=format)
+            if not content:
+                raise HTTPException(
+                    status_code=404, detail=f"Could not read paper {paper_id}"
+                )
+            
+            existing_cache = get_cached(paper_id)
+            if existing_cache:
+                existing_cache["content"] = content
+                existing_cache["format"] = format
+                set_cached(paper_id, existing_cache)
+            else:
+                sections_data = build_sections(content)
+                payload = {
+                    "content": content,
+                    "content_hash": compute_hash(content),
+                    "content_length": len(content),
+                    "sections": sections_data["sections"],
+                    "toc_flat": sections_data["toc_flat"],
+                    "format": format,
+                }
+                set_cached(paper_id, payload)
+        
+        data = content[:max_bytes] if isinstance(content, str) else ""
+        
+        return PlainTextResponse(data, media_type="text/plain; charset=utf-8")
+    
+    except HTTPException:
+        raise
+    except MCPArxivError as e:
+        raise HTTPException(status_code=503, detail=f"MCP service error: {str(e)}") from e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e

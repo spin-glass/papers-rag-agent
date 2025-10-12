@@ -103,6 +103,43 @@ task ui
 # - FastAPI:     http://localhost:9000
 ```
 
+## 📄 arXiv Content Retrieval (Optional)
+
+This project supports optional full-text paper retrieval using
+[arxiv-mcp-server](https://github.com/blazickjp/arxiv-mcp-server).
+When enabled, the system can:
+
+- Fetch and extract full text from arXiv PDFs
+- Cache paper content with configurable TTL
+- Prefetch content for top-ranked papers in digest
+- Provide section-level metadata (headings, structure)
+- Serve full text via dedicated endpoint
+
+### Setup MCP Integration
+
+1. Install arxiv-mcp-server:
+
+   ```bash
+   uv tool install arxiv-mcp-server
+   ```
+
+2. Enable in `.env`:
+
+   ```bash
+   ARXIV_MCP_ENABLE=true
+   ARXIV_PREFETCH_TOPK=10
+   ARXIV_CACHE_TTL_DAYS=7
+   ```
+
+3. Content is cached at `~/.arxiv-mcp-server/papers/cache/` by default
+
+### Content Endpoints
+
+- `GET /digest/{paper_id}/details` - Returns section metadata (headings,
+  offsets, snippets), NOT full text
+- `GET /digest/{paper_id}/fulltext?format=plain&max_bytes=200000` - Returns
+  full text content with optional truncation
+
 ### Available Tasks
 
 ```bash

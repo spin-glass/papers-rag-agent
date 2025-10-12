@@ -54,6 +54,17 @@ async def call_digest_details(paper_id: str) -> dict:
         raise Exception(error_msg)
 
 
+async def call_fulltext(paper_id: str, fmt: str = "plain", max_bytes: int = 100000) -> str:
+    """論文の全文を取得"""
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        response = await client.get(
+            f"{API_BASE}/digest/{paper_id}/fulltext",
+            params={"format": fmt, "max_bytes": max_bytes},
+        )
+        response.raise_for_status()
+        return response.text
+
+
 async def sse_rag_stream(query: str):
     try:
         async with httpx.AsyncClient(timeout=None) as client:
@@ -439,8 +450,34 @@ async def on_show_digest_details(action: cl.Action):
                 if "cs.RO" in categories:
                     content_parts.append("- **ロボティクス**分野での実用的な応用可能性")
 
+            if details.get("sections"):
+                content_parts.append("\n## 📑 検出されたセクション")
+                toc = details.get("toc_flat", [])
+                if toc:
+                    for heading in toc[:10]:
+                        content_parts.append(f"- {heading}")
+                    if len(toc) > 10:
+                        content_parts.append(f"... (他 {len(toc) - 10} セクション)")
+                
+                if details.get("has_full_text"):
+                    content_parts.append(f"\n**コンテンツサイズ**: {details.get('content_length', 0):,} bytes")
+
             # ローディングメッセージを更新
             loading_msg.content = "\n".join(content_parts)
+            
+            actions = []
+            if details.get("has_full_text"):
+                actions.append(
+                    cl.Action(
+                        name="show_fulltext",
+                        payload={"paper_id": paper_id},
+                        label="📄 全文を表示",
+                    )
+                )
+            
+            if actions:
+                loading_msg.actions = actions
+            
             await loading_msg.update()
 
         except httpx.HTTPStatusError as he:
@@ -458,6 +495,42 @@ async def on_show_digest_details(action: cl.Action):
 
     except Exception as e:
         await cl.Message(content=f"❌ 詳細表示エラー: `{e}`").send()
+
+
+@cl.action_callback("show_fulltext")
+async def on_show_fulltext(action: cl.Action):
+    """全文表示のコールバック"""
+    try:
+        paper_id = action.payload.get("paper_id")
+        
+        if not paper_id:
+            await cl.Message(content="❌ 論文IDが指定されていません").send()
+            return
+        
+        loading_msg = await cl.Message(content="📄 全文を取得中...").send()
+        
+        try:
+            fulltext = await call_fulltext(paper_id, fmt="plain", max_bytes=100000)
+            
+            if len(fulltext) >= 100000:
+                warning = "\n\n⚠️ **注意**: コンテンツは100,000バイトに制限されています。完全な内容を見るにはPDFをダウンロードしてください。\n\n"
+            else:
+                warning = ""
+            
+            content = f"""### 📄 全文コンテンツ
+
+{warning}```
+{fulltext}
+```
+"""
+            await loading_msg.update(content=content)
+        
+        except Exception as e:
+            error_msg = f"❌ 全文取得エラー: {str(e)}"
+            await loading_msg.update(content=error_msg)
+    
+    except Exception as e:
+        await cl.Message(content=f"❌ エラー: {str(e)}").send()
 
 
 @cl.on_message
