@@ -6,7 +6,10 @@
 
 English | 日本語版: [README-ja.md](README-ja.md)
 
-Papers RAG Agent is a workflow-driven chatbot for learning from academic papers. It combines Retrieval Augmented Generation (RAG) with LangGraph workflows to provide cited answers, Cornell Notes, and comprehension quizzes.
+Papers RAG Agent is a workflow-driven chatbot for learning from academic
+papers. It combines Retrieval Augmented Generation (RAG) with LangGraph
+workflows to provide cited answers, Cornell Notes, and comprehension
+quizzes.
 
 ## 📋 Implemented Features
 
@@ -173,7 +176,7 @@ See detailed setup in [`docs/guides/setup.md`](docs/guides/setup.md).
 
 Papers RAG Agent is composed of several LangGraph workflows.
 
-### Message Routing
+### Message Routing Workflow
 
 ```mermaid
 graph TD;
@@ -222,7 +225,7 @@ classDef first fill-opacity:0
 classDef last fill:#bfb6fc
 ```
 
-### Content Enhancement
+### Content Enhancement Workflow
 
 ```mermaid
 graph TD;
