@@ -25,8 +25,8 @@ class DigestItem(BaseModel):
 def _date_range_for_last_days(days: int) -> str:
     now = datetime.now(timezone.utc)
     start = now - timedelta(days=max(1, days))
-    fr = start.strftime("%Y%m%d")
-    to = now.strftime("%Y%m%d")
+    fr = start.strftime("%Y%m%d") + "*"
+    to = now.strftime("%Y%m%d") + "*"
     return f"{fr} TO {to}"
 
 
