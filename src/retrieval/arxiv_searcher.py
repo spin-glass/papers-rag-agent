@@ -85,7 +85,10 @@ def search_arxiv_papers(
     Returns:
         List of Paper objects with summary field populated
     """
-    q = build_improved_query(query)
+    if any(tok in query for tok in ("cat:", "ti:", "abs:", "au:", "AND", "OR")):
+        q = query
+    else:
+        q = build_improved_query(query)
 
     # Add date range if specified (format: "2017* TO 2025*")
     if date_range:
@@ -93,7 +96,7 @@ def search_arxiv_papers(
 
     url = (
         f"{ARXIV_API}?search_query={urllib.parse.quote(q)}"
-        f"&sortBy=relevance&sortOrder=descending&max_results={max_results}"
+        f"&sortBy=submittedDate&sortOrder=descending&max_results={max_results}"
     )
 
     feed = feedparser.parse(url)

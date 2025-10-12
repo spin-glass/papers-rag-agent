@@ -25,6 +25,14 @@ async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
         return r.json().get("items", [])
 
 
+async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> list[dict]:
+    params = {"cat": cat, "days": days, "limit": limit}
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        r = await client.get(f"{API_BASE}/digest", params=params)
+        r.raise_for_status()
+        return r.json()
+
+
 async def sse_rag_stream(query: str):
     try:
         async with httpx.AsyncClient(timeout=None) as client:
@@ -116,6 +124,16 @@ async def on_chat_start():
                 "何について知りたいですか？"
             )
         ).send()
+        await cl.Message(
+            content="ワンクリックで日次ダイジェストを取得できます。",
+            actions=[
+                cl.Action(
+                    name="daily_digest",
+                    payload={"cat": "cs.LG", "days": 2, "limit": 10},
+                    label="📰 デイリーダイジェスト（cs.LG, 直近2日）",
+                )
+            ],
+        ).send()
     except Exception as e:
         await cl.Message(
             content=(
@@ -131,20 +149,118 @@ async def on_chat_start():
         ).send()
 
 
+@cl.action_callback("daily_digest")
+async def on_daily_digest(action: cl.Action):
+    try:
+        cfg = {}
+        try:
+            if isinstance(action.payload, dict):
+                cfg = action.payload
+            elif isinstance(action.payload, str):
+                cfg = json.loads(action.payload)
+        except Exception:
+            cfg = {}
+        cat = cfg.get("cat", "cs.LG")
+        days = int(cfg.get("days", 2))
+        limit = int(cfg.get("limit", 10))
+
+        items = await call_digest(cat=cat, days=days, limit=limit)
+        if not items:
+            await cl.Message(
+                content="該当するダイジェスト項目がありませんでした。"
+            ).send()
+            return
+
+        lines = [f"### デイリーダイジェスト（{cat}, 過去{days}日・最大{limit}件）"]
+        for it in items:
+            title = (it.get("title") or "").strip() or "（無題）"
+            url = it.get("url") or it.get("link") or ""
+            pdf = it.get("pdf") or ""
+            summary = it.get("summary_short") or it.get("summary") or ""
+            bullet = f"- {title}"
+            if url:
+                bullet = f"- [{title}]({url})"
+            if pdf:
+                bullet += f"（[PDF]({pdf})）"
+            lines.append(bullet)
+            if summary:
+                s = summary.strip()
+                if len(s) > 280:
+                    s = s[:280] + "..."
+                lines.append(f"  \n  {s}")
+        await cl.Message(content="\n".join(lines)).send()
+    except httpx.HTTPStatusError as he:
+        await cl.Message(
+            content=f"❌ /digest エラー {he.response.status_code}: {he.response.text}"
+        ).send()
+    except Exception as e:
+        await cl.Message(
+            content=f"❌ デイリーダイジェスト取得に失敗しました: `{e}`"
+        ).send()
+
+
 @cl.on_message
 async def on_message(msg: cl.Message):
     text = (msg.content or "").strip()
+    if text.lower().startswith("digest"):
+        try:
+            parts = text.split()
+            cat = "cs.LG"
+            days = 2
+            limit = 10
+            for token in parts[1:]:
+                t = token.strip()
+                if t.lower().startswith("cs."):
+                    cat = t
+                elif t.lower().startswith("days="):
+                    days = int(t.split("=", 1)[1])
+                elif t.lower().startswith("limit="):
+                    limit = int(t.split("=", 1)[1])
+
+            items = await call_digest(cat=cat, days=days, limit=limit)
+            if not items:
+                await cl.Message(
+                    content="該当するダイジェスト項目がありませんでした。"
+                ).send()
+                return
+
+            lines = ["### デイリーダイジェスト"]
+            for it in items:
+                title = (it.get("title") or "").strip() or "（無題）"
+                url = it.get("url") or it.get("link") or ""
+                pdf = it.get("pdf") or ""
+                summary = it.get("summary_short") or it.get("summary") or ""
+                bullet = f"- **{title}**"
+                if url:
+                    bullet = f"- **[{title}]({url})**"
+                if pdf:
+                    bullet += f" （[PDF]({pdf})）"
+                lines.append(bullet)
+                if summary:
+                    s = summary.strip()
+                    if len(s) > 280:
+                        s = s[:280] + "..."
+                    lines.append(f"  \n  {s}")
+            await cl.Message(content="\n".join(lines)).send()
+        except httpx.HTTPStatusError as he:
+            await cl.Message(
+                content=f"❌ /digest {he.response.status_code}: {he.response.text}"
+            ).send()
+        except Exception as e:
+            await cl.Message(content=f"❌ /digest 失敗: `{e}`").send()
+        return
+
     # arxiv: クエリ
     if text.lower().startswith("arxiv:"):
         query = text.split(":", 1)[1].strip()
         try:
             items = await call_arxiv_search(query, max_results=10)
             if not items:
-                await cl.Message(content="_No results._").send()
+                await cl.Message(content="該当結果がありませんでした。").send()
                 return
             lines = []
             for it in items:
-                title = it.get("title", "").strip() or "(no title)"
+                title = it.get("title", "").strip() or "（無題）"
                 url = it.get("url") or ""
                 summary = it.get("summary") or ""
                 if url:
