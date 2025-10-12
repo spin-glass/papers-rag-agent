@@ -73,4 +73,4 @@ jobs:
     
     - name: Run pre-commit (all files)
       run: |
-        uv run pre-commit run --all-files || true
+        uvx pre-commit run --all-files || true
