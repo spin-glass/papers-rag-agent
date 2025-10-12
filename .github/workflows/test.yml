@@ -40,7 +40,8 @@ jobs:
 
     - name: Build caches (precomputed data)
       run: |
-        uv run task build:cache
+        export PYTHONPATH=$(pwd)
+        uv run python scripts/build_cache.py
 
     - name: Run tests
       run: |
@@ -77,7 +78,8 @@ jobs:
 
     - name: Build caches (precomputed data)
       run: |
-        uv run task build:cache
+        export PYTHONPATH=$(pwd)
+        uv run python scripts/build_cache.py
 
     - name: Run tests with coverage
       run: |

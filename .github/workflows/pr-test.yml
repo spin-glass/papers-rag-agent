@@ -31,7 +31,8 @@ jobs:
 
     - name: Build caches (precomputed data)
       run: |
-        uv run task build:cache
+        export PYTHONPATH=$(pwd)
+        uv run python scripts/build_cache.py
 
     - name: Run core tests (excluding UI tests)
       run: |
