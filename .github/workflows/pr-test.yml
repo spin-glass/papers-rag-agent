@@ -73,4 +73,7 @@ jobs:
 
     - name: Run pre-commit (diff only)
       run: |
-        uvx pre-commit run --from-ref origin/main --to-ref HEAD || true
+        set -eux
+        BASE_REF="${{ github.base_ref || 'main' }}"
+        git fetch --no-tags --prune --depth=1 origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+        uvx pre-commit run --from-ref "origin/${BASE_REF}" --to-ref HEAD || true
