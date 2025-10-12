@@ -7,10 +7,28 @@ This script generates papers and embeddings cache for fast startup.
 import json
 import pickle
 import asyncio
+import os
+import numpy as np
 from pathlib import Path
 
 from src.retrieval.arxiv_searcher import search_arxiv_papers
 from src.retrieval.inmemory import InMemoryIndex
+
+
+def _use_local_embeddings() -> bool:
+    """Check if we should use local embeddings instead of calling OpenAI."""
+    key = os.environ.get("OPENAI_API_KEY", "")
+    ci = os.environ.get("CI", "")
+    return (ci.lower() in ("1", "true")) or (not key) or (key == "test_key")
+
+
+def _make_local_embedding(text: str, dim: int = 64) -> np.ndarray:
+    """Generate deterministic pseudo-embedding based on text hash."""
+    seed = abs(hash(text)) % (2**32)
+    rng = np.random.default_rng(seed)
+    vec = rng.normal(loc=0.0, scale=1.0, size=dim).astype(np.float32)
+    norm = np.linalg.norm(vec) + 1e-8
+    return (vec / norm).astype(np.float32)
 
 
 async def build_papers_cache():
@@ -84,10 +102,19 @@ def build_embeddings_cache(papers):
         print("❌ No papers to process")
         return None
 
-    # Create index and build embeddings
     index = InMemoryIndex()
-    index.build(papers)
 
+    if _use_local_embeddings():
+        print("⚙️  CI/test mode detected — generating local deterministic embeddings")
+        index.papers_with_embeddings = []
+        for p in papers:
+            text = f"{p.title}\n\n{p.summary}"
+            emb = _make_local_embedding(text)
+            index.papers_with_embeddings.append((p, emb))
+        print(f"✅ Built embeddings for {len(index.papers_with_embeddings)} papers (local)")
+        return index
+
+    index.build(papers)
     print(f"✅ Built embeddings for {len(index.papers_with_embeddings)} papers")
     return index
 
