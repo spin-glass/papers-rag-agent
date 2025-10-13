@@ -36,7 +36,7 @@ async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> lis
 async def call_digest_details(paper_id: str) -> dict:
     """論文の詳細情報を取得"""
     try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
+        async with httpx.AsyncClient(timeout=360.0) as client:
             r = await client.get(f"{API_BASE}/digest/{paper_id}/details")
             r.raise_for_status()
             return r.json()
@@ -45,7 +45,7 @@ async def call_digest_details(paper_id: str) -> dict:
         print(f"❌ API Error: {error_msg}")
         raise Exception(f"API Error: {error_msg}")
     except httpx.TimeoutException:
-        error_msg = "Request timeout (120s)"
+        error_msg = "Request timeout (360s)"
         print(f"❌ Timeout: {error_msg}")
         raise Exception(f"Timeout: {error_msg}")
     except Exception as e:
