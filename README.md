@@ -1,7 +1,9 @@
 # Papers RAG Agent
 
 <!-- CLOUDRUN_URL_START -->
+
 🚀 **Live Demo (Chainlit UI)**: [https://papers-rag-ui-74fhp6jaca-an.a.run.app](https://papers-rag-ui-74fhp6jaca-an.a.run.app)
+
 <!-- CLOUDRUN_URL_END -->
 
 English | 日本語版: [docs/ja/README.md](docs/ja/README.md)
@@ -123,7 +125,7 @@ When enabled, the system can:
    uv tool install arxiv-mcp-server
    ```
 
-2. Enable in `.env`:
+1. Enable in `.env`:
 
    ```bash
    ARXIV_MCP_ENABLE=true
@@ -131,7 +133,7 @@ When enabled, the system can:
    ARXIV_CACHE_TTL_DAYS=7
    ```
 
-3. Content is cached at `~/.arxiv-mcp-server/papers/cache/` by default
+1. Content is cached at `~/.arxiv-mcp-server/papers/cache/` by default
 
 ### Content Endpoints
 

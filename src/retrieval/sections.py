@@ -14,12 +14,12 @@ def build_sections(content: str, max_snippet_len: int = 240) -> dict:
     lines = content.splitlines()
     indices = []
     toc_flat: List[str] = []
-    
+
     for i, line in enumerate(lines):
         if any(re.match(pat, line.strip(), re.IGNORECASE) for pat in SECTION_PATTERNS):
             indices.append(i)
             toc_flat.append(line.strip())
-    
+
     sections = []
     for idx, start in enumerate(indices):
         end = indices[idx + 1] if idx + 1 < len(indices) else len(lines)
@@ -33,5 +33,5 @@ def build_sections(content: str, max_snippet_len: int = 240) -> dict:
                 "snippet": seg[:max_snippet_len],
             }
         )
-    
+
     return {"sections": sections, "toc_flat": toc_flat}
