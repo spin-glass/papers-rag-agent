@@ -1,4 +1,5 @@
 import asyncio
+import gc
 import logging
 from threading import RLock
 from typing import List, Optional, Sequence
@@ -52,9 +53,9 @@ _FALLBACK_QUERIES = ("transformer", "attention mechanism", "BERT", "GPT")
 
 def load_or_build_index(
     queries: Sequence[str] = _DEFAULT_QUERIES,
-    per_query: int = 8,
+    per_query: int = 6,  # Reduced from 8 to save memory
     fallback_queries: Sequence[str] = _FALLBACK_QUERIES,
-    fallback_per_query: int = 10,
+    fallback_per_query: int = 8,  # Reduced from 10 to save memory
 ) -> InMemoryIndex:
     # 1) キャッシュ
     try:
@@ -93,9 +94,9 @@ def load_or_build_index(
 
 async def a_load_or_build_index(
     queries=_DEFAULT_QUERIES,
-    per_query: int = 8,
+    per_query: int = 6,  # Reduced from 8 to save memory
     fallback_queries=_FALLBACK_QUERIES,
-    fallback_per_query: int = 10,
+    fallback_per_query: int = 8,  # Reduced from 10 to save memory
 ) -> InMemoryIndex:
     return await asyncio.to_thread(
         load_or_build_index,
@@ -144,4 +145,8 @@ def _build_index_from_queries(
         len(unique),
         len(idx.papers_with_embeddings),
     )
+
+    # Force garbage collection after building index
+    gc.collect()
+
     return idx

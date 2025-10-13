@@ -1,5 +1,6 @@
 """In-memory vector index for RAG retrieval."""
 
+import gc
 import numpy as np
 from typing import List, Tuple
 from src.models import Paper, RetrievedContext
@@ -29,6 +30,8 @@ class InMemoryIndex:
             try:
                 # Get embedding for the combined text
                 embedding = get_embed(text)
+                # Convert to float32 to save memory
+                embedding = embedding.astype(np.float32)
                 self.papers_with_embeddings.append((paper, embedding))
 
             except Exception as e:
@@ -36,6 +39,9 @@ class InMemoryIndex:
                 continue
 
         print(f"Built index with {len(self.papers_with_embeddings)} papers")
+
+        # Force garbage collection to free memory
+        gc.collect()
 
     def search(self, query: str, k: int) -> List[RetrievedContext]:
         """
@@ -54,6 +60,8 @@ class InMemoryIndex:
         try:
             # Get query embedding
             query_embedding = get_embed(query)
+            # Convert to float32 for consistency
+            query_embedding = query_embedding.astype(np.float32)
 
         except Exception as e:
             print(f"Error: Failed to embed query: {e}")

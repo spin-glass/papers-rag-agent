@@ -59,7 +59,7 @@ jobs:
           --region "$REGION" \
           --allow-unauthenticated \
           --port 8000 \
-          --memory 2Gi \
+          --memory 4Gi \
           --cpu 1 \
           --min-instances 0 \
           --max-instances 10 \
@@ -117,7 +117,7 @@ jobs:
           --region "$REGION" \
           --allow-unauthenticated \
           --port 8000 \
-          --memory 2Gi \
+          --memory 4Gi \
           --cpu 1 \
           --min-instances 0 \
           --max-instances 10 \
