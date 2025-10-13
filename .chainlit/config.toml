@@ -163,6 +163,6 @@ ping_interval = 120
 compression = false
 cookie = false
 cors_allowed_origins = "*"
-transports = ["polling", "websocket"]
+transports = ["websocket"]
 upgrade_timeout = 10
 max_payload_size = 100000000

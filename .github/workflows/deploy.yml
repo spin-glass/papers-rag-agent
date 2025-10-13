@@ -9,7 +9,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-northeast1
-  REPO_NAME: papers-rag-agent          # ← 既存の Artifact Registry リポジトリ名
+  REPO_NAME: papers-rag-agent # ← 既存の Artifact Registry リポジトリ名
   FASTAPI_SERVICE: papers-rag-api
   CHAINLIT_SERVICE: papers-rag-ui
 
@@ -45,7 +45,7 @@ jobs:
     - name: Build & Push FastAPI Image
       uses: docker/build-push-action@v6
       with:
-        context: .                         # ルート（src/ を拾う構成）
+        context: .   # ルート（src/ を拾う構成）
         file: infra/docker/fastapi/Dockerfile
         push: true
         tags: |
@@ -59,11 +59,11 @@ jobs:
           --region "$REGION" \
           --allow-unauthenticated \
           --port 8000 \
-          --memory 2Gi \
+          --memory 4Gi \
           --cpu 1 \
           --min-instances 0 \
           --max-instances 10 \
-          --set-env-vars "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+          --set-env-vars "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},ARXIV_MCP_ENABLE=true,ARXIV_STORAGE_PATH=/app/arxiv-papers"
 
   deploy-chainlit:
     name: Deploy Chainlit Service
@@ -117,7 +117,7 @@ jobs:
           --region "$REGION" \
           --allow-unauthenticated \
           --port 8000 \
-          --memory 2Gi \
+          --memory 4Gi \
           --cpu 1 \
           --min-instances 0 \
           --max-instances 10 \

@@ -93,3 +93,7 @@ src/data/precomputed_embeddings.pkl
 
 # LangGraph Studio
 langgraph.json
+
+# arXiv MCP Server storage
+.arxiv-mcp-server/
+~/.arxiv-mcp-server/

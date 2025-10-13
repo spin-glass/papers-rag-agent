@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   fastapi:
@@ -9,6 +9,8 @@ services:
     - "9000:8000"
     environment:
     - PYTHONPATH=/app/src
+    - ARXIV_MCP_ENABLE=true
+    - ARXIV_STORAGE_PATH=/app/arxiv-papers
     volumes:
     - ./src:/app/src
     networks:
