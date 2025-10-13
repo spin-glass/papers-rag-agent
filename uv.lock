@@ -2374,6 +2374,7 @@ dependencies = [
     { name = "openai" },
     { name = "pydantic" },
     { name = "pytest" },
+    { name = "pytest-asyncio" },
     { name = "python-dotenv" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -2417,6 +2418,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11.9" },
     { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.0.0" },
+    { name = "pytest-asyncio", specifier = ">=1.2.0" },
     { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=0.24.0" },
     { name = "pytest-mock", marker = "extra == 'test'", specifier = ">=3.14.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },

@@ -200,24 +200,24 @@ async def get_digest(
 
     # 全ての論文を並列で翻訳
     items = await asyncio.gather(*[translate_paper(p) for p in top])
-    
+
     prefetch_k = int(os.getenv("ARXIV_PREFETCH_TOPK", "10"))
     topk = min(prefetch_k, len(top))
-    
+
     async def prefetch_paper(paper: Paper) -> None:
         try:
             cached = get_cached(paper.id)
             if cached:
                 return
-            
+
             success = await mcp_download_paper(paper.id)
             if not success:
                 return
-            
+
             content = await mcp_read_paper(paper.id, fmt="plain")
             if not content:
                 return
-            
+
             sections_data = build_sections(content)
             payload = {
                 "content": content,
@@ -230,10 +230,10 @@ async def get_digest(
             set_cached(paper.id, payload)
         except Exception:
             pass
-    
+
     for i in range(topk):
         asyncio.create_task(prefetch_paper(top[i]))
-    
+
     return items
 
 
@@ -412,16 +412,16 @@ async def get_digest_details(paper_id: str):
                             }
                             set_cached(paper.id, payload)
                             cached = payload
-                
+
                 if cached:
                     sections = cached.get("sections")
                     toc_flat = cached.get("toc_flat")
                     content_length = cached.get("content_length")
                     content_hash = cached.get("content_hash")
-                    has_full_text = content_length and content_length > 0
+                    has_full_text = bool(content_length and content_length > 0)
             except (MCPArxivError, Exception):
                 pass
-            
+
             details = DigestDetails(
                 paper_id=paper.id,
                 title=translated_title,
@@ -458,30 +458,30 @@ async def get_digest_details(paper_id: str):
 @router.get("/digest/{paper_id}/fulltext")
 async def get_fulltext(
     paper_id: str,
-    format: str = Query(default="plain", regex="^(plain|md)$"),
+    format: str = Query(default="plain", pattern="^(plain|md)$"),
     max_bytes: int = Query(default=200000, ge=1000, le=10000000),
 ) -> PlainTextResponse:
     """論文の全文コンテンツを取得"""
     try:
         cached = get_cached(paper_id)
         content = None
-        
+
         if cached and cached.get("format") == format and "content" in cached:
             content = cached["content"]
-        
+
         if content is None:
             success = await mcp_download_paper(paper_id)
             if not success:
                 raise HTTPException(
                     status_code=404, detail=f"Could not download paper {paper_id}"
                 )
-            
+
             content = await mcp_read_paper(paper_id, fmt=format)
             if not content:
                 raise HTTPException(
                     status_code=404, detail=f"Could not read paper {paper_id}"
                 )
-            
+
             existing_cache = get_cached(paper_id)
             if existing_cache:
                 existing_cache["content"] = content
@@ -498,14 +498,16 @@ async def get_fulltext(
                     "format": format,
                 }
                 set_cached(paper_id, payload)
-        
+
         data = content[:max_bytes] if isinstance(content, str) else ""
-        
+
         return PlainTextResponse(data, media_type="text/plain; charset=utf-8")
-    
+
     except HTTPException:
         raise
     except MCPArxivError as e:
-        raise HTTPException(status_code=503, detail=f"MCP service error: {str(e)}") from e
+        raise HTTPException(
+            status_code=503, detail=f"MCP service error: {str(e)}"
+        ) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
