@@ -19,7 +19,7 @@ async def get_health() -> dict:
 
 async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
     payload = {"query": query, "max_results": max_results}
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         r = await client.post(f"{API_BASE}/arxiv/search", json=payload)
         r.raise_for_status()
         return r.json().get("items", [])
@@ -27,7 +27,7 @@ async def call_arxiv_search(query: str, max_results: int = 10) -> list[dict]:
 
 async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> list[dict]:
     params = {"cat": cat, "days": days, "limit": limit}
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         r = await client.get(f"{API_BASE}/digest", params=params)
         r.raise_for_status()
         return r.json()
@@ -36,7 +36,7 @@ async def call_digest(cat: str = "cs.LG", days: int = 1, limit: int = 10) -> lis
 async def call_digest_details(paper_id: str) -> dict:
     """論文の詳細情報を取得"""
     try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=120.0) as client:
             r = await client.get(f"{API_BASE}/digest/{paper_id}/details")
             r.raise_for_status()
             return r.json()
@@ -45,7 +45,7 @@ async def call_digest_details(paper_id: str) -> dict:
         print(f"❌ API Error: {error_msg}")
         raise Exception(f"API Error: {error_msg}")
     except httpx.TimeoutException:
-        error_msg = "Request timeout (30s)"
+        error_msg = "Request timeout (120s)"
         print(f"❌ Timeout: {error_msg}")
         raise Exception(f"Timeout: {error_msg}")
     except Exception as e:

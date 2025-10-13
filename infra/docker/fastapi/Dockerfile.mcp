@@ -1,16 +1,14 @@
-# FastAPI専用のDockerfile（MCP統合対応）
+# MCP統合対応のFastAPI Dockerfile
 FROM python:3.13-slim
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# システムの依存関係をインストール（PDF処理用ライブラリも追加）
+# システムの依存関係をインストール
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     curl \
-    poppler-utils \
-    tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
 # uvをインストール
@@ -21,7 +19,7 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen
 
-# arxiv-mcp-serverをグローバルにインストール
+# arxiv-mcp-serverをインストール
 RUN uv tool install arxiv-mcp-server
 
 # uv仮想環境をアクティベートするための環境変数を設定
@@ -34,14 +32,14 @@ COPY src/ ./src/
 # Pythonパスを定義後に追加
 ENV PYTHONPATH="/app/src:$PYTHONPATH"
 
-# MCP用ディレクトリを作成
-RUN mkdir -p /app/arxiv-papers
-
-# MCP環境変数を設定
+# MCP用の環境変数設定
 ENV ARXIV_MCP_ENABLE=true
 ENV ARXIV_STORAGE_PATH=/app/arxiv-papers
 ENV ARXIV_MCP_CMD=uv
 ENV ARXIV_MCP_TIMEOUT_S=120
+
+# ストレージディレクトリを作成
+RUN mkdir -p /app/arxiv-papers
 
 # Cloud RunのPORT環境変数に対応（デフォルト8000）
 EXPOSE 8000
